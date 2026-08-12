@@ -18,9 +18,9 @@ export const MobileContainer = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#EAE4D9] dark:bg-[#060911] text-vault-charcoal dark:text-vault-text flex justify-center items-center sm:py-6 sm:px-4">
+    <div className="min-h-screen bg-[#F1F5F9] dark:bg-[#0D1117] text-vault-charcoal dark:text-vault-text flex justify-center items-center sm:py-6 sm:px-4">
       {/* Mobile Frame Container */}
-      <div className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:h-[860px] bg-vault-paper sm:rounded-[40px] sm:border-[8px] sm:border-vault-borderDark shadow-2xl flex flex-col relative overflow-hidden">
+      <div className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:h-[860px] bg-vault-paper sm:rounded-[40px] sm:border-[8px] sm:border-slate-800 shadow-2xl flex flex-col relative overflow-hidden">
         
         {/* Status Bar */}
         <header className="sticky top-0 z-30 bg-vault-paper/90 backdrop-blur-md px-5 pt-3 pb-2 flex items-center justify-between border-b border-vault-border select-none">
@@ -29,7 +29,7 @@ export const MobileContainer = ({ children }) => {
           </span>
 
           <div className="flex items-center gap-2.5 text-vault-muted dark:text-vault-mutedDark">
-            <span className="text-[10px] font-bold tracking-widest text-vault-terracotta bg-vault-terracottaLight px-2 py-0.5 rounded-full border border-vault-terracotta/20">
+            <span className="text-[10px] font-bold tracking-widest text-vault-bronze bg-vault-bronzeLight px-2 py-0.5 rounded-full border border-vault-bronze/20 font-mono">
               VAULT • UPI
             </span>
             <Wifi className="w-3.5 h-3.5 text-vault-charcoal dark:text-vault-text" />
@@ -44,7 +44,7 @@ export const MobileContainer = ({ children }) => {
               type="button"
               aria-label="Go to profile settings"
               onClick={() => setActiveTab('profile')}
-              className="relative rounded-full p-0.5 ring-2 ring-vault-terracotta/50 hover:ring-vault-terracotta transition-all focus:ring-2 focus:ring-vault-terracotta"
+              className="relative rounded-full p-0.5 ring-2 ring-vault-bronze/50 hover:ring-vault-bronze transition-all focus:ring-2 focus:ring-vault-bronze"
             >
               <img 
                 src={user.profilePic} 
@@ -66,9 +66,9 @@ export const MobileContainer = ({ children }) => {
               type="button"
               aria-label="View profile & security settings"
               onClick={() => setActiveTab('profile')}
-              className={`p-2 rounded-xl transition-all focus:ring-2 focus:ring-vault-terracotta ${
+              className={`p-2 rounded-xl transition-all focus:ring-2 focus:ring-vault-bronze ${
                 activeTab === 'profile' 
-                  ? 'bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30' 
+                  ? 'bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30' 
                   : 'bg-vault-surface text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text border border-vault-border'
               }`}
             >
@@ -85,11 +85,11 @@ export const MobileContainer = ({ children }) => {
         {/* Global Toast Notification with Screen Reader Live Region */}
         <div aria-live="polite" className="pointer-events-none">
           {toast && (
-            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[380px] bg-vault-surface border border-vault-terracotta/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 pointer-events-auto">
+            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[380px] bg-vault-surface border border-vault-bronze/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 pointer-events-auto">
               {toast.type === 'error' ? (
                 <AlertCircle className="w-5 h-5 text-vault-rose shrink-0" />
               ) : (
-                <CheckCircle2 className="w-5 h-5 text-vault-terracotta shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-vault-teal shrink-0" />
               )}
               <p className="text-xs font-semibold leading-tight">{toast.message}</p>
             </div>

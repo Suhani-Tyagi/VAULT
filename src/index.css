@@ -4,37 +4,46 @@
 
 @layer base {
   body {
-    background-color: #F7F3EC;
-    color: #1C1A17;
+    background-color: #F8FAFC;
+    color: #0F172A;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   .dark body {
-    background-color: #060911;
-    color: #F5F0E8;
+    background-color: #0D1117;
+    color: #F8FAFC;
   }
 
-  /* Dark mode surface & border overrides */
+  /* Architectural Dark Mode Overrides */
   .dark .bg-vault-paper {
-    background-color: #0B0F19 !important;
+    background-color: #0D1117 !important;
   }
   .dark .bg-vault-surface {
-    background-color: #121723 !important;
+    background-color: #161B22 !important;
   }
   .dark .bg-vault-surfaceHighlight {
-    background-color: #1A2638 !important;
+    background-color: #1F242D !important;
   }
   .dark .border-vault-border {
-    border-color: #232E42 !important;
+    border-color: #21262D !important;
   }
   .dark .border-vault-borderDark {
-    border-color: #2D3B54 !important;
+    border-color: #30363D !important;
   }
 
   /* Force tabular numbers for financial amounts so digits don't jitter */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* Custom Signature Rupee Symbol Container */
+.rupee-badge {
+  display: inline-flex;
+  items-align: center;
+  justify-content: center;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
 }
 
 /* Keyframes for PIN pad error shake animation */
@@ -48,7 +57,7 @@
   animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* Custom scrollbar for mobile container */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -59,12 +68,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E5DFD5;
+  background: #CBD5E1;
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #D8CFBF;
+.dark ::-webkit-scrollbar-thumb {
+  background: #30363D;
 }
 
 .no-scrollbar::-webkit-scrollbar {

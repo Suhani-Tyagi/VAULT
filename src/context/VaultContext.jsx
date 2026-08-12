@@ -1,87 +1,116 @@
-import React, { createContext, useContext, useState } from 'react';
-import { MOCK_USER, MOCK_CONTACTS, MOCK_GOALS, MOCK_TRANSACTIONS, MOCK_INSIGHTS } from '../data/mockData';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { MOCK_USER, MOCK_TRANSACTIONS, MOCK_GOALS, MOCK_CONTACTS } from '../data/mockData';
 
 const VaultContext = createContext(null);
 
 export const VaultProvider = ({ children }) => {
-  const [activeTab, setActiveTab] = useState('home');
-  const [user, setUser] = useState(MOCK_USER);
-  const [contacts, setContacts] = useState(MOCK_CONTACTS);
-  const [goals, setGoals] = useState(MOCK_GOALS);
+  const [user, setUser] = useState({ ...MOCK_USER, pin: '123456' });
   const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
-  const [insights, setInsights] = useState(MOCK_INSIGHTS);
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [goals, setGoals] = useState(MOCK_GOALS);
+  const [contacts] = useState(MOCK_CONTACTS);
+  const [friends] = useState(MOCK_CONTACTS);
   
+  const [activeTab, setActiveTab] = useState('home');
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [toast, setToast] = useState(null);
 
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+
+  // Security Lockout State
+  const [failedPinAttempts, setFailedPinAttempts] = useState(0);
+  const [lockState, setLockState] = useState({ isLocked: false, remainingSeconds: 0 });
+
+  useEffect(() => {
+    let timer;
+    if (lockState.isLocked && lockState.remainingSeconds > 0) {
+      timer = setInterval(() => {
+        setLockState(prev => {
+          if (prev.remainingSeconds <= 1) {
+            return { isLocked: false, remainingSeconds: 0 };
+          }
+          return { ...prev, remainingSeconds: prev.remainingSeconds - 1 };
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [lockState.isLocked, lockState.remainingSeconds]);
+
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
+    setTimeout(() => setToast(null), 3000);
   };
 
-  const executeSendMoney = (contact, amount, note) => {
-    const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) return { success: false, message: "Invalid amount" };
+  const verifyPin = (pinInput) => {
+    if (lockState.isLocked) return false;
 
-    if (numAmount > user.availableBalance) {
-      return {
-        success: false,
-        errorType: "insufficient_balance",
-        message: `This transfer didn't go through — your available balance is ₹${user.availableBalance.toLocaleString('en-IN')}, which is less than the ₹${numAmount.toLocaleString('en-IN')} you tried to send.`
+    const userPin = user.pin || '123456';
+    if (pinInput === userPin) {
+      setFailedPinAttempts(0);
+      return true;
+    } else {
+      const nextAttempts = failedPinAttempts + 1;
+      setFailedPinAttempts(nextAttempts);
+
+      if (nextAttempts >= 3) {
+        setLockState({ isLocked: true, remainingSeconds: 30 });
+        showToast("Account temporarily locked due to 3 failed PIN attempts", "error");
+      }
+      return false;
+    }
+  };
+
+  const toggleSetting = (settingKey) => {
+    setUser(prev => ({ ...prev, [settingKey]: !prev[settingKey] }));
+    showToast("Setting updated cleanly");
+  };
+
+  const executeSendMoney = (recipient, amountStr, note = '') => {
+    const amount = parseFloat(amountStr);
+    if (isNaN(amount) || amount <= 0) {
+      return { success: false, errorType: 'invalid_amount', message: "Please enter a valid amount." };
+    }
+
+    if (amount > user.availableBalance) {
+      return { 
+        success: false, 
+        errorType: 'insufficient_balance',
+        message: `This transfer didn't go through — your available balance is ₹${user.availableBalance.toLocaleString('en-IN')}, which is less than the ₹${amount.toLocaleString('en-IN')} you tried to send.` 
       };
     }
 
-    const newBalance = user.availableBalance - numAmount;
-    const newSafeToSpend = user.safeToSpend - numAmount;
-
+    const upiRef = `UPI${Math.floor(100000000000 + Math.random() * 900000000000)}`;
     const newTx = {
       id: `tx-${Date.now()}`,
-      merchant: contact.name,
-      category: "Transfers",
-      amount: numAmount,
-      type: "debit",
-      date: "Just now",
-      timestamp: new Date().toISOString(),
-      runningBalance: newBalance,
-      method: "Vault Direct Pay (₹0 Fee)",
-      upiRef: `${Math.floor(100000000000 + Math.random() * 900000000000)}`,
-      icon: "ArrowUpRight",
-      note: note || `Transfer to ${contact.name}`
+      merchant: recipient.name,
+      amount: amount,
+      type: 'debit',
+      category: 'Transfers',
+      date: 'Today, Just now',
+      upiRef: upiRef,
+      method: 'Vault Safe UPI',
+      runningBalance: user.availableBalance - amount,
+      icon: 'Send',
+      notes: note || 'Direct UPI Transfer'
     };
 
     setUser(prev => ({
       ...prev,
-      availableBalance: newBalance,
-      safeToSpend: newSafeToSpend
+      availableBalance: prev.availableBalance - amount,
+      safeToSpend: prev.safeToSpend - amount
     }));
 
     setTransactions(prev => [newTx, ...prev]);
-    showToast(`Transferred ₹${numAmount.toLocaleString('en-IN')} to ${contact.name}`);
+    showToast(`₹${amount.toLocaleString('en-IN')} sent to ${recipient.name}`);
 
     return { success: true, transaction: newTx };
   };
 
-  const createSplitRequest = (selectedContactIds, totalAmount, description) => {
-    const numTotal = parseFloat(totalAmount);
-    if (isNaN(numTotal) || numTotal <= 0) return false;
-
-    const peopleCount = selectedContactIds.length + 1;
-    const perPerson = (numTotal / peopleCount).toFixed(2);
-
-    const participatingContacts = contacts.filter(c => selectedContactIds.includes(c.id));
-    const names = participatingContacts.map(c => c.name).join(", ");
-
-    showToast(`Split request sent to ${names}. ₹${perPerson} each.`);
-    return true;
-  };
-
-  const depositToGoal = (goalId, depositAmount) => {
-    const amount = parseFloat(depositAmount);
+  const depositToGoal = (goalId, amountStr) => {
+    const amount = parseFloat(amountStr);
     if (isNaN(amount) || amount <= 0) return false;
 
     if (amount > user.availableBalance) {
-      showToast(`Cannot deposit ₹${amount} — exceeds available balance ₹${user.availableBalance}`, 'error');
+      showToast("Insufficient balance to transfer to goal", "error");
       return false;
     }
 
@@ -91,47 +120,44 @@ export const VaultProvider = ({ children }) => {
       safeToSpend: prev.safeToSpend - amount
     }));
 
-    setGoals(prev => prev.map(goal => {
-      if (goal.id === goalId) {
-        return {
-          ...goal,
-          currentAmount: goal.currentAmount + amount
-        };
+    setGoals(prev => prev.map(g => {
+      if (g.id === goalId) {
+        return { ...g, currentAmount: g.currentAmount + amount };
       }
-      return goal;
+      return g;
     }));
 
-    const targetGoal = goals.find(g => g.id === goalId);
-    showToast(`Added ₹${amount.toLocaleString('en-IN')} to "${targetGoal?.title}"`);
+    showToast(`Added ₹${amount.toLocaleString('en-IN')} to goal`);
     return true;
   };
 
-  const createGoal = (title, targetAmount, category, targetDate) => {
-    const target = parseFloat(targetAmount);
-    if (!title || isNaN(target) || target <= 0) return false;
+  const createGoal = (title, targetAmountStr, category, targetDate) => {
+    const targetAmount = parseFloat(targetAmountStr);
+    if (!title || isNaN(targetAmount) || targetAmount <= 0) return false;
 
     const newGoal = {
       id: `g-${Date.now()}`,
       title,
-      targetAmount: target,
       currentAmount: 0,
-      category: category || "Savings",
-      iconName: category === 'Travel' ? 'Plane' : category === 'Tech' ? 'Laptop' : 'Target',
-      color: "#B5563C",
-      targetDate: targetDate || "2027",
-      notes: "Goal created in Vault"
+      targetAmount,
+      category,
+      targetDate,
+      iconName: category === 'Travel' ? 'Plane' : 'Laptop',
+      notes: 'Custom user goal'
     };
 
     setGoals(prev => [...prev, newGoal]);
-    showToast(`New goal "${title}" created!`);
+    showToast(`Created new goal: ${title}`);
     return true;
   };
 
-  const toggleSetting = (key) => {
-    setUser(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+  const requestSplitBill = (billName, totalAmount, friendIds) => {
+    showToast(`Split request sent to ${friendIds.length} friends for ${billName}`);
+    return true;
+  };
+
+  const createSplitRequest = (friendIds, totalAmount, billName) => {
+    return requestSplitBill(billName, totalAmount, friendIds);
   };
 
   const logOut = () => {
@@ -141,30 +167,33 @@ export const VaultProvider = ({ children }) => {
 
   const logIn = () => {
     setIsLoggedOut(false);
-    showToast(`Welcome back, ${user.name.split(' ')[0]}!`);
+    showToast("Welcome back to Vault");
   };
 
   return (
     <VaultContext.Provider value={{
+      user,
+      transactions,
+      goals,
+      contacts,
+      friends,
       activeTab,
       setActiveTab,
-      user,
-      contacts,
-      goals,
-      transactions,
-      insights,
       selectedTransaction,
       setSelectedTransaction,
+      toast,
+      showToast,
+      verifyPin,
+      lockState,
+      toggleSetting,
       executeSendMoney,
-      createSplitRequest,
       depositToGoal,
       createGoal,
-      toggleSetting,
+      requestSplitBill,
+      createSplitRequest,
       isLoggedOut,
       logOut,
-      logIn,
-      toast,
-      showToast
+      logIn
     }}>
       {children}
     </VaultContext.Provider>

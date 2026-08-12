@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Delete, X, Lock, Loader2, AlertTriangle } from 'lucide-react';
+import { Lock, X, Delete, ShieldCheck, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useVault } from '../context/VaultContext';
+import PropTypes from 'prop-types';
 
 export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName }) => {
+  const { verifyPin, lockState, showToast } = useVault();
   const [pin, setPin] = useState('');
-  const [attemptsLeft, setAttemptsLeft] = useState(3);
+  const [errorMsg, setErrorMsg] = useState('');
   const [isShaking, setIsShaking] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  
-  const [isLocked, setIsLocked] = useState(false);
-  const [lockoutCountdown, setLockoutCountdown] = useState(30);
-
   const modalRef = useRef(null);
   const previousFocusRef = useRef(null);
-
-  const CORRECT_PIN = "123456";
 
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement;
+      setPin('');
+      setErrorMsg('');
+      setIsShaking(false);
+
       setTimeout(() => {
         if (modalRef.current) {
           const firstFocusable = modalRef.current.querySelector('button, [tabindex="0"]');
@@ -33,210 +32,182 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    let timer = null;
-    if (isLocked && lockoutCountdown > 0) {
-      timer = setInterval(() => {
-        setLockoutCountdown(prev => prev - 1);
-      }, 1000);
-    } else if (lockoutCountdown === 0) {
-      setIsLocked(false);
-      setAttemptsLeft(3);
-      setLockoutCountdown(30);
-      setErrorMessage(null);
-      setPin('');
-    }
-    return () => { if (timer) clearInterval(timer); };
-  }, [isLocked, lockoutCountdown]);
-
   if (!isOpen) return null;
 
-  const handleKeyPress = (num) => {
-    if (isLocked || isVerifying) return;
+  const handleDigitClick = (digit) => {
+    if (lockState.isLocked) return;
     if (pin.length < 6) {
-      const nextPin = pin + num;
+      const nextPin = pin + digit;
       setPin(nextPin);
-      setErrorMessage(null);
+      setErrorMsg('');
 
       if (nextPin.length === 6) {
-        verifyPin(nextPin);
+        setTimeout(() => submitPin(nextPin), 150);
       }
     }
   };
 
   const handleBackspace = () => {
-    if (isLocked || isVerifying) return;
+    if (lockState.isLocked) return;
     setPin(prev => prev.slice(0, -1));
-    setErrorMessage(null);
+    setErrorMsg('');
   };
 
   const handleClear = () => {
-    if (isLocked || isVerifying) return;
+    if (lockState.isLocked) return;
     setPin('');
-    setErrorMessage(null);
+    setErrorMsg('');
   };
 
-  const verifyPin = (enteredPin) => {
-    setIsVerifying(true);
+  const submitPin = (pinToTest) => {
+    const isCorrect = verifyPin(pinToTest);
 
-    setTimeout(() => {
-      if (enteredPin === CORRECT_PIN) {
-        setIsVerifying(false);
-        onSuccess();
-      } else {
-        setIsVerifying(false);
-        const remaining = attemptsLeft - 1;
-        setAttemptsLeft(remaining);
-        setIsShaking(true);
-        setTimeout(() => setIsShaking(false), 400);
-
-        if (remaining <= 0) {
-          setIsLocked(true);
-          setErrorMessage("Too many attempts. For your security, try again in 30 seconds");
-        } else {
-          setErrorMessage(`That PIN doesn't match. ${remaining} ${remaining === 1 ? 'attempt' : 'attempts'} left.`);
-          setPin('');
-        }
-      }
-    }, 750);
+    if (isCorrect) {
+      onSuccess();
+    } else {
+      setPin('');
+      setIsShaking(true);
+      setErrorMsg("That PIN doesn't match. Please try again.");
+      setTimeout(() => setIsShaking(false), 500);
+    }
   };
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
-        {/* Backdrop click */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0"
-          onClick={onClose}
-        />
-
-        {/* Modal Dialog */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <motion.div 
           ref={modalRef}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="pinpad-modal-title"
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "100%", opacity: 0 }}
-          transition={{ type: "spring", damping: 25, stiffness: 280 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text focus:outline-none"
+          aria-labelledby="pin-modal-title"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className={`relative w-full max-w-xs sm:max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none ${
+            isShaking ? 'animate-shake' : ''
+          }`}
         >
           {/* Close button */}
           <button 
+            type="button"
             onClick={onClose}
-            aria-label="Close PIN Verification"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            aria-label="Close PIN modal"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-bronze"
           >
             <X className="w-5 h-5" />
           </button>
 
           {/* Header */}
-          <div className="text-center mt-2 mb-4">
-            <div className="w-11 h-11 rounded-2xl bg-vault-terracottaLight border border-vault-terracotta/20 text-vault-terracotta flex items-center justify-center mx-auto mb-2">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
+          <div className="w-12 h-12 bg-vault-bronzeLight border border-vault-bronze/30 text-vault-bronze rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <Lock className="w-6 h-6" />
+          </div>
 
-            <h3 id="pinpad-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text tracking-tight">
-              Enter 6-Digit Vault PIN
-            </h3>
-            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-              Confirming security authorization for {recipientName || 'account action'}
+          <h3 id="pin-modal-title" className="text-base font-bold text-vault-charcoal dark:text-vault-text">
+            Enter 6-Digit Vault PIN
+          </h3>
+
+          {amount && recipientName && (
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1">
+              Authorizing transfer of <strong className="text-vault-bronze font-display">₹{parseFloat(amount).toLocaleString('en-IN')}</strong> to <strong className="text-vault-charcoal dark:text-vault-text">{recipientName}</strong>
             </p>
-          </div>
+          )}
 
-          {/* 6 Dots Row */}
-          <div className={`flex justify-center items-center gap-3 my-5 ${isShaking ? 'animate-shake' : ''}`}>
-            {[0, 1, 2, 3, 4, 5].map(idx => {
-              const isFilled = idx < pin.length;
-              return (
-                <div 
-                  key={idx}
-                  className={`w-4 h-4 rounded-full transition-all duration-200 ${
-                    isFilled 
-                      ? 'bg-vault-terracotta scale-110 shadow-sm shadow-vault-terracotta/40' 
-                      : 'bg-vault-paper border-2 border-vault-border'
-                  }`}
-                />
-              );
-            })}
-          </div>
-
-          {/* Error Message */}
-          <div aria-live="polite" className="min-h-[32px]">
-            {errorMessage && (
-              <div className="mb-4 p-2.5 rounded-xl bg-vault-roseLight border border-vault-rose/30 text-center text-xs font-semibold text-vault-rose flex items-center justify-center gap-1.5 animate-in fade-in">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>{errorMessage}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Verifying Spinner overlay */}
-          {isVerifying ? (
-            <div aria-live="polite" className="py-12 flex flex-col items-center justify-center space-y-2">
-              <Loader2 className="w-8 h-8 text-vault-terracotta animate-spin" />
-              <p className="text-xs font-semibold text-vault-muted dark:text-vault-mutedDark">Verifying PIN with bank server...</p>
-            </div>
-          ) : isLocked ? (
-            <div aria-live="polite" className="py-8 text-center space-y-3 bg-vault-paper border border-vault-border rounded-2xl">
-              <Lock className="w-8 h-8 text-vault-rose mx-auto" />
-              <div>
-                <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text">PIN Verification Locked</p>
-                <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark mt-0.5">Try again after countdown expires</p>
-              </div>
-              <div className="text-2xl font-display font-bold text-vault-rose tabular-nums">
-                00:{lockoutCountdown < 10 ? `0${lockoutCountdown}` : lockoutCountdown}
-              </div>
+          {/* Lockout Screen */}
+          {lockState.isLocked ? (
+            <div className="my-6 p-4 bg-vault-roseLight border border-vault-rose/30 rounded-2xl text-center space-y-2">
+              <AlertCircle className="w-8 h-8 text-vault-rose mx-auto animate-bounce" />
+              <h4 className="text-sm font-bold text-vault-rose">Security Lockout Active</h4>
+              <p className="text-xs text-vault-charcoal dark:text-vault-text">
+                Too many failed PIN attempts. Please wait <strong className="text-vault-rose font-mono text-sm">{lockState.remainingSeconds}s</strong> before trying again.
+              </p>
             </div>
           ) : (
-            /* Custom On-Screen Numeric Keypad */
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+            <>
+              {/* PIN Indicator Dots */}
+              <div className="flex justify-center gap-3 my-6">
+                {[0, 1, 2, 3, 4, 5].map((index) => {
+                  const isFilled = pin.length > index;
+                  return (
+                    <div 
+                      key={index}
+                      className={`w-3.5 h-3.5 rounded-full transition-all duration-200 ${
+                        isFilled 
+                          ? 'bg-vault-bronze scale-110 shadow-xs' 
+                          : 'border-2 border-vault-border bg-vault-paper'
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Error Message */}
+              <div aria-live="polite" className="min-h-[24px]">
+                {errorMsg && (
+                  <p className="text-xs text-vault-rose font-semibold mb-2 animate-in fade-in">
+                    {errorMsg}
+                  </p>
+                )}
+              </div>
+
+              {/* Numeric Keypad Grid */}
+              <div className="grid grid-cols-3 gap-2.5 my-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((digit) => (
+                  <button
+                    key={digit}
+                    type="button"
+                    aria-label={`Digit ${digit}`}
+                    onClick={() => handleDigitClick(digit.toString())}
+                    className="h-12 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-bronzeLight border border-vault-border rounded-2xl font-display text-lg font-bold text-vault-charcoal dark:text-vault-text transition-all focus:outline-none focus:ring-2 focus:ring-vault-bronze"
+                  >
+                    {digit}
+                  </button>
+                ))}
+
                 <button
-                  key={num}
                   type="button"
-                  aria-label={`Digit ${num}`}
-                  onClick={() => handleKeyPress(num.toString())}
-                  className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal dark:text-vault-text active:scale-95 transition-all shadow-xs tabular-nums focus:ring-2 focus:ring-vault-terracotta"
+                  onClick={handleClear}
+                  aria-label="Clear PIN"
+                  className="h-12 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-border rounded-2xl text-xs font-bold text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text transition-all focus:outline-none focus:ring-2 focus:ring-vault-bronze"
                 >
-                  {num}
+                  Clear
                 </button>
-              ))}
 
-              <button
-                type="button"
-                aria-label="Clear PIN entry"
-                onClick={handleClear}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-xs font-semibold text-vault-muted dark:text-vault-mutedDark active:scale-95 transition-all focus:ring-2 focus:ring-vault-terracotta"
-              >
-                Clear
-              </button>
+                <button
+                  type="button"
+                  aria-label="Digit 0"
+                  onClick={() => handleDigitClick('0')}
+                  className="h-12 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-bronzeLight border border-vault-border rounded-2xl font-display text-lg font-bold text-vault-charcoal dark:text-vault-text transition-all focus:outline-none focus:ring-2 focus:ring-vault-bronze"
+                >
+                  0
+                </button>
 
-              <button
-                type="button"
-                aria-label="Digit 0"
-                onClick={() => handleKeyPress('0')}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal dark:text-vault-text active:scale-95 transition-all shadow-xs tabular-nums focus:ring-2 focus:ring-vault-terracotta"
-              >
-                0
-              </button>
-
-              <button
-                type="button"
-                aria-label="Backspace"
-                onClick={handleBackspace}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text active:scale-95 transition-all flex items-center justify-center focus:ring-2 focus:ring-vault-terracotta"
-              >
-                <Delete className="w-5 h-5" />
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={handleBackspace}
+                  aria-label="Backspace PIN digit"
+                  className="h-12 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-border rounded-2xl flex items-center justify-center text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text transition-all focus:outline-none focus:ring-2 focus:ring-vault-bronze"
+                >
+                  <Delete className="w-5 h-5" />
+                </button>
+              </div>
+            </>
           )}
+
+          {/* Security Subtext */}
+          <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark mt-4 pt-3 border-t border-vault-border flex items-center justify-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-vault-teal shrink-0" />
+            <span>Vault Sandbox Security • Default PIN is 123456</span>
+          </p>
         </motion.div>
       </div>
     </AnimatePresence>
   );
+};
+
+PinPadModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  amount: PropTypes.string,
+  recipientName: PropTypes.string
 };

@@ -25,10 +25,10 @@ export const TabletShell = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0EAE1] dark:bg-[#060911] text-vault-charcoal dark:text-vault-text flex">
+    <div className="min-h-screen bg-[#F1F5F9] dark:bg-[#0D1117] text-vault-charcoal dark:text-vault-text flex">
       {/* Left Navigation Rail */}
       <aside className="w-20 sm:w-24 bg-vault-surface border-r border-vault-border flex flex-col items-center py-6 shrink-0 select-none">
-        <div className="w-10 h-10 rounded-2xl bg-vault-terracotta text-white flex items-center justify-center font-display font-bold text-lg mb-8 shadow-md shadow-vault-terracotta/30">
+        <div className="w-10 h-10 rounded-2xl bg-vault-bronze text-white flex items-center justify-center font-display font-bold text-lg mb-8 shadow-md shadow-vault-bronze/30">
           V
         </div>
 
@@ -45,7 +45,7 @@ export const TabletShell = ({ children }) => {
                 onClick={() => setActiveTab(item.id)}
                 className={`flex flex-col items-center p-3 rounded-2xl transition-all ${
                   isActive 
-                    ? 'bg-vault-terracotta text-white shadow-md shadow-vault-terracotta/20 scale-105' 
+                    ? 'bg-vault-bronze text-white shadow-md shadow-vault-bronze/20 scale-105' 
                     : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
                 }`}
               >
@@ -61,7 +61,7 @@ export const TabletShell = ({ children }) => {
           type="button"
           aria-label="Profile Settings"
           onClick={() => setActiveTab('profile')}
-          className="relative rounded-full p-0.5 ring-2 ring-vault-terracotta/40 hover:ring-vault-terracotta transition-all"
+          className="relative rounded-full p-0.5 ring-2 ring-vault-bronze/40 hover:ring-vault-bronze transition-all"
         >
           <img src={user.profilePic} alt={user.name} className="w-9 h-9 rounded-full object-cover" />
         </button>
@@ -75,7 +75,7 @@ export const TabletShell = ({ children }) => {
             <h1 className="text-lg font-bold text-vault-charcoal dark:text-vault-text">
               Vault Tablet Workspace
             </h1>
-            <span className="text-[10px] font-bold tracking-widest text-vault-terracotta bg-vault-terracottaLight px-2.5 py-1 rounded-full border border-vault-terracotta/20">
+            <span className="text-[10px] font-bold font-mono tracking-widest text-vault-bronze bg-vault-bronzeLight px-2.5 py-1 rounded-full border border-vault-bronze/20">
               UPI TABLET MODE
             </span>
           </div>
@@ -126,10 +126,10 @@ export const TabletShell = ({ children }) => {
               <h3 className="text-lg font-bold text-vault-charcoal dark:text-vault-text">
                 {selectedTransaction.merchant}
               </h3>
-              <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">{selectedTransaction.date}</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">{selectedTransaction.date}</p>
 
-              <div className="mt-4 text-2xl font-display font-bold tabular-nums">
-                <span className={selectedTransaction.type === 'refund' ? "text-vault-terracotta" : selectedTransaction.type === 'credit' ? "text-vault-sage" : "text-vault-charcoal dark:text-vault-text"}>
+              <div className="mt-4 text-2xl font-display font-extrabold tabular-nums">
+                <span className={selectedTransaction.type === 'refund' ? "text-vault-bronze" : selectedTransaction.type === 'credit' ? "text-vault-teal font-extrabold" : "text-vault-charcoal dark:text-vault-text"}>
                   {selectedTransaction.type === 'debit' ? '-₹' : '+₹'}
                   {selectedTransaction.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
@@ -147,7 +147,7 @@ export const TabletShell = ({ children }) => {
               </div>
               <div className="flex justify-between py-1">
                 <span className="text-vault-muted dark:text-vault-mutedDark">UPI Ref ID</span>
-                <button onClick={() => handleCopyRef(selectedTransaction.upiRef)} className="font-mono text-vault-terracotta hover:underline">
+                <button onClick={() => handleCopyRef(selectedTransaction.upiRef)} className="font-mono text-vault-bronze hover:underline">
                   {selectedTransaction.upiRef}
                 </button>
               </div>
@@ -158,8 +158,8 @@ export const TabletShell = ({ children }) => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-terracotta/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-vault-terracotta" />
+        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-bronze/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-vault-teal" />
           <p className="text-xs font-semibold">{toast.message}</p>
         </div>
       )}

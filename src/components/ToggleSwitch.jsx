@@ -21,8 +21,8 @@ export const ToggleSwitch = ({ checked, onChange, label, id, disabled = false })
       tabIndex={disabled ? -1 : 0}
       onClick={() => !disabled && onChange(!checked)}
       onKeyDown={handleKeyDown}
-      className={`w-11 h-6 rounded-full transition-colors relative focus:outline-none focus-visible:ring-2 focus-visible:ring-vault-terracotta focus-visible:ring-offset-2 ${
-        checked ? 'bg-vault-terracotta' : 'bg-vault-paper border border-vault-border'
+      className={`w-11 h-6 rounded-full transition-colors relative focus:outline-none focus-visible:ring-2 focus-visible:ring-vault-bronze focus-visible:ring-offset-2 ${
+        checked ? 'bg-vault-bronze' : 'bg-vault-paper border border-vault-border'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <span className="sr-only">{label}</span>

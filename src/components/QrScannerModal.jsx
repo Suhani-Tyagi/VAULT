@@ -1,14 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, X, Camera } from 'lucide-react';
+import { QrCode, X, Camera, RefreshCw } from 'lucide-react';
+import { Html5Qrcode } from 'html5-qrcode';
+import PropTypes from 'prop-types';
 
 export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
-  const videoRef = useRef(null);
   const modalRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const scannerContainerId = "html5qr-code-full-region";
 
   const [cameraAvailable, setCameraAvailable] = useState(false);
-  const [stream, setStream] = useState(null);
+  const [html5QrcodeScanner, setHtml5QrcodeScanner] = useState(null);
+
+  // Helper function to parse UPI URLs
+  const parseUpiUrl = (qrText) => {
+    try {
+      if (qrText.startsWith('upi://pay')) {
+        const url = new URL(qrText);
+        const params = new URLSearchParams(url.search);
+        return {
+          name: params.get('pn') || 'Scanned Payee',
+          upiId: params.get('pa') || 'merchant@upi',
+          amount: params.get('am') || null,
+          note: params.get('tn') || ''
+        };
+      }
+    } catch {
+      // Fallback if generic string
+    }
+    return {
+      name: qrText.includes('@') ? qrText.split('@')[0] : 'Scanned Payee',
+      upiId: qrText.includes('@') ? qrText : `${qrText.toLowerCase().replace(/\s+/g, '')}@upi`
+    };
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -27,25 +51,39 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    let scannerInstance = null;
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then((s) => {
-          setStream(s);
-          setCameraAvailable(true);
-          if (videoRef.current) {
-            videoRef.current.srcObject = s;
+    if (isOpen) {
+      // Initialize HTML5 QR Scanner
+      try {
+        scannerInstance = new Html5Qrcode(scannerContainerId);
+        setHtml5QrcodeScanner(scannerInstance);
+
+        scannerInstance.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 200, height: 200 } },
+          (decodedText) => {
+            scannerInstance.stop().then(() => {
+              const payee = parseUpiUrl(decodedText);
+              onScanSuccess(payee);
+            });
+          },
+          () => {
+            // Ignore frame decode errors
           }
-        })
-        .catch(() => {
+        ).then(() => {
+          setCameraAvailable(true);
+        }).catch(() => {
           setCameraAvailable(false);
         });
+      } catch {
+        setCameraAvailable(false);
+      }
     }
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      if (scannerInstance && scannerInstance.isScanning) {
+        scannerInstance.stop().catch(() => {});
       }
     };
   }, [isOpen]);
@@ -53,8 +91,8 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
   if (!isOpen) return null;
 
   const handleSimulateScan = (recipient) => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+    if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
+      html5QrcodeScanner.stop().catch(() => {});
     }
     onScanSuccess(recipient);
   };
@@ -73,60 +111,60 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
           className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none"
         >
           <button 
+            type="button"
             onClick={onClose}
             aria-label="Close QR Scanner"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-bronze"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="mt-2 mb-4">
+          <div className="mt-2 mb-3">
             <h3 id="qr-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text tracking-tight flex items-center justify-center gap-2">
-              <QrCode className="w-5 h-5 text-vault-terracotta" />
+              <QrCode className="w-5 h-5 text-vault-bronze" />
               <span>Scan UPI QR Code</span>
             </h3>
             <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-              Point camera at any merchant or friend's UPI QR code
+              Point camera at any merchant or friend's QR code
             </p>
           </div>
 
-          <div className="relative w-full h-56 bg-black rounded-2xl overflow-hidden flex items-center justify-center my-4 border-2 border-vault-terracotta/40">
-            {cameraAvailable ? (
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                className="w-full h-full object-cover" 
-              />
-            ) : (
-              <div className="text-center p-4 space-y-2 text-white/80">
-                <Camera className="w-10 h-10 mx-auto text-vault-terracotta opacity-80" />
-                <p className="text-xs font-semibold text-white">Camera unavailable in this demo</p>
-                <p className="text-[11px] text-white/70">Tap below to test QR code auto-scan</p>
+          {/* HTML5 Camera Stream / Simulator Container */}
+          <div className="relative w-full h-56 bg-black rounded-2xl overflow-hidden flex items-center justify-center my-3 border-2 border-vault-bronze/40">
+            <div id={scannerContainerId} className="w-full h-full object-cover" />
+
+            {!cameraAvailable && (
+              <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-center p-4 space-y-2 text-white/80">
+                <Camera className="w-10 h-10 mx-auto text-vault-bronze opacity-80" />
+                <p className="text-xs font-bold text-white">Camera Simulator Active</p>
+                <p className="text-[11px] text-white/70">Tap a merchant below to simulate QR decode</p>
               </div>
             )}
 
-            <div className="absolute inset-8 border-2 border-dashed border-vault-terracotta rounded-xl pointer-events-none animate-pulse" />
+            <div className="absolute inset-8 border-2 border-dashed border-vault-bronze rounded-xl pointer-events-none animate-pulse" />
           </div>
 
           <div className="space-y-2 text-xs">
-            <p className="text-vault-muted dark:text-vault-mutedDark font-bold text-[11px] uppercase tracking-wider">Test QR Scan Payees</p>
+            <p className="text-vault-muted dark:text-vault-mutedDark font-bold text-[11px] uppercase tracking-wider">Test UPI QR Codes</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 aria-label="Scan Kirana Store QR Code"
                 onClick={() => handleSimulateScan({ name: "Society Tea Kirana", upiId: "societytea@upi" })}
-                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
+                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-bronze focus:ring-2 focus:ring-vault-bronze text-left"
               >
-                Kirana Store QR
+                <p className="truncate font-bold">Society Tea Kirana</p>
+                <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono">societytea@upi</p>
               </button>
+
               <button
                 type="button"
                 aria-label="Scan Cafe QR Code"
                 onClick={() => handleSimulateScan({ name: "Third Wave Coffee", upiId: "thirdwave@upi" })}
-                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
+                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-bronze focus:ring-2 focus:ring-vault-bronze text-left"
               >
-                Cafe QR Code
+                <p className="truncate font-bold">Third Wave Coffee</p>
+                <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono">thirdwave@upi</p>
               </button>
             </div>
           </div>
@@ -134,4 +172,10 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
       </div>
     </AnimatePresence>
   );
+};
+
+QrScannerModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onScanSuccess: PropTypes.func.isRequired
 };

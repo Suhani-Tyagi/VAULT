@@ -22,12 +22,12 @@ export const TransactionRow = memo(({ tx, onClick, onContextMenu }) => {
           <h4 className="text-xs font-bold text-vault-charcoal dark:text-vault-text truncate flex items-center gap-1.5">
             <span className="truncate">{tx.merchant}</span>
             {isRefund && (
-              <span className="text-[9px] bg-vault-terracottaLight text-vault-terracotta px-1.5 py-0.2 rounded border border-vault-terracotta/30 shrink-0 font-bold">
+              <span className="text-[9px] bg-vault-bronzeLight text-vault-bronze px-1.5 py-0.2 rounded border border-vault-bronze/30 shrink-0 font-bold">
                 Refund
               </span>
             )}
           </h4>
-          <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark truncate mt-0.5">
+          <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark truncate mt-0.5 font-mono">
             {tx.date} • {tx.method}
           </p>
         </div>
@@ -35,12 +35,12 @@ export const TransactionRow = memo(({ tx, onClick, onContextMenu }) => {
 
       <div className="text-right shrink-0">
         <p className={`text-xs font-display font-bold tabular-nums ${
-          isRefund ? 'text-vault-terracotta' : isCredit ? 'text-vault-sage' : 'text-vault-charcoal dark:text-vault-text'
+          isRefund ? 'text-vault-bronze' : isCredit ? 'text-vault-teal font-extrabold' : 'text-vault-charcoal dark:text-vault-text'
         }`}>
           {isRefund ? '+₹' : isCredit ? '+₹' : '-₹'}
           {tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
         </p>
-        <p className="text-[10px] text-vault-subtle dark:text-vault-mutedDark tabular-nums mt-0.5">
+        <p className="text-[10px] text-vault-subtle dark:text-vault-mutedDark tabular-nums mt-0.5 font-mono">
           Bal: ₹{tx.runningBalance.toLocaleString('en-IN')}
         </p>
       </div>

@@ -51,9 +51,9 @@ export const DesktopShell = ({ children }) => {
 
   if (isLoggedOut) {
     return (
-      <div className="min-h-screen bg-[#F7F3EC] dark:bg-[#060911] text-vault-charcoal dark:text-vault-text flex items-center justify-center p-6">
+      <div className="min-h-screen bg-[#F1F5F9] dark:bg-[#0D1117] text-vault-charcoal dark:text-vault-text flex items-center justify-center p-6">
         <div className="max-w-md w-full bg-vault-surface border border-vault-border rounded-3xl p-8 shadow-2xl text-center space-y-5 animate-in fade-in">
-          <div className="w-16 h-16 rounded-3xl bg-vault-terracottaLight border border-vault-terracotta/30 text-vault-terracotta flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-vault-bronzeLight border border-vault-bronze/30 text-vault-bronze flex items-center justify-center mx-auto">
             <Lock className="w-8 h-8" />
           </div>
 
@@ -72,15 +72,15 @@ export const DesktopShell = ({ children }) => {
                 width={48}
                 height={48}
                 loading="lazy"
-                className="w-12 h-12 rounded-full object-cover shrink-0 ring-2 ring-vault-terracotta/40"
+                className="w-12 h-12 rounded-full object-cover shrink-0 ring-2 ring-vault-bronze/40"
               />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">{user.email}</p>
               </div>
             </div>
 
-            <div className="p-2.5 bg-vault-surface border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-xs">
+            <div className="p-2.5 bg-vault-surface border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-xs font-mono">
               Vault Sandbox Environment • RBI Regulated Digital Banking
             </div>
           </div>
@@ -88,7 +88,7 @@ export const DesktopShell = ({ children }) => {
           <button
             type="button"
             onClick={logIn}
-            className="w-full py-3.5 bg-vault-terracotta hover:bg-vault-terracottaHover text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-vault-bronze hover:bg-vault-bronzeHover text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
           >
             <LogIn className="w-4 h-4" />
             <span>Log Back In as {user.name}</span>
@@ -99,20 +99,20 @@ export const DesktopShell = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F3EC] dark:bg-[#060911] text-vault-charcoal dark:text-vault-text flex">
+    <div className="min-h-screen bg-[#F1F5F9] dark:bg-[#0D1117] text-vault-charcoal dark:text-vault-text flex">
       {/* Sidebar Navigation */}
       <aside className="w-64 bg-vault-surface border-r border-vault-border p-5 flex flex-col justify-between shrink-0 select-none">
         <div className="space-y-6">
           {/* Logo Header */}
           <div className="flex items-center gap-3 px-2">
-            <div className="w-9 h-9 rounded-xl bg-vault-terracotta text-white flex items-center justify-center font-display font-bold text-lg shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-vault-bronze text-white flex items-center justify-center font-display font-bold text-lg shadow-sm">
               V
             </div>
             <div>
               <h1 className="text-base font-bold text-vault-charcoal dark:text-vault-text tracking-tight leading-none">
                 VAULT
               </h1>
-              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-medium tracking-wider uppercase mt-1">
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono font-medium tracking-wider uppercase mt-1">
                 Calm Digital Banking
               </p>
             </div>
@@ -123,7 +123,7 @@ export const DesktopShell = ({ children }) => {
             type="button"
             aria-label="Send money quick action"
             onClick={() => setActiveTab('send')}
-            className="w-full py-2.5 px-4 bg-vault-terracotta hover:bg-vault-terracottaHover text-white rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95"
+            className="w-full py-2.5 px-4 bg-vault-bronze hover:bg-vault-bronzeHover text-white rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span>Quick Send Money</span>
@@ -142,11 +142,11 @@ export const DesktopShell = ({ children }) => {
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
                     isActive 
-                      ? 'bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30' 
+                      ? 'bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30' 
                       : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-vault-terracotta' : 'text-vault-muted dark:text-vault-mutedDark'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-vault-bronze' : 'text-vault-muted dark:text-vault-mutedDark'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -166,11 +166,11 @@ export const DesktopShell = ({ children }) => {
               width={36}
               height={36}
               loading="lazy"
-              className="w-9 h-9 rounded-full object-cover shrink-0 ring-2 ring-vault-terracotta/40"
+              className="w-9 h-9 rounded-full object-cover shrink-0 ring-2 ring-vault-bronze/40"
             />
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text truncate">{user.name}</p>
-              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark truncate">Salary Account</p>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono truncate">Salary Account</p>
             </div>
 
             <button
@@ -192,7 +192,7 @@ export const DesktopShell = ({ children }) => {
           <button
             type="button"
             onClick={() => setIsCmdPaletteOpen(true)}
-            className="flex items-center gap-3 px-3.5 py-2 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted dark:text-vault-mutedDark hover:border-vault-terracotta transition-colors w-72"
+            className="flex items-center gap-3 px-3.5 py-2 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted dark:text-vault-mutedDark hover:border-vault-bronze transition-colors w-72"
           >
             <Search className="w-4 h-4 text-vault-muted dark:text-vault-mutedDark" />
             <span className="flex-1 text-left">Search transactions or contacts...</span>
@@ -202,7 +202,7 @@ export const DesktopShell = ({ children }) => {
           </button>
 
           <div className="flex items-center gap-4 text-xs font-medium text-vault-muted dark:text-vault-mutedDark">
-            <span className="flex items-center gap-1.5 bg-vault-terracottaLight text-vault-terracotta px-3 py-1 rounded-full border border-vault-terracotta/30 font-bold">
+            <span className="flex items-center gap-1.5 bg-vault-bronzeLight text-vault-bronze px-3 py-1 rounded-full border border-vault-bronze/30 font-bold font-mono">
               <ShieldCheck className="w-4 h-4" /> RBI Sandbox Verified
             </span>
           </div>

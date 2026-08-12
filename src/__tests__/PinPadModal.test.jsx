@@ -1,14 +1,23 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { VaultProvider } from '../context/VaultContext';
 import { PinPadModal } from '../components/PinPadModal';
+
+const renderWithProviders = (ui) => {
+  return render(
+    <VaultProvider>
+      {ui}
+    </VaultProvider>
+  );
+};
 
 describe('PinPadModal Component', () => {
   it('renders modal when open and handles correct PIN input', async () => {
     const handleSuccess = vi.fn();
     const handleClose = vi.fn();
 
-    render(
+    renderWithProviders(
       <PinPadModal
         isOpen={true}
         onClose={handleClose}
@@ -37,7 +46,7 @@ describe('PinPadModal Component', () => {
     const handleSuccess = vi.fn();
     const handleClose = vi.fn();
 
-    render(
+    renderWithProviders(
       <PinPadModal
         isOpen={true}
         onClose={handleClose}

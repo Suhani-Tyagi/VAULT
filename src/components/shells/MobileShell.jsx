@@ -11,7 +11,7 @@ export const MobileShell = ({ children }) => {
     return (
       <MobileContainer>
         <div className="py-12 px-4 text-center space-y-5 animate-in fade-in">
-          <div className="w-16 h-16 rounded-3xl bg-vault-terracottaLight border border-vault-terracotta/30 text-vault-terracotta flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-vault-bronzeLight border border-vault-bronze/30 text-vault-bronze flex items-center justify-center mx-auto">
             <Lock className="w-8 h-8" />
           </div>
 
@@ -30,15 +30,15 @@ export const MobileShell = ({ children }) => {
                 width={40}
                 height={40}
                 loading="lazy"
-                className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-vault-terracotta/40"
+                className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-vault-bronze/40"
               />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">{user.email}</p>
               </div>
             </div>
 
-            <div className="p-2.5 bg-vault-paper border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-[11px]">
+            <div className="p-2.5 bg-vault-paper border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-[11px] font-mono">
               RBI Regulated Banking Sandbox Session
             </div>
           </div>
@@ -46,7 +46,7 @@ export const MobileShell = ({ children }) => {
           <button
             type="button"
             onClick={logIn}
-            className="w-full py-3.5 bg-vault-terracotta hover:bg-vault-terracottaHover text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-vault-bronze hover:bg-vault-bronzeHover text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
           >
             <LogIn className="w-4 h-4" />
             <span>Log Back In as {user.name.split(' ')[0]}</span>

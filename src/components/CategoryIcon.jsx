@@ -26,78 +26,78 @@ export const CategoryIcon = ({ iconName, category, type, className = "w-5 h-5", 
 
   if (type === 'refund') {
     IconComponent = RotateCcw;
-    bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+    bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
   } else if (type === 'credit') {
     IconComponent = ArrowDownLeft;
-    bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+    bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
   } else {
     switch (iconName || category) {
       case 'Utensils':
       case 'Food & Dining':
         IconComponent = Utensils;
-        bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
         break;
       case 'Coffee':
         IconComponent = Coffee;
-        bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
         break;
       case 'ShoppingBag':
       case 'Groceries':
         IconComponent = ShoppingBag;
-        bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
         break;
       case 'Package':
       case 'Shopping':
         IconComponent = Package;
-        bgClass = "bg-vault-amberLight text-vault-amber border border-vault-amber/30";
+        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
         break;
       case 'Store':
         IconComponent = Store;
-        bgClass = "bg-vault-amberLight text-vault-amber border border-vault-amber/30";
+        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
         break;
       case 'Car':
       case 'Transport':
         IconComponent = Car;
-        bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
         break;
       case 'Zap':
       case 'Utilities':
         IconComponent = Zap;
-        bgClass = "bg-vault-amberLight text-vault-amber border border-vault-amber/30";
+        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
         break;
       case 'Tv':
       case 'Subscriptions':
         IconComponent = Tv;
-        bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
         break;
       case 'Home':
       case 'Rent':
         IconComponent = Home;
-        bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
         break;
       case 'Activity':
         IconComponent = Activity;
-        bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
         break;
       case 'Film':
       case 'Entertainment':
         IconComponent = Film;
-        bgClass = "bg-vault-amberLight text-vault-amber border border-vault-amber/30";
+        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
         break;
       case 'Plane':
       case 'Travel':
         IconComponent = Plane;
-        bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
         break;
       case 'Laptop':
       case 'Tech':
         IconComponent = Laptop;
-        bgClass = "bg-vault-sageLight text-vault-sage border border-vault-sage/30";
+        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
         break;
       case 'ArrowUpRight':
       case 'Transfers':
         IconComponent = ArrowUpRight;
-        bgClass = "bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30";
+        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
         break;
       default:
         IconComponent = Wallet;

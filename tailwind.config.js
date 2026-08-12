@@ -9,30 +9,43 @@ export default {
     extend: {
       colors: {
         vault: {
-          paper: '#F7F3EC',             // Warm off-white paper base
-          surface: '#FAF7F2',           // Clean card background
-          surfaceHighlight: '#EFE9DF',  // Elevated hover background
-          border: '#E5DFD5',            // Crisp warm divider
-          borderDark: '#D8CFBF',        // Darker divider for contrast
-          charcoal: '#1C1A17',          // Near-black warm body text
-          text: '#F5F0E8',              // Dark mode safe light text
-          muted: '#78726A',             // Calm secondary copy
-          mutedDark: '#A5A096',         // Secondary copy for dark background
-          subtle: '#A09A90',            // Subtle auxiliary text
-          terracotta: '#B5563C',        // Primary committed accent (Deep Clay)
-          terracottaHover: '#9E462E',
-          terracottaLight: '#B5563C14', // Tinted background
-          sage: '#6B8272',              // Muted secondary tag accent
-          sageLight: '#6B82721A',
-          amber: '#C68A2E',             // Warm warning accent
-          amberLight: '#C68A2E1A',
-          rose: '#9E3A3A',
-          roseLight: '#9E3A3A1A'
+          // Indian Modern Monolith Design Palette
+          paper: '#F8FAFC',             // Cool crisp chalk base (light)
+          surface: '#FFFFFF',           // Clean crisp card surface
+          surfaceHighlight: '#F1F5F9',  // Slate tint hover elevation
+          border: '#E2E8F0',            // Subtle slate divider
+          borderDark: '#CBD5E1',        // Stronger divider contrast
+          charcoal: '#0F172A',          // Deep obsidian slate text (light mode)
+          text: '#F8FAFC',              // Soft off-white chalk text (dark mode)
+          muted: '#64748B',             // Slate muted secondary copy
+          mutedDark: '#94A3B8',         // Muted copy for dark slate background
+          subtle: '#94A3B8',            // Auxiliary micro copy
+          
+          // Saffron Bronze Primary Accent (Replaces generic terracotta)
+          bronze: '#D97706',            // Warm Saffron Bronze
+          bronzeHover: '#B45309',
+          bronzeLight: '#D9770614',     // Tinted background
+          
+          // Deep Mineral Teal Supporting Accent (Replaces generic green/sage)
+          teal: '#0F766E',              // Mineral Emerald Teal
+          tealLight: '#0F766E18',
+          
+          // Dark Mode Specific Slate Surface Values
+          darkBase: '#0D1117',          // Obsidian slate base
+          darkSurface: '#161B22',       // Elevated dark tile surface
+          darkSurfaceHighlight: '#1F242D',
+
+          // Warning & Status Accents
+          amber: '#D97706',
+          amberLight: '#D977061A',
+          rose: '#BE123C',
+          roseLight: '#BE123C1A'
         }
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['"Space Grotesk"', '"Plus Jakarta Sans"', 'sans-serif'],
+        display: ['"Outfit"', '"Space Grotesk"', '"Plus Jakarta Sans"', 'sans-serif'],
+        mono: ['"Space Grotesk"', 'monospace']
       }
     },
   },
