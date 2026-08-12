@@ -79,7 +79,7 @@ export const HomeScreen = () => {
                 <Target className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs text-vault-muted font-medium">Active Goal</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Active Goal</p>
                 <h4 className="text-sm font-bold text-vault-charcoal dark:text-vault-text group-hover:text-vault-terracotta transition-colors">
                   {topGoal.title}
                 </h4>
@@ -98,7 +98,7 @@ export const HomeScreen = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center text-xs mt-2 text-vault-muted font-medium">
+          <div className="flex justify-between items-center text-xs mt-2 text-vault-muted dark:text-vault-mutedDark font-medium">
             <span>₹{topGoal.currentAmount.toLocaleString('en-IN')} saved</span>
             <span>Target: ₹{topGoal.targetAmount.toLocaleString('en-IN')}</span>
           </div>
@@ -132,7 +132,7 @@ export const HomeScreen = () => {
       </div>
 
       {/* Human Assurance */}
-      <div className="p-3.5 rounded-2xl bg-vault-surface border border-vault-border text-xs text-vault-muted leading-relaxed">
+      <div className="p-3.5 rounded-2xl bg-vault-surface border border-vault-border text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
         <p className="flex items-center gap-1.5 text-vault-charcoal dark:text-vault-text font-bold mb-0.5">
           <ShieldCheck className="w-4 h-4 text-vault-terracotta shrink-0" />
           No hidden fees or surprises

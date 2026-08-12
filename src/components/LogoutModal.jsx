@@ -41,7 +41,7 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
             type="button"
             onClick={onClose}
             aria-label="Close logout modal"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
           >
             <X className="w-5 h-5" />
           </button>
@@ -54,7 +54,7 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
             Log Out of Vault?
           </h3>
 
-          <p className="text-xs text-vault-muted my-2 leading-relaxed">
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark my-2 leading-relaxed">
             "You will be logged out of your Vault sandbox session on this device. Your money and settings will remain safe."
           </p>
 

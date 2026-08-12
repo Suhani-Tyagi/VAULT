@@ -70,22 +70,22 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal text-center focus:outline-none"
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none"
         >
           <button 
             onClick={onClose}
             aria-label="Close QR Scanner"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="mt-2 mb-4">
-            <h3 id="qr-modal-title" className="text-lg font-bold text-vault-charcoal tracking-tight flex items-center justify-center gap-2">
+            <h3 id="qr-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text tracking-tight flex items-center justify-center gap-2">
               <QrCode className="w-5 h-5 text-vault-terracotta" />
               <span>Scan UPI QR Code</span>
             </h3>
-            <p className="text-xs text-vault-muted mt-0.5">
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
               Point camera at any merchant or friend's UPI QR code
             </p>
           </div>
@@ -102,7 +102,7 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
               <div className="text-center p-4 space-y-2 text-white/80">
                 <Camera className="w-10 h-10 mx-auto text-vault-terracotta opacity-80" />
                 <p className="text-xs font-semibold text-white">Camera unavailable in this demo</p>
-                <p className="text-[11px] text-vault-muted">Tap below to test QR code auto-scan</p>
+                <p className="text-[11px] text-white/70">Tap below to test QR code auto-scan</p>
               </div>
             )}
 
@@ -110,13 +110,13 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
           </div>
 
           <div className="space-y-2 text-xs">
-            <p className="text-vault-muted font-bold text-[11px] uppercase tracking-wider">Test QR Scan Payees</p>
+            <p className="text-vault-muted dark:text-vault-mutedDark font-bold text-[11px] uppercase tracking-wider">Test QR Scan Payees</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 aria-label="Scan Kirana Store QR Code"
                 onClick={() => handleSimulateScan({ name: "Society Tea Kirana", upiId: "societytea@upi" })}
-                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
+                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
               >
                 Kirana Store QR
               </button>
@@ -124,7 +124,7 @@ export const QrScannerModal = ({ isOpen, onClose, onScanSuccess }) => {
                 type="button"
                 aria-label="Scan Cafe QR Code"
                 onClick={() => handleSimulateScan({ name: "Third Wave Coffee", upiId: "thirdwave@upi" })}
-                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
+                className="p-2 bg-vault-paper border border-vault-border rounded-xl font-bold text-vault-charcoal dark:text-vault-text hover:border-vault-terracotta focus:ring-2 focus:ring-vault-terracotta"
               >
                 Cafe QR Code
               </button>

@@ -17,7 +17,7 @@ export const MobileShell = ({ children }) => {
 
           <div>
             <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text">Vault Session Locked</h2>
-            <p className="text-xs text-vault-muted mt-1 leading-relaxed">
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1 leading-relaxed">
               "Managing money should feel calm and clear, never intimidating."
             </p>
           </div>
@@ -34,11 +34,11 @@ export const MobileShell = ({ children }) => {
               />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-                <p className="text-xs text-vault-muted">{user.email}</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
               </div>
             </div>
 
-            <div className="p-2.5 bg-vault-paper border border-vault-border rounded-xl text-vault-muted text-[11px]">
+            <div className="p-2.5 bg-vault-paper border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-[11px]">
               RBI Regulated Banking Sandbox Session
             </div>
           </div>

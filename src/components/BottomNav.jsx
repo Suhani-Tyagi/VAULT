@@ -23,13 +23,15 @@ export const BottomNav = () => {
           return (
             <button
               key={item.id}
+              type="button"
+              aria-label="Pay & Split"
               onClick={() => setActiveTab('send')}
               className="flex flex-col items-center -mt-5"
             >
               <div className="w-12 h-12 rounded-full bg-vault-terracotta text-white flex items-center justify-center shadow-lg shadow-vault-terracotta/30 hover:scale-105 active:scale-95 transition-all">
                 <Send className="w-5 h-5 translate-x-[1px]" />
               </div>
-              <span className={`text-[10px] font-bold mt-1 ${isActive ? 'text-vault-terracotta' : 'text-vault-muted'}`}>
+              <span className={`text-[10px] font-bold mt-1 ${isActive ? 'text-vault-terracotta' : 'text-vault-muted dark:text-vault-mutedDark'}`}>
                 {item.label}
               </span>
             </button>
@@ -39,9 +41,11 @@ export const BottomNav = () => {
         return (
           <button
             key={item.id}
+            type="button"
+            aria-label={`Navigate to ${item.label}`}
             onClick={() => setActiveTab(item.id)}
             className={`flex flex-col items-center py-1 px-3 rounded-xl transition-all ${
-              isActive ? 'text-vault-terracotta' : 'text-vault-muted hover:text-vault-charcoal'
+              isActive ? 'text-vault-terracotta' : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text'
             }`}
           >
             <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : 'stroke-[1.75px]'}`} />

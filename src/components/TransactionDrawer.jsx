@@ -38,7 +38,7 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 280 }}
-          className="relative w-full max-w-md bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-xl overflow-hidden z-10 text-vault-charcoal"
+          className="relative w-full max-w-md bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text"
         >
           {/* Top handle bar */}
           <div className="w-12 h-1 bg-vault-borderDark rounded-full mx-auto mb-4 opacity-70" />
@@ -46,7 +46,8 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
           {/* Close button */}
           <button 
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight transition-colors"
+            aria-label="Close transaction details"
+            className="absolute top-5 right-5 p-2 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -61,11 +62,11 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
               bgSize="w-16 h-16 mb-3"
             />
 
-            <h3 className="text-xl font-bold text-vault-charcoal tracking-tight">
+            <h3 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">
               {transaction.merchant}
             </h3>
             
-            <p className="text-xs text-vault-muted mt-1 flex items-center gap-1.5">
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1 flex items-center gap-1.5">
               <span>{transaction.category}</span>
               <span>•</span>
               <span>{transaction.date}</span>
@@ -73,7 +74,7 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
 
             {/* Amount */}
             <div className="mt-4 text-3xl font-display font-bold tabular-nums">
-              <span className={isRefund ? "text-vault-terracotta" : isCredit ? "text-vault-sage" : "text-vault-charcoal"}>
+              <span className={isRefund ? "text-vault-terracotta" : isCredit ? "text-vault-sage" : "text-vault-charcoal dark:text-vault-text"}>
                 {isRefund ? "+₹" : isCredit ? "+₹" : "-₹"}
                 {transaction.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
@@ -90,21 +91,21 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
           <div className="bg-vault-paper border border-vault-border rounded-2xl p-4 space-y-3">
             {/* Running Balance at that point */}
             <div className="flex justify-between items-center text-xs py-1 border-b border-vault-border">
-              <span className="text-vault-muted font-medium">Running Balance After</span>
-              <span className="font-display font-bold text-vault-charcoal tabular-nums">
+              <span className="text-vault-muted dark:text-vault-mutedDark font-medium">Running Balance After</span>
+              <span className="font-display font-bold text-vault-charcoal dark:text-vault-text tabular-nums">
                 ₹{transaction.runningBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
             </div>
 
             {/* Payment Method */}
             <div className="flex justify-between items-center text-xs py-1 border-b border-vault-border">
-              <span className="text-vault-muted font-medium">Payment Method</span>
-              <span className="font-medium text-vault-charcoal">{transaction.method}</span>
+              <span className="text-vault-muted dark:text-vault-mutedDark font-medium">Payment Method</span>
+              <span className="font-medium text-vault-charcoal dark:text-vault-text">{transaction.method}</span>
             </div>
 
             {/* UPI / Tx Reference */}
             <div className="flex justify-between items-center text-xs py-1 border-b border-vault-border">
-              <span className="text-vault-muted font-medium">Reference ID</span>
+              <span className="text-vault-muted dark:text-vault-mutedDark font-medium">Reference ID</span>
               <button 
                 onClick={handleCopyRef}
                 className="flex items-center gap-1 text-vault-terracotta hover:underline font-mono text-xs"
@@ -117,8 +118,8 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
             {/* Note */}
             {transaction.note && (
               <div className="flex justify-between items-center text-xs py-1">
-                <span className="text-vault-muted font-medium">Note</span>
-                <span className="text-vault-charcoal text-right text-xs bg-vault-surface px-2.5 py-1 rounded-lg border border-vault-border">
+                <span className="text-vault-muted dark:text-vault-mutedDark font-medium">Note</span>
+                <span className="text-vault-charcoal dark:text-vault-text text-right text-xs bg-vault-surface px-2.5 py-1 rounded-lg border border-vault-border">
                   {transaction.note}
                 </span>
               </div>
@@ -126,7 +127,7 @@ export const TransactionDrawer = ({ transaction, onClose }) => {
           </div>
 
           {/* Security guarantee footer */}
-          <div className="mt-5 flex items-center justify-center gap-2 text-xs text-vault-muted">
+          <div className="mt-5 flex items-center justify-center gap-2 text-xs text-vault-muted dark:text-vault-mutedDark">
             <ShieldCheck className="w-4 h-4 text-vault-terracotta shrink-0" />
             <span>Bank-grade 256-bit encrypted transaction record</span>
           </div>

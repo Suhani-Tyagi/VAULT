@@ -59,7 +59,7 @@ export const DesktopShell = ({ children }) => {
 
           <div>
             <h2 className="text-2xl font-bold text-vault-charcoal dark:text-vault-text">Vault Desktop Locked</h2>
-            <p className="text-xs text-vault-muted mt-1 leading-relaxed">
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1 leading-relaxed">
               "Managing money should feel calm and clear, never intimidating."
             </p>
           </div>
@@ -76,11 +76,11 @@ export const DesktopShell = ({ children }) => {
               />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-                <p className="text-xs text-vault-muted">{user.email}</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
               </div>
             </div>
 
-            <div className="p-2.5 bg-vault-surface border border-vault-border rounded-xl text-vault-muted text-xs">
+            <div className="p-2.5 bg-vault-surface border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-xs">
               Vault Sandbox Environment • RBI Regulated Digital Banking
             </div>
           </div>
@@ -112,7 +112,7 @@ export const DesktopShell = ({ children }) => {
               <h1 className="text-base font-bold text-vault-charcoal dark:text-vault-text tracking-tight leading-none">
                 VAULT
               </h1>
-              <p className="text-[10px] text-vault-muted font-medium tracking-wider uppercase mt-1">
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-medium tracking-wider uppercase mt-1">
                 Calm Digital Banking
               </p>
             </div>
@@ -143,10 +143,10 @@ export const DesktopShell = ({ children }) => {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
                     isActive 
                       ? 'bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30' 
-                      : 'text-vault-muted hover:text-vault-charcoal dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
+                      : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-vault-terracotta' : 'text-vault-muted'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-vault-terracotta' : 'text-vault-muted dark:text-vault-mutedDark'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -170,14 +170,14 @@ export const DesktopShell = ({ children }) => {
             />
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text truncate">{user.name}</p>
-              <p className="text-[10px] text-vault-muted truncate">Salary Account</p>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark truncate">Salary Account</p>
             </div>
 
             <button
               type="button"
               aria-label="Log out of Vault"
               onClick={(e) => { e.stopPropagation(); setShowLogoutModal(true); }}
-              className="p-1.5 text-vault-muted hover:text-vault-rose rounded-lg hover:bg-vault-roseLight transition-colors"
+              className="p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-rose rounded-lg hover:bg-vault-roseLight transition-colors"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -192,16 +192,16 @@ export const DesktopShell = ({ children }) => {
           <button
             type="button"
             onClick={() => setIsCmdPaletteOpen(true)}
-            className="flex items-center gap-3 px-3.5 py-2 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted hover:border-vault-terracotta transition-colors w-72"
+            className="flex items-center gap-3 px-3.5 py-2 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted dark:text-vault-mutedDark hover:border-vault-terracotta transition-colors w-72"
           >
-            <Search className="w-4 h-4 text-vault-muted" />
+            <Search className="w-4 h-4 text-vault-muted dark:text-vault-mutedDark" />
             <span className="flex-1 text-left">Search transactions or contacts...</span>
             <kbd className="px-1.5 py-0.5 bg-vault-surface border border-vault-border rounded text-[10px] font-mono font-bold text-vault-charcoal dark:text-vault-text">
               ⌘K
             </kbd>
           </button>
 
-          <div className="flex items-center gap-4 text-xs font-medium text-vault-muted">
+          <div className="flex items-center gap-4 text-xs font-medium text-vault-muted dark:text-vault-mutedDark">
             <span className="flex items-center gap-1.5 bg-vault-terracottaLight text-vault-terracotta px-3 py-1 rounded-full border border-vault-terracotta/30 font-bold">
               <ShieldCheck className="w-4 h-4" /> RBI Sandbox Verified
             </span>

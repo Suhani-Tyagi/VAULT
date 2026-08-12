@@ -27,7 +27,7 @@ export const TransactionRow = memo(({ tx, onClick, onContextMenu }) => {
               </span>
             )}
           </h4>
-          <p className="text-[11px] text-vault-muted truncate mt-0.5">
+          <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark truncate mt-0.5">
             {tx.date} • {tx.method}
           </p>
         </div>
@@ -40,7 +40,7 @@ export const TransactionRow = memo(({ tx, onClick, onContextMenu }) => {
           {isRefund ? '+₹' : isCredit ? '+₹' : '-₹'}
           {tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
         </p>
-        <p className="text-[10px] text-vault-subtle tabular-nums mt-0.5">
+        <p className="text-[10px] text-vault-subtle dark:text-vault-mutedDark tabular-nums mt-0.5">
           Bal: ₹{tx.runningBalance.toLocaleString('en-IN')}
         </p>
       </div>

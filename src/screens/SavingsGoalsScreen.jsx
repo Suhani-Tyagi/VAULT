@@ -44,7 +44,7 @@ export const SavingsGoalsScreen = () => {
       <div className="flex justify-between items-start">
         <div>
           <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Savings Goals</h2>
-          <p className="text-xs text-vault-muted mt-0.5">
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
             Ring-fenced funds for things that matter
           </p>
         </div>
@@ -62,13 +62,13 @@ export const SavingsGoalsScreen = () => {
       {/* Summary Card */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 flex justify-between items-center shadow-xs">
         <div>
-          <p className="text-xs text-vault-muted font-medium">Total Saved Across Goals</p>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Total Saved Across Goals</p>
           <h3 className="text-2xl font-display font-bold text-vault-terracotta tabular-nums mt-0.5">
             ₹{totalSavedInGoals.toLocaleString('en-IN')}
           </h3>
         </div>
         <div className="text-right">
-          <p className="text-xs text-vault-muted font-medium">Active Goals</p>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Active Goals</p>
           <p className="text-lg font-bold text-vault-charcoal dark:text-vault-text font-display tabular-nums mt-0.5">
             {goals.length}
           </p>
@@ -95,7 +95,7 @@ export const SavingsGoalsScreen = () => {
                   />
                   <div>
                     <h3 className="text-sm font-bold text-vault-charcoal dark:text-vault-text">{goal.title}</h3>
-                    <p className="text-xs text-vault-muted mt-0.5">
+                    <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
                       Target: {goal.targetDate} • {goal.category}
                     </p>
                   </div>
@@ -118,14 +118,14 @@ export const SavingsGoalsScreen = () => {
                   <span className="text-vault-charcoal dark:text-vault-text font-display font-bold tabular-nums">
                     ₹{goal.currentAmount.toLocaleString('en-IN')}
                   </span>
-                  <span className="text-vault-muted tabular-nums">
+                  <span className="text-vault-muted dark:text-vault-mutedDark tabular-nums">
                     ₹{remaining.toLocaleString('en-IN')} remaining of ₹{goal.targetAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-vault-border flex justify-between items-center">
-                <span className="text-xs text-vault-muted italic truncate max-w-[200px]">
+                <span className="text-xs text-vault-muted dark:text-vault-mutedDark italic truncate max-w-[200px]">
                   {goal.notes}
                 </span>
 
@@ -158,26 +158,26 @@ export const SavingsGoalsScreen = () => {
               <button 
                 onClick={() => setActiveDepositGoal(null)}
                 aria-label="Close deposit modal"
-                className="text-vault-muted hover:text-vault-charcoal p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div>
-              <p className="text-xs text-vault-muted">Selected Goal</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Selected Goal</p>
               <h4 className="text-sm font-bold text-vault-charcoal dark:text-vault-text mt-0.5">{activeDepositGoal.title}</h4>
             </div>
 
             <form onSubmit={handleDepositSubmit} className="space-y-3">
               <div>
-                <div className="flex justify-between text-xs text-vault-muted mb-1">
+                <div className="flex justify-between text-xs text-vault-muted dark:text-vault-mutedDark mb-1">
                   <span>Amount to Deposit</span>
                   <span>Available: <strong className="text-vault-charcoal dark:text-vault-text">₹{user.availableBalance.toLocaleString('en-IN')}</strong></span>
                 </div>
 
                 <div className="flex items-center bg-vault-paper border border-vault-border rounded-xl px-3 py-2">
-                  <span className="text-xl font-bold text-vault-muted mr-1">₹</span>
+                  <span className="text-xl font-bold text-vault-muted dark:text-vault-mutedDark mr-1">₹</span>
                   <input 
                     type="number"
                     value={depositAmount}
@@ -195,14 +195,14 @@ export const SavingsGoalsScreen = () => {
                     type="button"
                     aria-label={`Add ${val} rupees`}
                     onClick={() => setDepositAmount(val.toString())}
-                    className="flex-1 py-1 bg-vault-paper border border-vault-border rounded-lg text-xs text-vault-muted hover:text-vault-charcoal font-mono focus:ring-2 focus:ring-vault-terracotta"
+                    className="flex-1 py-1 bg-vault-paper border border-vault-border rounded-lg text-xs text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text font-mono focus:ring-2 focus:ring-vault-terracotta"
                   >
                     +₹{val}
                   </button>
                 ))}
               </div>
 
-              <div className="p-3 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted leading-relaxed">
+              <div className="p-3 bg-vault-paper border border-vault-border rounded-xl text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
                 "Money added to goals is moved from your safe-to-spend balance. You can withdraw back anytime instantly."
               </div>
 
@@ -210,7 +210,7 @@ export const SavingsGoalsScreen = () => {
                 <button
                   type="button"
                   onClick={() => setActiveDepositGoal(null)}
-                  className="flex-1 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-muted rounded-xl text-xs font-semibold"
+                  className="flex-1 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-xl text-xs font-semibold"
                 >
                   Cancel
                 </button>
@@ -242,7 +242,7 @@ export const SavingsGoalsScreen = () => {
               <button 
                 onClick={() => setShowCreateModal(false)}
                 aria-label="Close goal creation modal"
-                className="text-vault-muted hover:text-vault-charcoal p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -250,7 +250,7 @@ export const SavingsGoalsScreen = () => {
 
             <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs">
               <div>
-                <label htmlFor="goal-name-input" className="text-vault-muted font-bold block mb-1">Goal Name</label>
+                <label htmlFor="goal-name-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Goal Name</label>
                 <input 
                   id="goal-name-input"
                   type="text"
@@ -263,7 +263,7 @@ export const SavingsGoalsScreen = () => {
               </div>
 
               <div>
-                <label htmlFor="goal-target-input" className="text-vault-muted font-bold block mb-1">Target Amount (₹)</label>
+                <label htmlFor="goal-target-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Target Amount (₹)</label>
                 <input 
                   id="goal-target-input"
                   type="number"
@@ -276,7 +276,7 @@ export const SavingsGoalsScreen = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label htmlFor="goal-category-select" className="text-vault-muted font-bold block mb-1">Category</label>
+                  <label htmlFor="goal-category-select" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Category</label>
                   <select 
                     id="goal-category-select"
                     value={newCategory}
@@ -291,7 +291,7 @@ export const SavingsGoalsScreen = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="goal-date-input" className="text-vault-muted font-bold block mb-1">Target Date</label>
+                  <label htmlFor="goal-date-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Target Date</label>
                   <input 
                     id="goal-date-input"
                     type="text"
@@ -307,7 +307,7 @@ export const SavingsGoalsScreen = () => {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-muted rounded-xl font-semibold"
+                  className="flex-1 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-xl font-semibold"
                 >
                   Cancel
                 </button>

@@ -26,7 +26,7 @@ export const TabletShell = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-[#F0EAE1] dark:bg-[#060911] text-vault-charcoal dark:text-vault-text flex">
-      {/* Left Navigation Rail (Persistent icon + label rail) */}
+      {/* Left Navigation Rail */}
       <aside className="w-20 sm:w-24 bg-vault-surface border-r border-vault-border flex flex-col items-center py-6 shrink-0 select-none">
         <div className="w-10 h-10 rounded-2xl bg-vault-terracotta text-white flex items-center justify-center font-display font-bold text-lg mb-8 shadow-md shadow-vault-terracotta/30">
           V
@@ -40,11 +40,13 @@ export const TabletShell = ({ children }) => {
             return (
               <button
                 key={item.id}
+                type="button"
+                aria-label={`Navigate to ${item.label}`}
                 onClick={() => setActiveTab(item.id)}
                 className={`flex flex-col items-center p-3 rounded-2xl transition-all ${
                   isActive 
                     ? 'bg-vault-terracotta text-white shadow-md shadow-vault-terracotta/20 scale-105' 
-                    : 'text-vault-muted hover:text-vault-charcoal hover:bg-vault-surfaceHighlight'
+                    : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
                 }`}
               >
                 <Icon className="w-5 h-5 mb-1" />
@@ -56,6 +58,8 @@ export const TabletShell = ({ children }) => {
 
         {/* User profile avatar footer button */}
         <button 
+          type="button"
+          aria-label="Profile Settings"
           onClick={() => setActiveTab('profile')}
           className="relative rounded-full p-0.5 ring-2 ring-vault-terracotta/40 hover:ring-vault-terracotta transition-all"
         >
@@ -79,7 +83,7 @@ export const TabletShell = ({ children }) => {
           <div className="flex items-center gap-4">
             <div className="text-right">
               <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-              <p className="text-[11px] text-vault-muted font-mono">{user.upiId}</p>
+              <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark font-mono">{user.upiId}</p>
             </div>
           </div>
         </header>
@@ -92,7 +96,7 @@ export const TabletShell = ({ children }) => {
         </main>
       </div>
 
-      {/* Right Side Panel Transaction Detail Drawer (Tablet Specification) */}
+      {/* Right Side Panel Transaction Detail Drawer */}
       <AnimatePresence>
         {selectedTransaction && (
           <motion.aside
@@ -100,11 +104,12 @@ export const TabletShell = ({ children }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="w-80 bg-vault-surface border-l border-vault-border p-6 shadow-2xl overflow-y-auto shrink-0 z-40 relative flex flex-col"
+            className="w-80 bg-vault-surface border-l border-vault-border p-6 shadow-2xl overflow-y-auto shrink-0 z-40 relative flex flex-col text-vault-charcoal dark:text-vault-text"
           >
             <button 
               onClick={() => setSelectedTransaction(null)}
-              className="absolute top-5 right-5 p-2 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight"
+              aria-label="Close details"
+              className="absolute top-5 right-5 p-2 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight"
             >
               <X className="w-5 h-5" />
             </button>
@@ -121,7 +126,7 @@ export const TabletShell = ({ children }) => {
               <h3 className="text-lg font-bold text-vault-charcoal dark:text-vault-text">
                 {selectedTransaction.merchant}
               </h3>
-              <p className="text-xs text-vault-muted mt-0.5">{selectedTransaction.date}</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">{selectedTransaction.date}</p>
 
               <div className="mt-4 text-2xl font-display font-bold tabular-nums">
                 <span className={selectedTransaction.type === 'refund' ? "text-vault-terracotta" : selectedTransaction.type === 'credit' ? "text-vault-sage" : "text-vault-charcoal dark:text-vault-text"}>
@@ -133,15 +138,15 @@ export const TabletShell = ({ children }) => {
 
             <div className="bg-vault-paper border border-vault-border rounded-2xl p-4 space-y-3 text-xs">
               <div className="flex justify-between py-1 border-b border-vault-border">
-                <span className="text-vault-muted">Running Balance</span>
-                <span className="font-bold font-display tabular-nums">₹{selectedTransaction.runningBalance.toLocaleString('en-IN')}</span>
+                <span className="text-vault-muted dark:text-vault-mutedDark">Running Balance</span>
+                <span className="font-bold font-display tabular-nums text-vault-charcoal dark:text-vault-text">₹{selectedTransaction.runningBalance.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-vault-border">
-                <span className="text-vault-muted">Payment Method</span>
-                <span className="font-semibold">{selectedTransaction.method}</span>
+                <span className="text-vault-muted dark:text-vault-mutedDark">Payment Method</span>
+                <span className="font-semibold text-vault-charcoal dark:text-vault-text">{selectedTransaction.method}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-vault-muted">UPI Ref ID</span>
+                <span className="text-vault-muted dark:text-vault-mutedDark">UPI Ref ID</span>
                 <button onClick={() => handleCopyRef(selectedTransaction.upiRef)} className="font-mono text-vault-terracotta hover:underline">
                   {selectedTransaction.upiRef}
                 </button>
@@ -153,7 +158,7 @@ export const TabletShell = ({ children }) => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-terracotta/40 text-vault-charcoal px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
+        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-terracotta/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 text-vault-terracotta" />
           <p className="text-xs font-semibold">{toast.message}</p>
         </div>

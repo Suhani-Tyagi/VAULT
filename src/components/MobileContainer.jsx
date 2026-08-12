@@ -28,7 +28,7 @@ export const MobileContainer = ({ children }) => {
             {time || '9:41'}
           </span>
 
-          <div className="flex items-center gap-2.5 text-vault-muted">
+          <div className="flex items-center gap-2.5 text-vault-muted dark:text-vault-mutedDark">
             <span className="text-[10px] font-bold tracking-widest text-vault-terracotta bg-vault-terracottaLight px-2 py-0.5 rounded-full border border-vault-terracotta/20">
               VAULT • UPI
             </span>
@@ -56,7 +56,7 @@ export const MobileContainer = ({ children }) => {
               />
             </button>
             <div>
-              <p className="text-xs text-vault-muted font-medium leading-none">Welcome back</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium leading-none">Welcome back</p>
               <h2 className="text-sm font-bold text-vault-charcoal dark:text-vault-text leading-tight mt-0.5">{user.name.split(' ')[0]}</h2>
             </div>
           </div>
@@ -69,7 +69,7 @@ export const MobileContainer = ({ children }) => {
               className={`p-2 rounded-xl transition-all focus:ring-2 focus:ring-vault-terracotta ${
                 activeTab === 'profile' 
                   ? 'bg-vault-terracottaLight text-vault-terracotta border border-vault-terracotta/30' 
-                  : 'bg-vault-surface text-vault-muted hover:text-vault-charcoal border border-vault-border'
+                  : 'bg-vault-surface text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text border border-vault-border'
               }`}
             >
               <User className="w-4 h-4" />

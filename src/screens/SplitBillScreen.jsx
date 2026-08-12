@@ -49,37 +49,37 @@ export const SplitBillScreen = () => {
   if (isSuccess) {
     return (
       <div className="space-y-5 animate-in fade-in zoom-in-95">
-        <div className="bg-vault-surface border border-vault-border rounded-3xl p-6 text-center space-y-4 shadow-sm text-vault-charcoal">
+        <div className="bg-vault-surface border border-vault-border rounded-3xl p-6 text-center space-y-4 shadow-sm text-vault-charcoal dark:text-vault-text">
           <div className="w-16 h-16 bg-vault-terracottaLight border border-vault-terracotta/40 text-vault-terracotta rounded-full flex items-center justify-center mx-auto">
             <Users className="w-8 h-8" />
           </div>
 
           <div>
-            <h3 className="text-xl font-bold text-vault-charcoal">Split Request Sent</h3>
-            <p className="text-xs text-vault-muted mt-1">
+            <h3 className="text-xl font-bold text-vault-charcoal dark:text-vault-text">Split Request Sent</h3>
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1">
               For "{description}"
             </p>
           </div>
 
           <div className="p-4 bg-vault-paper border border-vault-border rounded-2xl text-left space-y-2 text-xs">
             <div className="flex justify-between border-b border-vault-border pb-2">
-              <span className="text-vault-muted">Total Bill</span>
-              <span className="font-display font-bold text-vault-charcoal">₹{numTotal.toLocaleString('en-IN')}</span>
+              <span className="text-vault-muted dark:text-vault-mutedDark">Total Bill</span>
+              <span className="font-display font-bold text-vault-charcoal dark:text-vault-text">₹{numTotal.toLocaleString('en-IN')}</span>
             </div>
 
             <div className="flex justify-between border-b border-vault-border pb-2">
-              <span className="text-vault-muted">Split Among</span>
-              <span className="font-bold text-vault-charcoal">{totalPeople} people (You + {selectedIds.length} friends)</span>
+              <span className="text-vault-muted dark:text-vault-mutedDark">Split Among</span>
+              <span className="font-bold text-vault-charcoal dark:text-vault-text">{totalPeople} people (You + {selectedIds.length} friends)</span>
             </div>
 
             <div className="flex justify-between pt-1">
-              <span className="text-vault-muted font-medium">Request amount per friend</span>
+              <span className="text-vault-muted dark:text-vault-mutedDark font-medium">Request amount per friend</span>
               <span className="font-display font-bold text-vault-terracotta text-sm">₹{parseFloat(perPerson).toLocaleString('en-IN')}</span>
             </div>
           </div>
 
-          <div className="p-3.5 bg-vault-paper border border-vault-border rounded-xl text-left text-xs text-vault-muted leading-relaxed">
-            <p className="text-vault-charcoal font-bold mb-0.5">What happens next?</p>
+          <div className="p-3.5 bg-vault-paper border border-vault-border rounded-xl text-left text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
+            <p className="text-vault-charcoal dark:text-vault-text font-bold mb-0.5">What happens next?</p>
             "A payment request notification is sent to each person. Funds are credited directly to your Vault balance as soon as they approve & pay."
           </div>
 
@@ -98,8 +98,8 @@ export const SplitBillScreen = () => {
     <div className="space-y-4">
       {/* Header title */}
       <div>
-        <h2 className="text-xl font-bold text-vault-charcoal tracking-tight">Split a Bill</h2>
-        <p className="text-xs text-vault-muted mt-0.5">
+        <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Split a Bill</h2>
+        <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
           Share costs transparently without awkward math
         </p>
       </div>
@@ -107,7 +107,7 @@ export const SplitBillScreen = () => {
       {/* 1. Description & Amount */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
         <div>
-          <label className="text-xs font-bold text-vault-muted uppercase tracking-wider block mb-1">
+          <label className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
             Bill Description
           </label>
           <input 
@@ -115,22 +115,22 @@ export const SplitBillScreen = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="e.g. Dinner at Toit, Airbnb Goa"
-            className="w-full bg-vault-paper border border-vault-border rounded-xl px-3 py-2 text-xs text-vault-charcoal placeholder-vault-muted focus:outline-none focus:border-vault-terracotta"
+            className="w-full bg-vault-paper border border-vault-border rounded-xl px-3 py-2 text-xs text-vault-charcoal dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-terracotta"
           />
         </div>
 
         <div>
-          <label className="text-xs font-bold text-vault-muted uppercase tracking-wider block mb-1">
+          <label className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
             Total Amount
           </label>
           <div className="flex items-center bg-vault-paper border border-vault-border rounded-xl px-4 py-2 focus-within:border-vault-terracotta">
-            <span className="text-2xl font-bold text-vault-muted mr-1">₹</span>
+            <span className="text-2xl font-bold text-vault-muted dark:text-vault-mutedDark mr-1">₹</span>
             <input 
               type="number"
               value={totalAmount}
               onChange={(e) => setTotalAmount(e.target.value)}
               placeholder="0"
-              className="w-full bg-transparent text-2xl font-display font-bold text-vault-charcoal focus:outline-none tabular-nums"
+              className="w-full bg-transparent text-2xl font-display font-bold text-vault-charcoal dark:text-vault-text focus:outline-none tabular-nums"
             />
           </div>
         </div>
@@ -139,7 +139,7 @@ export const SplitBillScreen = () => {
       {/* 2. Select Friends */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center text-xs">
-          <label className="font-bold text-vault-muted uppercase tracking-wider">
+          <label className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
             Split With ({selectedIds.length} Selected)
           </label>
           <span className="text-vault-terracotta font-bold">Tap to toggle</span>
@@ -154,8 +154,8 @@ export const SplitBillScreen = () => {
                 onClick={() => toggleContact(c.id)}
                 className={`p-2.5 rounded-2xl border flex items-center justify-between transition-all ${
                   isSelected 
-                    ? 'bg-vault-terracottaLight border-vault-terracotta text-vault-charcoal' 
-                    : 'bg-vault-paper border-vault-border text-vault-muted hover:border-vault-borderDark'
+                    ? 'bg-vault-terracottaLight border-vault-terracotta text-vault-charcoal dark:text-vault-text' 
+                    : 'bg-vault-paper border-vault-border text-vault-muted dark:text-vault-mutedDark hover:border-vault-borderDark'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -165,8 +165,8 @@ export const SplitBillScreen = () => {
                     className="w-8 h-8 rounded-full object-cover shrink-0" 
                   />
                   <div className="text-left min-w-0">
-                    <p className="text-xs font-bold truncate">{c.name}</p>
-                    <p className="text-[10px] text-vault-muted truncate">{c.upiId}</p>
+                    <p className="text-xs font-bold truncate text-vault-charcoal dark:text-vault-text">{c.name}</p>
+                    <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark truncate">{c.upiId}</p>
                   </div>
                 </div>
 
@@ -183,25 +183,25 @@ export const SplitBillScreen = () => {
 
       {/* 3. Live Breakdown Summary Card */}
       <div className="bg-vault-paper border border-vault-border rounded-2xl p-4 space-y-2 text-xs">
-        <div className="flex justify-between items-center text-vault-muted font-medium">
+        <div className="flex justify-between items-center text-vault-muted dark:text-vault-mutedDark font-medium">
           <span>Calculation</span>
           <span>Equal ({totalPeople} ways)</span>
         </div>
 
-        <div className="flex justify-between items-center text-sm font-bold text-vault-charcoal pt-1 border-t border-vault-border">
+        <div className="flex justify-between items-center text-sm font-bold text-vault-charcoal dark:text-vault-text pt-1 border-t border-vault-border">
           <span>Each person owes:</span>
           <span className="font-display text-base text-vault-terracotta tabular-nums">
             ₹{parseFloat(perPerson).toLocaleString('en-IN')}
           </span>
         </div>
 
-        <p className="text-[11px] text-vault-muted pt-1">
+        <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark pt-1">
           Your share is ₹{parseFloat(perPerson).toLocaleString('en-IN')}. Requests for ₹{parseFloat(perPerson).toLocaleString('en-IN')} each will be sent to {selectedIds.length} friends.
         </p>
       </div>
 
       {/* 4. Human Tone Explanation */}
-      <div className="p-3.5 bg-vault-paper border border-vault-border rounded-2xl flex items-start gap-2.5 text-xs text-vault-muted leading-relaxed">
+      <div className="p-3.5 bg-vault-paper border border-vault-border rounded-2xl flex items-start gap-2.5 text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
         <Info className="w-4 h-4 text-vault-terracotta shrink-0 mt-0.5" />
         <span>
           A request notification is sent to each person. Money is never silently deducted from anyone's account.

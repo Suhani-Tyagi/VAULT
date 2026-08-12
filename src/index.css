@@ -9,6 +9,28 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
+  .dark body {
+    background-color: #060911;
+    color: #F5F0E8;
+  }
+
+  /* Dark mode surface & border overrides */
+  .dark .bg-vault-paper {
+    background-color: #0B0F19 !important;
+  }
+  .dark .bg-vault-surface {
+    background-color: #121723 !important;
+  }
+  .dark .bg-vault-surfaceHighlight {
+    background-color: #1A2638 !important;
+  }
+  .dark .border-vault-border {
+    border-color: #232E42 !important;
+  }
+  .dark .border-vault-borderDark {
+    border-color: #2D3B54 !important;
+  }
+
   /* Force tabular numbers for financial amounts so digits don't jitter */
   .tabular-nums {
     font-variant-numeric: tabular-nums;

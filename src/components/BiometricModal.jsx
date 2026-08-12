@@ -66,21 +66,21 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 280 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal text-center focus:outline-none"
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none"
         >
           <button 
             onClick={onClose}
             aria-label="Close Biometric Verification"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="mt-2 mb-4">
-            <h3 id="biometric-modal-title" className="text-lg font-bold text-vault-charcoal tracking-tight">
+            <h3 id="biometric-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text tracking-tight">
               {biometricName} Verification
             </h3>
-            <p className="text-xs text-vault-muted mt-0.5">
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
               Confirming <strong className="text-vault-terracotta font-display">₹{parseFloat(amount || 0).toLocaleString('en-IN')}</strong> transfer to {recipientName || 'Recipient'}
             </p>
           </div>
@@ -104,12 +104,12 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
               )}
             </button>
 
-            <p aria-live="polite" className="text-xs font-semibold text-vault-charcoal mt-4">
+            <p aria-live="polite" className="text-xs font-semibold text-vault-charcoal dark:text-vault-text mt-4">
               {isScanning ? `Verifying ${biometricName}...` : `Touch/Scan sensor to authorize with ${biometricName}`}
             </p>
           </div>
 
-          <div className="p-3 bg-vault-paper border border-vault-border rounded-2xl text-xs text-vault-muted">
+          <div className="p-3 bg-vault-paper border border-vault-border rounded-2xl text-xs text-vault-muted dark:text-vault-mutedDark">
             Vault {biometricName} Security Active
           </div>
         </motion.div>
