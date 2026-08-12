@@ -4,46 +4,55 @@
 
 @layer base {
   body {
-    background-color: #F8FAFC;
-    color: #0F172A;
+    background-color: #FAF9F6;
+    color: #111827;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   .dark body {
-    background-color: #0D1117;
-    color: #F8FAFC;
+    background-color: #0C0E12;
+    color: #F3F4F6;
   }
 
-  /* Architectural Dark Mode Overrides */
+  /* Passbook Dark Mode Surface Overrides */
   .dark .bg-vault-paper {
-    background-color: #0D1117 !important;
+    background-color: #0C0E12 !important;
   }
   .dark .bg-vault-surface {
-    background-color: #161B22 !important;
+    background-color: #141820 !important;
   }
   .dark .bg-vault-surfaceHighlight {
-    background-color: #1F242D !important;
+    background-color: #1A202C !important;
   }
-  .dark .border-vault-border {
-    border-color: #21262D !important;
+  .dark .border-vault-rule, .dark .border-vault-border {
+    border-color: #1F2937 !important;
   }
   .dark .border-vault-borderDark {
-    border-color: #30363D !important;
+    border-color: #374151 !important;
   }
 
-  /* Force tabular numbers for financial amounts so digits don't jitter */
+  /* Force tabular monospace numbers for financial amounts */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom Signature Rupee Symbol Container */
-.rupee-badge {
-  display: inline-flex;
-  items-align: center;
-  justify-content: center;
-  font-family: "Outfit", sans-serif;
+/* Custom Signature Rupee Symbol Container using Fraunces Serif */
+.rupee-symbol {
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Thermal Passbook Tape Micro-Ticker Animation */
+@keyframes thermalPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-thermal {
+  animation: thermalPulse 3s ease-in-out infinite;
 }
 
 /* Keyframes for PIN pad error shake animation */
@@ -59,8 +68,8 @@
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -68,12 +77,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #D1D5DB;
   border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #30363D;
+  background: #374151;
 }
 
 .no-scrollbar::-webkit-scrollbar {

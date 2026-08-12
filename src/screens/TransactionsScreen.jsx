@@ -45,22 +45,24 @@ export const TransactionsScreen = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Vault_Statement_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute("download", `Vault_Passbook_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    showToast("Statement CSV downloaded");
+    showToast("Passbook CSV downloaded");
   };
 
   return (
     <div className="space-y-4">
-      {/* Header title & CSV Download button */}
-      <div className="flex justify-between items-start">
+      {/* Header title & Passbook CSV Export button */}
+      <div className="flex justify-between items-start pb-2 border-b border-vault-rule">
         <div>
-          <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Activity & Transactions</h2>
+          <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text tracking-tight">
+            Activity & Transactions
+          </h2>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-            Full ledger of past transfers and receipts
+            Official NPCI UPI Passbook Ledger
           </p>
         </div>
 
@@ -68,15 +70,15 @@ export const TransactionsScreen = () => {
           type="button"
           aria-label="Export activity as CSV statement"
           onClick={handleExportCsv}
-          className="flex items-center gap-1.5 px-3 py-2 bg-vault-surfaceHighlight border border-vault-border hover:border-vault-bronze text-vault-charcoal dark:text-vault-text rounded-xl text-xs font-bold transition-all shadow-xs focus:ring-2 focus:ring-vault-bronze"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-paper border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-all shadow-xs focus:ring-2 focus:ring-vault-reserveBlue"
         >
-          <Download className="w-4 h-4 text-vault-bronze" />
-          <span>Export CSV</span>
+          <Download className="w-3.5 h-3.5 text-vault-reserveBlue" />
+          <span>Export Passbook</span>
         </button>
       </div>
 
       {/* Search Input & Category Filter Tabs */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-3 space-y-2.5 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-3 space-y-2.5 shadow-xs">
         <div className="relative flex items-center">
           <Search className="w-4 h-4 absolute left-3 text-vault-muted dark:text-vault-mutedDark pointer-events-none" />
           <input 
@@ -85,11 +87,11 @@ export const TransactionsScreen = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Search transactions"
-            className="w-full bg-vault-paper border border-vault-border rounded-xl pl-9 pr-3 py-2 text-xs text-vault-charcoal dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-bronze"
+            className="w-full bg-vault-paper border border-vault-rule rounded-lg pl-9 pr-3 py-2 text-xs text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-mono"
           />
         </div>
 
-        <div className="flex gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar">
+        <div className="flex gap-1.5 text-xs font-mono font-semibold overflow-x-auto no-scrollbar">
           {[
             { id: 'all', label: 'All' },
             { id: 'debit', label: 'Spent' },
@@ -101,10 +103,10 @@ export const TransactionsScreen = () => {
               type="button"
               aria-label={filter.label}
               onClick={() => setSelectedFilter(filter.id)}
-              className={`flex-1 min-w-[70px] py-1.5 rounded-xl transition-all ${
+              className={`flex-1 min-w-[65px] py-1 rounded-lg transition-all text-center ${
                 selectedFilter === filter.id 
-                  ? 'bg-vault-bronze text-white font-bold shadow-xs' 
-                  : 'bg-vault-paper border border-vault-border text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text'
+                  ? 'bg-vault-reserveBlue text-white font-bold shadow-xs' 
+                  : 'bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text'
               }`}
             >
               {filter.label}
@@ -113,8 +115,8 @@ export const TransactionsScreen = () => {
         </div>
       </div>
 
-      {/* Transaction List */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl divide-y divide-vault-border overflow-hidden shadow-xs">
+      {/* Transaction Passbook Ledger */}
+      <div className="bg-vault-surface border border-vault-rule rounded-xl overflow-hidden shadow-xs">
         {filteredTransactions.length > 0 ? (
           filteredTransactions.map((tx) => (
             <TransactionRow 
@@ -124,8 +126,8 @@ export const TransactionsScreen = () => {
             />
           ))
         ) : (
-          <div className="py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-2">
-            <p className="text-sm font-bold text-vault-charcoal dark:text-vault-text">No transactions found</p>
+          <div className="py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-2 font-mono">
+            <p className="text-sm font-bold text-vault-ink dark:text-vault-text">No transactions found</p>
             <p className="text-xs">Try adjusting your search query or filter criteria.</p>
           </div>
         )}

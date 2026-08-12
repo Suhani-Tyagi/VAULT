@@ -106,28 +106,28 @@ export const ProfileScreen = () => {
     <div className="space-y-4">
       {/* Header title */}
       <div>
-        <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Profile & Security</h2>
+        <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text tracking-tight">Profile & Security</h2>
         <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
           Account credentials, active devices, and security controls
         </p>
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 flex items-center justify-between shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-4">
           <img 
             src={user.profilePic} 
             alt={`${user.name}'s profile avatar`}
-            width={64}
-            height={64}
+            width={56}
+            height={56}
             loading="lazy"
-            className="w-16 h-16 rounded-full object-cover ring-2 ring-vault-bronze/40 shrink-0"
+            className="w-14 h-14 rounded-full object-cover ring-2 ring-vault-reserveBlue/40 shrink-0"
           />
 
           <div className="min-w-0">
-            <h3 className="text-base font-bold text-vault-charcoal dark:text-vault-text truncate">{user.name}</h3>
-            <p className="text-xs text-vault-muted dark:text-vault-mutedDark truncate">{user.email}</p>
-            <p className="text-xs text-vault-subtle font-medium mt-1">{user.city}</p>
+            <h3 className="font-serif text-base font-bold text-vault-ink dark:text-vault-text truncate">{user.name}</h3>
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono truncate">{user.email}</p>
+            <p className="text-xs text-vault-subtle font-mono mt-0.5">{user.city}</p>
           </div>
         </div>
 
@@ -136,33 +136,33 @@ export const ProfileScreen = () => {
           type="button"
           aria-label="Log out of Vault"
           onClick={() => setShowLogoutModal(true)}
-          className="px-3 py-2 bg-vault-roseLight text-vault-rose hover:bg-vault-rose hover:text-white border border-vault-rose/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
+          className="px-3 py-1.5 bg-vault-roseLight text-vault-rose hover:bg-vault-rose hover:text-white border border-vault-rose/30 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 shrink-0"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Log Out</span>
         </button>
       </div>
 
       {/* Developer / Demo Device Switcher */}
-      <div className="bg-vault-surface border border-vault-bronze/30 rounded-2xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-reserveBlue/30 rounded-xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center">
-          <h3 className="text-xs font-bold text-vault-bronze uppercase tracking-wider flex items-center gap-1.5">
+          <h3 className="text-xs font-mono font-bold text-vault-reserveBlue uppercase tracking-wider flex items-center gap-1.5">
             <Monitor className="w-4 h-4" />
             <span>Developer / Demo Settings</span>
           </h3>
 
           {isOverridden && (
-            <span className="text-xs bg-vault-bronze text-white px-2 py-0.5 rounded-full font-bold">
+            <span className="text-[10px] font-mono bg-vault-reserveBlue text-white px-2 py-0.5 rounded font-bold">
               Override Active
             </span>
           )}
         </div>
 
         <p className="text-xs text-vault-muted dark:text-vault-mutedDark">
-          Preview how Vault adapts across viewports and operating systems. Active mode: <strong className="text-vault-charcoal dark:text-vault-text capitalize">{deviceType} ({os})</strong>
+          Preview how Vault adapts across viewports and operating systems. Active mode: <strong className="text-vault-ink dark:text-vault-text capitalize font-mono">{deviceType} ({os})</strong>
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 font-mono">
           {devicePresets.map(preset => {
             const isSelected = preset.id === 'auto' 
               ? !isOverridden 
@@ -177,10 +177,10 @@ export const ProfileScreen = () => {
                   if (preset.id === 'auto') clearOverride();
                   else setOverride({ deviceType: preset.type, os: preset.os });
                 }}
-                className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all border text-center ${
+                className={`py-1.5 px-2.5 rounded-lg text-xs font-bold transition-all border text-center ${
                   isSelected 
-                    ? 'bg-vault-bronze text-white border-vault-bronze shadow-xs' 
-                    : 'bg-vault-paper border-vault-border text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text'
+                    ? 'bg-vault-reserveBlue text-white border-vault-reserveBlue shadow-xs' 
+                    : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text'
                 }`}
               >
                 {preset.label}
@@ -191,16 +191,16 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Theme & Dark Mode Controls */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
-        <h3 className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+        <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
           Appearance & Theme
         </h3>
 
         <div className="flex justify-between items-center py-1 text-xs">
           <div className="flex items-center gap-2.5">
-            {isDarkMode ? <Moon className="w-4 h-4 text-vault-bronze" /> : <Sun className="w-4 h-4 text-amber-500" />}
+            {isDarkMode ? <Moon className="w-4 h-4 text-vault-reserveBlue" /> : <Sun className="w-4 h-4 text-amber-500" />}
             <div>
-              <p className="font-bold text-vault-charcoal dark:text-vault-text">Dark Theme</p>
+              <p className="font-bold text-vault-ink dark:text-vault-text">Dark Theme</p>
               <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Toggle high-contrast obsidian dark mode</p>
             </div>
           </div>
@@ -215,18 +215,18 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Account Credentials Card */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center">
-          <h3 className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
+          <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
             Vault Account Details
           </h3>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 font-mono">
             <button 
               type="button"
               aria-label="Show personal receive QR code"
               onClick={() => setShowReceiveModal(true)}
-              className="text-xs font-bold text-vault-bronze hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-vault-reserveBlue hover:underline flex items-center gap-1"
             >
               <QrCode className="w-3.5 h-3.5" />
               <span>Show QR</span>
@@ -236,7 +236,7 @@ export const ProfileScreen = () => {
               type="button"
               aria-label={revealAccount ? "Mask account number" : "Authenticate to reveal full account number"}
               onClick={() => handleInitiateReveal('account')}
-              className="text-xs font-bold text-vault-bronze hover:underline flex items-center gap-1 ml-2"
+              className="text-xs font-bold text-vault-reserveBlue hover:underline flex items-center gap-1 ml-2"
             >
               {revealAccount ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               <span>{revealAccount ? "Mask" : "Reveal (Auth)"}</span>
@@ -244,43 +244,43 @@ export const ProfileScreen = () => {
           </div>
         </div>
 
-        <div className="space-y-2 text-xs">
-          <div className="flex justify-between items-center py-1.5 border-b border-vault-border">
+        <div className="space-y-2 text-xs font-mono">
+          <div className="flex justify-between items-center py-1.5 border-b border-vault-rule">
             <span className="text-vault-muted dark:text-vault-mutedDark">Primary UPI Handle</span>
             <button 
               type="button"
               aria-label="Copy UPI handle"
               onClick={copyUpi}
-              className="flex items-center gap-1 font-mono font-bold text-vault-bronze hover:underline"
+              className="flex items-center gap-1 font-bold text-vault-reserveBlue hover:underline"
             >
               <span>{user.upiId}</span>
               <Copy className="w-3 h-3" />
             </button>
           </div>
 
-          <div className="flex justify-between items-center py-1.5 border-b border-vault-border">
+          <div className="flex justify-between items-center py-1.5 border-b border-vault-rule">
             <span className="text-vault-muted dark:text-vault-mutedDark">Account Number</span>
-            <span className="font-mono font-bold text-vault-charcoal dark:text-vault-text">
+            <span className="font-bold text-vault-ink dark:text-vault-text">
               {revealAccount ? user.fullAccountNo : user.accountNo}
             </span>
           </div>
 
-          <div className="flex justify-between items-center py-1.5 border-b border-vault-border">
+          <div className="flex justify-between items-center py-1.5 border-b border-vault-rule">
             <span className="text-vault-muted dark:text-vault-mutedDark">IFSC Code</span>
-            <span className="font-mono font-bold text-vault-charcoal dark:text-vault-text">{user.ifscCode}</span>
+            <span className="font-bold text-vault-ink dark:text-vault-text">{user.ifscCode}</span>
           </div>
 
           <div className="flex justify-between items-center py-1.5">
             <span className="text-vault-muted dark:text-vault-mutedDark">Account Type</span>
-            <span className="font-bold text-vault-charcoal dark:text-vault-text">Vault Salary Account</span>
+            <span className="font-bold text-vault-ink dark:text-vault-text font-sans">Vault Salary Account</span>
           </div>
         </div>
       </div>
 
       {/* Linked Bank Card */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center">
-          <h3 className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
+          <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
             Linked Bank & Cards
           </h3>
 
@@ -288,43 +288,43 @@ export const ProfileScreen = () => {
             type="button"
             aria-label={revealCard ? "Mask debit card number" : "Authenticate to reveal full card number"}
             onClick={() => handleInitiateReveal('card')}
-            className="text-xs font-bold text-vault-bronze hover:underline flex items-center gap-1"
+            className="text-xs font-mono font-bold text-vault-reserveBlue hover:underline flex items-center gap-1"
           >
             {revealCard ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             <span>{revealCard ? "Mask" : "Reveal (Auth)"}</span>
           </button>
         </div>
 
-        <div className="p-3 bg-vault-paper border border-vault-border rounded-xl flex items-center justify-between">
+        <div className="p-3 bg-vault-paper border border-vault-rule rounded-lg flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-vault-bronzeLight border border-vault-bronze/30 text-vault-bronze flex items-center justify-center">
-              <CreditCard className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-lg bg-vault-reserveBlueLight border border-vault-reserveBlue/30 text-vault-reserveBlue flex items-center justify-center">
+              <CreditCard className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text">{user.linkedCard.bank}</p>
+              <p className="text-xs font-bold text-vault-ink dark:text-vault-text">{user.linkedCard.bank}</p>
               <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">
                 {revealCard ? user.linkedCard.fullCardNo : user.linkedCard.cardNo} • {user.linkedCard.type}
               </p>
             </div>
           </div>
-          <span className="text-xs text-vault-teal font-bold bg-vault-tealLight px-2 py-0.5 rounded border border-vault-teal/20">
+          <span className="text-[10px] font-mono text-vault-emerald font-bold bg-vault-emeraldLight px-2 py-0.5 rounded border border-vault-emerald/20">
             Active
           </span>
         </div>
       </div>
 
       {/* Security & Biometric Controls */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
-        <h3 className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+        <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
           Security Controls
         </h3>
 
         <div className="space-y-3 text-xs">
           <div className="flex justify-between items-center py-1">
             <div className="flex items-center gap-2.5">
-              <BiometricIcon className="w-4 h-4 text-vault-bronze" />
+              <BiometricIcon className="w-4 h-4 text-vault-reserveBlue" />
               <div>
-                <p className="font-bold text-vault-charcoal dark:text-vault-text">{biometricLabel} Verification</p>
+                <p className="font-bold text-vault-ink dark:text-vault-text">{biometricLabel} Verification</p>
                 <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Use {biometricLabel} instead of 6-digit PIN for payments</p>
               </div>
             </div>
@@ -337,11 +337,11 @@ export const ProfileScreen = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center py-1 border-t border-vault-border pt-3">
+          <div className="flex justify-between items-center py-1 border-t border-vault-rule pt-3">
             <div className="flex items-center gap-2.5">
-              <Lock className="w-4 h-4 text-vault-bronze" />
+              <Lock className="w-4 h-4 text-vault-reserveBlue" />
               <div>
-                <p className="font-bold text-vault-charcoal dark:text-vault-text">Mandatory PIN for transfers over ₹5,000</p>
+                <p className="font-bold text-vault-ink dark:text-vault-text">Mandatory PIN for transfers over ₹5,000</p>
                 <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Enforces security check on high-value transfers</p>
               </div>
             </div>
@@ -357,20 +357,20 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Active Devices & Sessions */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-2 shadow-xs">
-        <h3 className="text-xs font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-2 shadow-xs">
+        <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
           Active Devices & Sessions
         </h3>
 
-        <div className="flex items-center justify-between p-2.5 bg-vault-paper border border-vault-border rounded-xl text-xs">
+        <div className="flex items-center justify-between p-2.5 bg-vault-paper border border-vault-rule rounded-lg text-xs font-mono">
           <div className="flex items-center gap-2.5">
-            <Smartphone className="w-4 h-4 text-vault-bronze" />
+            <Smartphone className="w-4 h-4 text-vault-reserveBlue" />
             <div>
-              <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.activeSession.device}</p>
+              <p className="font-bold text-vault-ink dark:text-vault-text">{user.activeSession.device}</p>
               <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Logged in on this device • {user.activeSession.location}</p>
             </div>
           </div>
-          <span className="text-xs text-vault-bronze font-bold font-mono">
+          <span className="text-[11px] text-vault-reserveBlue font-bold">
             {user.activeSession.time}
           </span>
         </div>

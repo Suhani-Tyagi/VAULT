@@ -18,33 +18,33 @@ export const MobileContainer = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] dark:bg-[#0D1117] text-vault-charcoal dark:text-vault-text flex justify-center items-center sm:py-6 sm:px-4">
+    <div className="min-h-screen bg-[#F3F4F6] dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex justify-center items-center sm:py-6 sm:px-4">
       {/* Mobile Frame Container */}
-      <div className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:h-[860px] bg-vault-paper sm:rounded-[40px] sm:border-[8px] sm:border-slate-800 shadow-2xl flex flex-col relative overflow-hidden">
+      <div className="w-full sm:max-w-[420px] min-h-screen sm:min-h-[860px] sm:h-[860px] bg-vault-paper sm:rounded-[36px] sm:border-[8px] sm:border-slate-800 shadow-2xl flex flex-col relative overflow-hidden">
         
         {/* Status Bar */}
-        <header className="sticky top-0 z-30 bg-vault-paper/90 backdrop-blur-md px-5 pt-3 pb-2 flex items-center justify-between border-b border-vault-border select-none">
-          <span className="text-xs font-display font-bold text-vault-charcoal dark:text-vault-text tracking-wide">
+        <header className="sticky top-0 z-30 bg-vault-paper/90 backdrop-blur-md px-5 pt-3 pb-2 flex items-center justify-between border-b border-vault-rule select-none font-mono">
+          <span className="text-xs font-bold text-vault-ink dark:text-vault-text tracking-wide">
             {time || '9:41'}
           </span>
 
           <div className="flex items-center gap-2.5 text-vault-muted dark:text-vault-mutedDark">
-            <span className="text-[10px] font-bold tracking-widest text-vault-bronze bg-vault-bronzeLight px-2 py-0.5 rounded-full border border-vault-bronze/20 font-mono">
+            <span className="text-[10px] font-bold tracking-widest text-vault-reserveBlue bg-vault-reserveBlueLight px-2 py-0.5 rounded border border-vault-reserveBlue/20">
               VAULT • UPI
             </span>
-            <Wifi className="w-3.5 h-3.5 text-vault-charcoal dark:text-vault-text" />
-            <Battery className="w-4 h-4 text-vault-charcoal dark:text-vault-text" />
+            <Wifi className="w-3.5 h-3.5 text-vault-ink dark:text-vault-text" />
+            <Battery className="w-4 h-4 text-vault-ink dark:text-vault-text" />
           </div>
         </header>
 
         {/* Top Header */}
-        <div className="px-5 py-3 flex items-center justify-between bg-vault-paper border-b border-vault-border">
+        <div className="px-5 py-3 flex items-center justify-between bg-vault-paper border-b border-vault-rule">
           <div className="flex items-center gap-3">
             <button 
               type="button"
               aria-label="Go to profile settings"
               onClick={() => setActiveTab('profile')}
-              className="relative rounded-full p-0.5 ring-2 ring-vault-bronze/50 hover:ring-vault-bronze transition-all focus:ring-2 focus:ring-vault-bronze"
+              className="relative rounded-full p-0.5 ring-2 ring-vault-reserveBlue/50 hover:ring-vault-reserveBlue transition-all focus:ring-2 focus:ring-vault-reserveBlue"
             >
               <img 
                 src={user.profilePic} 
@@ -56,20 +56,20 @@ export const MobileContainer = ({ children }) => {
               />
             </button>
             <div>
-              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium leading-none">Welcome back</p>
-              <h2 className="text-sm font-bold text-vault-charcoal dark:text-vault-text leading-tight mt-0.5">{user.name.split(' ')[0]}</h2>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium leading-none font-mono">Welcome back</p>
+              <h2 className="text-sm font-bold text-vault-ink dark:text-vault-text leading-tight mt-0.5 font-serif">{user.name.split(' ')[0]}</h2>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 font-mono">
             <button 
               type="button"
               aria-label="View profile & security settings"
               onClick={() => setActiveTab('profile')}
-              className={`p-2 rounded-xl transition-all focus:ring-2 focus:ring-vault-bronze ${
+              className={`p-2 rounded-lg transition-all focus:ring-2 focus:ring-vault-reserveBlue ${
                 activeTab === 'profile' 
-                  ? 'bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30' 
-                  : 'bg-vault-surface text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text border border-vault-border'
+                  ? 'bg-vault-reserveBlueLight text-vault-reserveBlue border border-vault-reserveBlue/30' 
+                  : 'bg-vault-surface text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink border border-vault-rule'
               }`}
             >
               <User className="w-4 h-4" />
@@ -85,11 +85,11 @@ export const MobileContainer = ({ children }) => {
         {/* Global Toast Notification with Screen Reader Live Region */}
         <div aria-live="polite" className="pointer-events-none">
           {toast && (
-            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[380px] bg-vault-surface border border-vault-bronze/40 text-vault-charcoal dark:text-vault-text px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 pointer-events-auto">
+            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[380px] bg-vault-surface border border-vault-reserveBlue/40 text-vault-ink dark:text-vault-text px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 pointer-events-auto font-mono">
               {toast.type === 'error' ? (
                 <AlertCircle className="w-5 h-5 text-vault-rose shrink-0" />
               ) : (
-                <CheckCircle2 className="w-5 h-5 text-vault-teal shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-vault-emerald shrink-0" />
               )}
               <p className="text-xs font-semibold leading-tight">{toast.message}</p>
             </div>

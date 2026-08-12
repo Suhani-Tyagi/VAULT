@@ -11,18 +11,18 @@ export const MobileShell = ({ children }) => {
     return (
       <MobileContainer>
         <div className="py-12 px-4 text-center space-y-5 animate-in fade-in">
-          <div className="w-16 h-16 rounded-3xl bg-vault-bronzeLight border border-vault-bronze/30 text-vault-bronze flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-vault-reserveBlueLight border border-vault-reserveBlue/30 text-vault-reserveBlue flex items-center justify-center mx-auto">
             <Lock className="w-8 h-8" />
           </div>
 
           <div>
-            <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text">Vault Session Locked</h2>
+            <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text">Vault Session Locked</h2>
             <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1 leading-relaxed">
               "Managing money should feel calm and clear, never intimidating."
             </p>
           </div>
 
-          <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 text-left space-y-3 text-xs">
+          <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 text-left space-y-3 text-xs font-mono">
             <div className="flex items-center gap-3">
               <img 
                 src={user.profilePic} 
@@ -30,15 +30,15 @@ export const MobileShell = ({ children }) => {
                 width={40}
                 height={40}
                 loading="lazy"
-                className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-vault-bronze/40"
+                className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-vault-reserveBlue/40"
               />
               <div>
-                <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.name}</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">{user.email}</p>
+                <p className="font-bold font-sans text-vault-ink dark:text-vault-text">{user.name}</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
               </div>
             </div>
 
-            <div className="p-2.5 bg-vault-paper border border-vault-border rounded-xl text-vault-muted dark:text-vault-mutedDark text-[11px] font-mono">
+            <div className="p-2.5 bg-vault-paper border border-vault-rule rounded-lg text-vault-muted dark:text-vault-mutedDark text-[11px]">
               RBI Regulated Banking Sandbox Session
             </div>
           </div>
@@ -46,7 +46,7 @@ export const MobileShell = ({ children }) => {
           <button
             type="button"
             onClick={logIn}
-            className="w-full py-3.5 bg-vault-bronze hover:bg-vault-bronzeHover text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white font-mono font-bold text-xs rounded-lg shadow-xs transition-all flex items-center justify-center gap-2"
           >
             <LogIn className="w-4 h-4" />
             <span>Log Back In as {user.name.split(' ')[0]}</span>

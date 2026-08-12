@@ -20,94 +20,112 @@ import {
   Laptop
 } from 'lucide-react';
 
-export const CategoryIcon = ({ iconName, category, type, className = "w-5 h-5", bgSize = "w-10 h-10" }) => {
+export const CategoryIcon = ({ iconName, category, type, className = "w-4 h-4", bgSize = "w-8 h-8" }) => {
   let IconComponent = Wallet;
-  let bgClass = "bg-vault-surfaceHighlight text-vault-charcoal dark:text-vault-text border border-vault-border";
+  let textClass = "text-vault-ink dark:text-vault-text";
+  let bgClass = "bg-vault-surfaceHighlight/50 border border-vault-rule";
 
   if (type === 'refund') {
     IconComponent = RotateCcw;
-    bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+    textClass = "text-vault-reserveBlue";
+    bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/30";
   } else if (type === 'credit') {
     IconComponent = ArrowDownLeft;
-    bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+    textClass = "text-vault-emerald";
+    bgClass = "bg-vault-emeraldLight border border-vault-emerald/30";
   } else {
     switch (iconName || category) {
       case 'Utensils':
       case 'Food & Dining':
         IconComponent = Utensils;
-        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+        textClass = "text-vault-reserveBlue";
+        bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/20";
         break;
       case 'Coffee':
         IconComponent = Coffee;
-        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+        textClass = "text-vault-reserveBlue";
+        bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/20";
         break;
       case 'ShoppingBag':
       case 'Groceries':
         IconComponent = ShoppingBag;
-        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+        textClass = "text-vault-emerald";
+        bgClass = "bg-vault-emeraldLight border border-vault-emerald/20";
         break;
       case 'Package':
       case 'Shopping':
         IconComponent = Package;
-        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+        textClass = "text-amber-600 dark:text-amber-400";
+        bgClass = "bg-amber-500/10 border border-amber-500/20";
         break;
       case 'Store':
         IconComponent = Store;
-        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+        textClass = "text-amber-600 dark:text-amber-400";
+        bgClass = "bg-amber-500/10 border border-amber-500/20";
         break;
       case 'Car':
       case 'Transport':
         IconComponent = Car;
-        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+        textClass = "text-vault-emerald";
+        bgClass = "bg-vault-emeraldLight border border-vault-emerald/20";
         break;
       case 'Zap':
       case 'Utilities':
         IconComponent = Zap;
-        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+        textClass = "text-amber-600 dark:text-amber-400";
+        bgClass = "bg-amber-500/10 border border-amber-500/20";
         break;
       case 'Tv':
       case 'Subscriptions':
         IconComponent = Tv;
-        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+        textClass = "text-vault-reserveBlue";
+        bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/20";
         break;
       case 'Home':
       case 'Rent':
         IconComponent = Home;
-        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+        textClass = "text-vault-emerald";
+        bgClass = "bg-vault-emeraldLight border border-vault-emerald/20";
         break;
       case 'Activity':
         IconComponent = Activity;
-        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+        textClass = "text-vault-emerald";
+        bgClass = "bg-vault-emeraldLight border border-vault-emerald/20";
         break;
       case 'Film':
       case 'Entertainment':
         IconComponent = Film;
-        bgClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+        textClass = "text-amber-600 dark:text-amber-400";
+        bgClass = "bg-amber-500/10 border border-amber-500/20";
         break;
       case 'Plane':
       case 'Travel':
         IconComponent = Plane;
-        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+        textClass = "text-vault-reserveBlue";
+        bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/20";
         break;
       case 'Laptop':
       case 'Tech':
         IconComponent = Laptop;
-        bgClass = "bg-vault-tealLight text-vault-teal border border-vault-teal/30";
+        textClass = "text-vault-emerald";
+        bgClass = "bg-vault-emeraldLight border border-vault-emerald/20";
         break;
       case 'ArrowUpRight':
       case 'Transfers':
         IconComponent = ArrowUpRight;
-        bgClass = "bg-vault-bronzeLight text-vault-bronze border border-vault-bronze/30";
+        textClass = "text-vault-reserveBlue";
+        bgClass = "bg-vault-reserveBlueLight border border-vault-reserveBlue/20";
         break;
       default:
         IconComponent = Wallet;
-        bgClass = "bg-vault-paper text-vault-charcoal dark:text-vault-text border border-vault-border";
+        textClass = "text-vault-ink dark:text-vault-text";
+        bgClass = "bg-vault-paper border border-vault-rule";
     }
   }
 
   return (
-    <div className={`${bgSize} rounded-xl flex items-center justify-center shrink-0 ${bgClass}`}>
-      <IconComponent className={className} />
+    <div className={`${bgSize} rounded-lg flex items-center justify-center shrink-0 ${bgClass}`}>
+      <IconComponent className={`${className} ${textClass}`} />
     </div>
   );
 };
