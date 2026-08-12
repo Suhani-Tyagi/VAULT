@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fingerprint, Scan, ShieldCheck, X, Loader2 } from 'lucide-react';
 import { useDevice } from '../context/DeviceContext';
@@ -6,10 +6,27 @@ import { useDevice } from '../context/DeviceContext';
 export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientName }) => {
   const { os } = useDevice();
   const [isScanning, setIsScanning] = useState(false);
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
+      setTimeout(() => {
+        if (modalRef.current) {
+          const firstFocusable = modalRef.current.querySelector('button, [tabindex="0"]');
+          if (firstFocusable) firstFocusable.focus();
+        }
+      }, 50);
+    } else {
+      if (previousFocusRef.current && previousFocusRef.current.focus) {
+        previousFocusRef.current.focus();
+      }
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // OS-conditional copy & icon selection
   let biometricName = "Biometric ID";
   let IconComponent = ShieldCheck;
 
@@ -41,21 +58,26 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
         />
 
         <motion.div 
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="biometric-modal-title"
           initial={{ y: "100%", opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 280 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal text-center"
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal text-center focus:outline-none"
         >
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight"
+            aria-label="Close Biometric Verification"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="mt-2 mb-4">
-            <h3 className="text-lg font-bold text-vault-charcoal tracking-tight">
+            <h3 id="biometric-modal-title" className="text-lg font-bold text-vault-charcoal tracking-tight">
               {biometricName} Verification
             </h3>
             <p className="text-xs text-vault-muted mt-0.5">
@@ -65,9 +87,11 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
 
           <div className="my-6 py-4 flex flex-col items-center">
             <button
+              type="button"
+              aria-label={`Scan ${biometricName} to authenticate transfer`}
               onClick={handleScan}
               disabled={isScanning}
-              className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${
+              className={`w-24 h-24 rounded-full flex items-center justify-center transition-all focus:ring-4 focus:ring-vault-terracotta/50 ${
                 isScanning 
                   ? 'bg-vault-terracottaLight border-2 border-vault-terracotta scale-105' 
                   : 'bg-vault-paper border-2 border-vault-terracotta/40 hover:border-vault-terracotta hover:scale-105 active:scale-95 shadow-md'
@@ -80,7 +104,7 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
               )}
             </button>
 
-            <p className="text-xs font-semibold text-vault-charcoal mt-4">
+            <p aria-live="polite" className="text-xs font-semibold text-vault-charcoal mt-4">
               {isScanning ? `Verifying ${biometricName}...` : `Touch/Scan sensor to authorize with ${biometricName}`}
             </p>
           </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { 
   Utensils, 
   ShoppingBag, 
@@ -16,17 +17,12 @@ import {
   Activity, 
   Film,
   Plane,
-  Laptop,
-  Target,
-  ShieldCheck,
-  CreditCard,
-  Building,
-  UserCheck
+  Laptop
 } from 'lucide-react';
 
 export const CategoryIcon = ({ iconName, category, type, className = "w-5 h-5", bgSize = "w-10 h-10" }) => {
   let IconComponent = Wallet;
-  let bgClass = "bg-vault-surfaceHighlight text-vault-charcoal border border-vault-border";
+  let bgClass = "bg-vault-surfaceHighlight text-vault-charcoal dark:text-vault-text border border-vault-border";
 
   if (type === 'refund') {
     IconComponent = RotateCcw;
@@ -105,7 +101,7 @@ export const CategoryIcon = ({ iconName, category, type, className = "w-5 h-5", 
         break;
       default:
         IconComponent = Wallet;
-        bgClass = "bg-vault-paper text-vault-charcoal border border-vault-border";
+        bgClass = "bg-vault-paper text-vault-charcoal dark:text-vault-text border border-vault-border";
     }
   }
 
@@ -114,4 +110,12 @@ export const CategoryIcon = ({ iconName, category, type, className = "w-5 h-5", 
       <IconComponent className={className} />
     </div>
   );
+};
+
+CategoryIcon.propTypes = {
+  iconName: PropTypes.string,
+  category: PropTypes.string,
+  type: PropTypes.string,
+  className: PropTypes.string,
+  bgSize: PropTypes.string
 };

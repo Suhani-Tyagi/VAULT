@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Download, X, Copy, Eye, Check } from 'lucide-react';
+import { Search, Filter, Download, X, Copy, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
-import { CategoryIcon } from '../components/CategoryIcon';
+import { TransactionRow } from '../components/TransactionRow';
+
+const ITEMS_PER_PAGE = 8;
 
 export const TransactionsScreen = () => {
   const { transactions, setSelectedTransaction, showToast } = useVault();
@@ -10,8 +12,7 @@ export const TransactionsScreen = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  
-  // Custom right-click context menu state
+  const [currentPage, setCurrentPage] = useState(1);
   const [contextMenu, setContextMenu] = useState(null);
 
   const categories = [
@@ -40,17 +41,34 @@ export const TransactionsScreen = () => {
     });
   }, [transactions, searchTerm, selectedCategory]);
 
+  const totalPages = Math.ceil(filteredTxs.length / ITEMS_PER_PAGE) || 1;
+  const validPage = Math.min(currentPage, totalPages);
+
+  const paginatedTxs = useMemo(() => {
+    const start = (validPage - 1) * ITEMS_PER_PAGE;
+    return filteredTxs.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredTxs, validPage]);
+
   const groupedTxs = useMemo(() => {
     const groups = {};
-    filteredTxs.forEach(tx => {
+    paginatedTxs.forEach(tx => {
       const dateKey = tx.date.split(',')[0];
       if (!groups[dateKey]) groups[dateKey] = [];
       groups[dateKey].push(tx);
     });
     return groups;
-  }, [filteredTxs]);
+  }, [paginatedTxs]);
 
-  // Client-Side CSV Export (Point 5 Requirement for Desktop)
+  const handleSearchChange = (val) => {
+    setSearchTerm(val);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1);
+  };
+
   const handleExportCSV = () => {
     if (filteredTxs.length === 0) return;
 
@@ -82,7 +100,6 @@ export const TransactionsScreen = () => {
     showToast(`Exported ${filteredTxs.length} transactions to CSV`);
   };
 
-  // Right-Click Context Menu Handler (Point 2 Requirement for Desktop)
   const handleContextMenu = (e, tx) => {
     e.preventDefault();
     setContextMenu({
@@ -100,18 +117,17 @@ export const TransactionsScreen = () => {
 
   return (
     <div className="space-y-4" onClick={() => contextMenu && setContextMenu(null)}>
-      {/* Header title + CSV Export button on Desktop */}
       <div className="flex justify-between items-start">
         <div>
           <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Activity & Transactions</h2>
           <p className="text-xs text-vault-muted mt-0.5">
-            Real-time ledger with full running balances
+            Real-time ledger with pagination & running balances
           </p>
         </div>
 
-        {/* Desktop-only CSV Export button */}
         {deviceType === 'desktop' && (
           <button
+            type="button"
             onClick={handleExportCSV}
             className="flex items-center gap-1.5 px-3 py-2 bg-vault-surface border border-vault-border hover:bg-vault-surfaceHighlight text-vault-charcoal dark:text-vault-text rounded-xl text-xs font-bold transition-all shadow-xs"
           >
@@ -121,19 +137,20 @@ export const TransactionsScreen = () => {
         )}
       </div>
 
-      {/* Search Bar */}
       <div className="relative">
         <Search className="w-4 h-4 text-vault-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input 
           type="text" 
           placeholder="Search merchant, category, or note..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full bg-vault-surface border border-vault-border rounded-xl pl-10 pr-9 py-2.5 text-xs text-vault-charcoal dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-terracotta transition-colors shadow-xs"
         />
         {searchTerm && (
           <button 
-            onClick={() => setSearchTerm('')}
+            type="button"
+            aria-label="Clear search query"
+            onClick={() => handleSearchChange('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-vault-muted hover:text-vault-charcoal"
           >
             <X className="w-4 h-4" />
@@ -141,14 +158,14 @@ export const TransactionsScreen = () => {
         )}
       </div>
 
-      {/* Filter Category Chips */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 pt-0.5">
         {categories.map(cat => {
           const isActive = selectedCategory === cat;
           return (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              type="button"
+              onClick={() => handleCategoryChange(cat)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 isActive 
                   ? 'bg-vault-terracotta text-white shadow-sm' 
@@ -161,7 +178,6 @@ export const TransactionsScreen = () => {
         })}
       </div>
 
-      {/* Grouped Transactions List */}
       {Object.keys(groupedTxs).length > 0 ? (
         <div className="space-y-4">
           {Object.entries(groupedTxs).map(([dateGroup, items]) => (
@@ -172,55 +188,47 @@ export const TransactionsScreen = () => {
               </div>
 
               <div className="bg-vault-surface border border-vault-border rounded-2xl divide-y divide-vault-border overflow-hidden shadow-xs">
-                {items.map(tx => {
-                  const isCredit = tx.type === 'credit';
-                  const isRefund = tx.type === 'refund';
-
-                  return (
-                    <div 
-                      key={tx.id}
-                      onClick={() => setSelectedTransaction(tx)}
-                      onContextMenu={(e) => handleContextMenu(e, tx)}
-                      className="p-3.5 flex items-center justify-between hover:bg-vault-surfaceHighlight/70 active:scale-[0.99] transition-all cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <CategoryIcon 
-                          iconName={tx.icon} 
-                          category={tx.category} 
-                          type={tx.type} 
-                        />
-                        <div className="min-w-0">
-                          <h4 className="text-xs font-bold text-vault-charcoal dark:text-vault-text truncate flex items-center gap-1.5">
-                            <span className="truncate">{tx.merchant}</span>
-                            {isRefund && (
-                              <span className="text-[9px] bg-vault-terracottaLight text-vault-terracotta px-1.5 py-0.2 rounded border border-vault-terracotta/30 shrink-0 font-bold">
-                                Refund
-                              </span>
-                            )}
-                          </h4>
-                          <p className="text-[11px] text-vault-muted truncate mt-0.5">
-                            {tx.date} • {tx.method}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <p className={`text-xs font-display font-bold tabular-nums ${
-                          isRefund ? 'text-vault-terracotta' : isCredit ? 'text-vault-sage' : 'text-vault-charcoal dark:text-vault-text'
-                        }`}>
-                          {isRefund ? '+₹' : isCredit ? '+₹' : '-₹'}
-                          {tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                        </p>
-                        <p className="text-[10px] text-vault-subtle tabular-nums mt-0.5">
-                          Bal: ₹{tx.runningBalance.toLocaleString('en-IN')}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                {items.map(tx => (
+                  <TransactionRow 
+                    key={tx.id}
+                    tx={tx}
+                    onClick={() => setSelectedTransaction(tx)}
+                    onContextMenu={(e) => handleContextMenu(e, tx)}
+                  />
+                ))}
               </div>
             </div>
           ))}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-between items-center pt-2 px-1 text-xs">
+              <span className="text-vault-muted font-medium">
+                Page <strong className="text-vault-charcoal dark:text-vault-text">{validPage}</strong> of <strong className="text-vault-charcoal dark:text-vault-text">{totalPages}</strong> ({filteredTxs.length} total)
+              </span>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  aria-label="Previous page"
+                  disabled={validPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className="p-2 bg-vault-surface border border-vault-border rounded-xl text-vault-charcoal dark:text-vault-text disabled:opacity-40 hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next page"
+                  disabled={validPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  className="p-2 bg-vault-surface border border-vault-border rounded-xl text-vault-charcoal dark:text-vault-text disabled:opacity-40 hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="py-12 px-4 text-center bg-vault-surface border border-vault-border rounded-2xl space-y-2">
@@ -229,10 +237,11 @@ export const TransactionsScreen = () => {
           </div>
           <h4 className="text-sm font-bold text-vault-charcoal dark:text-vault-text">No transactions found</h4>
           <p className="text-xs text-vault-muted max-w-xs mx-auto">
-            "No transactions yet. Once you spend or receive money in this category, you'll see it here."
+            "No transactions match your current search or category filter."
           </p>
           <button 
-            onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
+            type="button"
+            onClick={() => { handleSearchChange(''); handleCategoryChange('All'); }}
             className="mt-2 text-xs text-vault-terracotta hover:underline font-bold"
           >
             Clear all filters
@@ -240,13 +249,13 @@ export const TransactionsScreen = () => {
         </div>
       )}
 
-      {/* Right-Click Context Menu Popup */}
       {contextMenu && (
         <div 
           className="fixed z-50 bg-vault-surface border border-vault-border rounded-xl shadow-xl py-1 w-48 text-xs font-bold text-vault-charcoal dark:text-vault-text animate-in fade-in"
           style={{ top: contextMenu.y, left: contextMenu.x }}
         >
           <button
+            type="button"
             onClick={() => handleCopyRefFromContext(contextMenu.tx.upiRef)}
             className="w-full text-left px-3 py-2 hover:bg-vault-terracottaLight hover:text-vault-terracotta flex items-center gap-2"
           >
@@ -254,6 +263,7 @@ export const TransactionsScreen = () => {
             <span>Copy Reference ID</span>
           </button>
           <button
+            type="button"
             onClick={() => { setSelectedTransaction(contextMenu.tx); setContextMenu(null); }}
             className="w-full text-left px-3 py-2 hover:bg-vault-terracottaLight hover:text-vault-terracotta flex items-center gap-2 border-t border-vault-border"
           >

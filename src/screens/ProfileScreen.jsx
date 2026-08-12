@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { User, Shield, CreditCard, Bell, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, SmartphoneNfc } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Shield, CreditCard, Bell, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, LogOut, Mail, MessageSquare } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
+import { ToggleSwitch } from '../components/ToggleSwitch';
+import { PinPadModal } from '../components/PinPadModal';
+import { BiometricModal } from '../components/BiometricModal';
+import { LogoutModal } from '../components/LogoutModal';
 
 export const ProfileScreen = () => {
-  const { user, toggleSetting, showToast } = useVault();
+  const { user, toggleSetting, showToast, logOut } = useVault();
   const { deviceType, os, isOverridden, activeOverride, setOverride, clearOverride } = useDevice();
 
   const [revealAccount, setRevealAccount] = useState(false);
   const [revealCard, setRevealCard] = useState(false);
 
-  // Persistent Dark Mode state
+  const [authActionTarget, setAuthActionTarget] = useState(null);
+  const [showPinAuthModal, setShowPinAuthModal] = useState(false);
+  const [showBiometricAuthModal, setShowBiometricAuthModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window === 'undefined') return false;
     const savedTheme = localStorage.getItem("vault-theme");
@@ -18,8 +26,7 @@ export const ProfileScreen = () => {
     return document.documentElement.classList.contains('dark');
   });
 
-  const handleThemeToggle = () => {
-    const nextTheme = !isDarkMode;
+  const handleThemeToggle = (nextTheme) => {
     setIsDarkMode(nextTheme);
     if (nextTheme) {
       document.documentElement.classList.add('dark');
@@ -37,7 +44,41 @@ export const ProfileScreen = () => {
     showToast("UPI ID copied to clipboard");
   };
 
-  // OS-conditional copy & icon selection
+  const handleInitiateReveal = (target) => {
+    if (target === 'account') {
+      if (revealAccount) {
+        setRevealAccount(false);
+        return;
+      }
+    } else if (target === 'card') {
+      if (revealCard) {
+        setRevealCard(false);
+        return;
+      }
+    }
+
+    setAuthActionTarget(target);
+    if (user.biometricsEnabled) {
+      setShowBiometricAuthModal(true);
+    } else {
+      setShowPinAuthModal(true);
+    }
+  };
+
+  const handleAuthSuccess = () => {
+    setShowPinAuthModal(false);
+    setShowBiometricAuthModal(false);
+    
+    if (authActionTarget === 'account') {
+      setRevealAccount(true);
+      showToast("Account number unmasked");
+    } else if (authActionTarget === 'card') {
+      setRevealCard(true);
+      showToast("Debit card number unmasked");
+    }
+    setAuthActionTarget(null);
+  };
+
   let biometricLabel = "Biometric ID";
   let BiometricIcon = Shield;
 
@@ -70,21 +111,37 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 flex items-center gap-4 shadow-xs">
-        <img 
-          src={user.profilePic} 
-          alt={user.name} 
-          className="w-16 h-16 rounded-full object-cover ring-2 ring-vault-terracotta/40"
-        />
+      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 flex items-center justify-between shadow-xs">
+        <div className="flex items-center gap-4">
+          <img 
+            src={user.profilePic} 
+            alt={`${user.name}'s profile avatar`}
+            width={64}
+            height={64}
+            loading="lazy"
+            className="w-16 h-16 rounded-full object-cover ring-2 ring-vault-terracotta/40 shrink-0"
+          />
 
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-vault-charcoal dark:text-vault-text truncate">{user.name}</h3>
-          <p className="text-xs text-vault-muted truncate">{user.email}</p>
-          <p className="text-[11px] text-vault-subtle font-medium mt-1">{user.city}</p>
+          <div className="min-w-0">
+            <h3 className="text-base font-bold text-vault-charcoal dark:text-vault-text truncate">{user.name}</h3>
+            <p className="text-xs text-vault-muted truncate">{user.email}</p>
+            <p className="text-xs text-vault-subtle font-medium mt-1">{user.city}</p>
+          </div>
         </div>
+
+        {/* Log Out Button */}
+        <button
+          type="button"
+          aria-label="Log out of Vault"
+          onClick={() => setShowLogoutModal(true)}
+          className="px-3 py-2 bg-vault-roseLight text-vault-rose hover:bg-vault-rose hover:text-white border border-vault-rose/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Log Out</span>
+        </button>
       </div>
 
-      {/* 1. Developer / Demo Device Switcher Section */}
+      {/* Developer / Demo Device Switcher */}
       <div className="bg-vault-surface border border-vault-terracotta/30 rounded-2xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center">
           <h3 className="text-xs font-bold text-vault-terracotta uppercase tracking-wider flex items-center gap-1.5">
@@ -93,7 +150,7 @@ export const ProfileScreen = () => {
           </h3>
 
           {isOverridden && (
-            <span className="text-[10px] bg-vault-terracotta text-white px-2 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-vault-terracotta text-white px-2 py-0.5 rounded-full font-bold">
               Override Active
             </span>
           )}
@@ -112,6 +169,8 @@ export const ProfileScreen = () => {
             return (
               <button
                 key={preset.id}
+                type="button"
+                aria-label={`Override device view to ${preset.label}`}
                 onClick={() => {
                   if (preset.id === 'auto') clearOverride();
                   else setOverride({ deviceType: preset.type, os: preset.os });
@@ -129,7 +188,7 @@ export const ProfileScreen = () => {
         </div>
       </div>
 
-      {/* 2. Theme & Dark Mode Controls */}
+      {/* Theme & Dark Mode Controls */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
         <h3 className="text-xs font-bold text-vault-muted uppercase tracking-wider">
           Appearance & Theme
@@ -140,20 +199,79 @@ export const ProfileScreen = () => {
             {isDarkMode ? <Moon className="w-4 h-4 text-vault-terracotta" /> : <Sun className="w-4 h-4 text-vault-amber" />}
             <div>
               <p className="font-bold text-vault-charcoal dark:text-vault-text">Dark Theme</p>
-              <p className="text-[11px] text-vault-muted">Toggle high-contrast ink dark mode</p>
+              <p className="text-xs text-vault-muted">Toggle high-contrast ink dark mode</p>
             </div>
           </div>
 
-          <button 
-            onClick={handleThemeToggle}
-            className={`w-11 h-6 rounded-full transition-colors relative ${
-              isDarkMode ? 'bg-vault-terracotta' : 'bg-vault-paper border border-vault-border'
-            }`}
-          >
-            <div className={`w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-              isDarkMode ? 'right-1' : 'left-1'
-            }`} />
-          </button>
+          <ToggleSwitch 
+            id="dark-theme-toggle"
+            label="Toggle dark theme mode"
+            checked={isDarkMode}
+            onChange={handleThemeToggle}
+          />
+        </div>
+      </div>
+
+      {/* Notification Preferences Card (Wired to pushNotifications, emailAlerts, smsAlerts) */}
+      <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
+        <h3 className="text-xs font-bold text-vault-muted uppercase tracking-wider">
+          Notification Alerts
+        </h3>
+
+        <div className="space-y-3 text-xs">
+          {/* Push Notifications */}
+          <div className="flex justify-between items-center py-1">
+            <div className="flex items-center gap-2.5">
+              <Bell className="w-4 h-4 text-vault-terracotta" />
+              <div>
+                <p className="font-bold text-vault-charcoal dark:text-vault-text">Push Notifications</p>
+                <p className="text-xs text-vault-muted">Instant payment alerts and goal milestones</p>
+              </div>
+            </div>
+
+            <ToggleSwitch 
+              id="push-alerts-toggle"
+              label="Toggle push notifications"
+              checked={user.pushNotifications}
+              onChange={() => toggleSetting('pushNotifications')}
+            />
+          </div>
+
+          {/* Email Alerts */}
+          <div className="flex justify-between items-center py-1 border-t border-vault-border pt-3">
+            <div className="flex items-center gap-2.5">
+              <Mail className="w-4 h-4 text-vault-terracotta" />
+              <div>
+                <p className="font-bold text-vault-charcoal dark:text-vault-text">Email Statements & Summaries</p>
+                <p className="text-xs text-vault-muted">Monthly spend digests sent to {user.email}</p>
+              </div>
+            </div>
+
+            <ToggleSwitch 
+              id="email-alerts-toggle"
+              label="Toggle email summaries"
+              checked={user.emailAlerts}
+              onChange={() => toggleSetting('emailAlerts')}
+            />
+          </div>
+
+          {/* SMS Alerts */}
+          <div className="flex justify-between items-center py-1 border-t border-vault-border pt-3">
+            <div className="flex items-center gap-2.5">
+              <MessageSquare className="w-4 h-4 text-vault-terracotta" />
+              <div>
+                <p className="font-bold text-vault-charcoal dark:text-vault-text">SMS Transaction Alerts</p>
+                <p className="text-xs text-vault-muted">Bank SMS for high-value debits and credits</p>
+              </div>
+            </div>
+
+            <ToggleSwitch 
+              id="sms-alerts-toggle"
+              label="Toggle SMS transaction alerts"
+              checked={user.smsAlerts}
+              onChange={() => toggleSetting('smsAlerts')}
+            />
+          </div>
         </div>
       </div>
 
@@ -165,11 +283,13 @@ export const ProfileScreen = () => {
           </h3>
 
           <button 
-            onClick={() => setRevealAccount(!revealAccount)}
-            className="text-[11px] font-bold text-vault-terracotta hover:underline flex items-center gap-1"
+            type="button"
+            aria-label={revealAccount ? "Mask account number" : "Authenticate to reveal full account number"}
+            onClick={() => handleInitiateReveal('account')}
+            className="text-xs font-bold text-vault-terracotta hover:underline flex items-center gap-1"
           >
             {revealAccount ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>{revealAccount ? "Mask" : "Reveal"}</span>
+            <span>{revealAccount ? "Mask" : "Reveal (Requires Auth)"}</span>
           </button>
         </div>
 
@@ -177,6 +297,8 @@ export const ProfileScreen = () => {
           <div className="flex justify-between items-center py-1.5 border-b border-vault-border">
             <span className="text-vault-muted">Primary UPI Handle</span>
             <button 
+              type="button"
+              aria-label="Copy UPI handle"
               onClick={copyUpi}
               className="flex items-center gap-1 font-mono font-bold text-vault-terracotta hover:underline"
             >
@@ -212,11 +334,13 @@ export const ProfileScreen = () => {
           </h3>
 
           <button 
-            onClick={() => setRevealCard(!revealCard)}
-            className="text-[11px] font-bold text-vault-terracotta hover:underline flex items-center gap-1"
+            type="button"
+            aria-label={revealCard ? "Mask debit card number" : "Authenticate to reveal full card number"}
+            onClick={() => handleInitiateReveal('card')}
+            className="text-xs font-bold text-vault-terracotta hover:underline flex items-center gap-1"
           >
             {revealCard ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>{revealCard ? "Mask" : "Reveal"}</span>
+            <span>{revealCard ? "Mask" : "Reveal (Requires Auth)"}</span>
           </button>
         </div>
 
@@ -227,18 +351,18 @@ export const ProfileScreen = () => {
             </div>
             <div>
               <p className="text-xs font-bold text-vault-charcoal dark:text-vault-text">{user.linkedCard.bank}</p>
-              <p className="text-[11px] text-vault-muted font-mono">
+              <p className="text-xs text-vault-muted font-mono">
                 {revealCard ? user.linkedCard.fullCardNo : user.linkedCard.cardNo} • {user.linkedCard.type}
               </p>
             </div>
           </div>
-          <span className="text-[10px] text-vault-terracotta font-bold bg-vault-terracottaLight px-2 py-0.5 rounded border border-vault-terracotta/20">
+          <span className="text-xs text-vault-terracotta font-bold bg-vault-terracottaLight px-2 py-0.5 rounded border border-vault-terracotta/20">
             Active
           </span>
         </div>
       </div>
 
-      {/* Security & Biometric Controls (OS Conditional Copy & Icon) */}
+      {/* Security & Biometric Controls */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
         <h3 className="text-xs font-bold text-vault-muted uppercase tracking-wider">
           Security Controls
@@ -250,20 +374,16 @@ export const ProfileScreen = () => {
               <BiometricIcon className="w-4 h-4 text-vault-terracotta" />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">{biometricLabel} Verification</p>
-                <p className="text-[11px] text-vault-muted">Use {biometricLabel} instead of 6-digit PIN for payments</p>
+                <p className="text-xs text-vault-muted">Use {biometricLabel} instead of 6-digit PIN for payments</p>
               </div>
             </div>
 
-            <button 
-              onClick={() => toggleSetting('biometricsEnabled')}
-              className={`w-11 h-6 rounded-full transition-colors relative ${
-                user.biometricsEnabled ? 'bg-vault-terracotta' : 'bg-vault-paper border border-vault-border'
-              }`}
-            >
-              <div className={`w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                user.biometricsEnabled ? 'right-1' : 'left-1'
-              }`} />
-            </button>
+            <ToggleSwitch 
+              id="biometric-toggle"
+              label={`Toggle ${biometricLabel} verification`}
+              checked={user.biometricsEnabled}
+              onChange={() => toggleSetting('biometricsEnabled')}
+            />
           </div>
 
           <div className="flex justify-between items-center py-1 border-t border-vault-border pt-3">
@@ -271,25 +391,21 @@ export const ProfileScreen = () => {
               <Lock className="w-4 h-4 text-vault-terracotta" />
               <div>
                 <p className="font-bold text-vault-charcoal dark:text-vault-text">Mandatory PIN for transfers over ₹5,000</p>
-                <p className="text-[11px] text-vault-muted">Enforces security check on high-value transfers</p>
+                <p className="text-xs text-vault-muted">Enforces security check on high-value transfers</p>
               </div>
             </div>
 
-            <button 
-              onClick={() => toggleSetting('requirePinOverThreshold')}
-              className={`w-11 h-6 rounded-full transition-colors relative ${
-                user.requirePinOverThreshold ? 'bg-vault-terracotta' : 'bg-vault-paper border border-vault-border'
-              }`}
-            >
-              <div className={`w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
-                user.requirePinOverThreshold ? 'right-1' : 'left-1'
-              }`} />
-            </button>
+            <ToggleSwitch 
+              id="pin-threshold-toggle"
+              label="Toggle mandatory PIN for high-value transfers"
+              checked={user.requirePinOverThreshold}
+              onChange={() => toggleSetting('requirePinOverThreshold')}
+            />
           </div>
         </div>
       </div>
 
-      {/* Active Device Session Section */}
+      {/* Active Devices & Sessions */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-2 shadow-xs">
         <h3 className="text-xs font-bold text-vault-muted uppercase tracking-wider">
           Active Devices & Sessions
@@ -300,18 +416,40 @@ export const ProfileScreen = () => {
             <Smartphone className="w-4 h-4 text-vault-terracotta" />
             <div>
               <p className="font-bold text-vault-charcoal dark:text-vault-text">{user.activeSession.device}</p>
-              <p className="text-[11px] text-vault-muted">Logged in on this device • {user.activeSession.location}</p>
+              <p className="text-xs text-vault-muted">Logged in on this device • {user.activeSession.location}</p>
             </div>
           </div>
-          <span className="text-[10px] text-vault-terracotta font-bold font-mono">
+          <span className="text-xs text-vault-terracotta font-bold font-mono">
             {user.activeSession.time}
           </span>
         </div>
       </div>
 
+      {/* Re-Auth Modals */}
+      <PinPadModal
+        isOpen={showPinAuthModal}
+        onClose={() => { setShowPinAuthModal(false); setAuthActionTarget(null); }}
+        onSuccess={handleAuthSuccess}
+        recipientName={authActionTarget === 'account' ? 'Unmask Account Details' : 'Unmask Debit Card Details'}
+      />
+
+      <BiometricModal
+        isOpen={showBiometricAuthModal}
+        onClose={() => { setShowBiometricAuthModal(false); setAuthActionTarget(null); }}
+        onSuccess={handleAuthSuccess}
+        recipientName={authActionTarget === 'account' ? 'Unmask Account Details' : 'Unmask Debit Card Details'}
+      />
+
+      {/* Logout Confirmation Modal */}
+      <LogoutModal 
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={() => { setShowLogoutModal(false); logOut(); }}
+      />
+
       {/* Footer support text */}
       <div className="p-3 text-center text-xs text-vault-subtle space-y-1">
-        <p className="font-mono">Vault App v2.6.0 • Adaptive Edition</p>
+        <p className="font-mono">Vault App v2.8.0 • Full Features Edition</p>
         <p>RBI Regulated Digital Banking Sandbox Environment</p>
       </div>
     </div>

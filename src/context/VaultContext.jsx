@@ -10,11 +10,9 @@ export const VaultProvider = ({ children }) => {
   const [goals, setGoals] = useState(MOCK_GOALS);
   const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
   const [insights, setInsights] = useState(MOCK_INSIGHTS);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
   
-  // Selected transaction for detailed drawer
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  
-  // Notification Toast state
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -22,7 +20,6 @@ export const VaultProvider = ({ children }) => {
     setTimeout(() => setToast(null), 4000);
   };
 
-  // 1. Send Money Execution Action
   const executeSendMoney = (contact, amount, note) => {
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) return { success: false, message: "Invalid amount" };
@@ -38,7 +35,6 @@ export const VaultProvider = ({ children }) => {
     const newBalance = user.availableBalance - numAmount;
     const newSafeToSpend = user.safeToSpend - numAmount;
 
-    // Create transaction record
     const newTx = {
       id: `tx-${Date.now()}`,
       merchant: contact.name,
@@ -66,7 +62,6 @@ export const VaultProvider = ({ children }) => {
     return { success: true, transaction: newTx };
   };
 
-  // 2. Split Bill Action
   const createSplitRequest = (selectedContactIds, totalAmount, description) => {
     const numTotal = parseFloat(totalAmount);
     if (isNaN(numTotal) || numTotal <= 0) return false;
@@ -81,7 +76,6 @@ export const VaultProvider = ({ children }) => {
     return true;
   };
 
-  // 3. Add Funds to Savings Goal
   const depositToGoal = (goalId, depositAmount) => {
     const amount = parseFloat(depositAmount);
     if (isNaN(amount) || amount <= 0) return false;
@@ -112,7 +106,6 @@ export const VaultProvider = ({ children }) => {
     return true;
   };
 
-  // 4. Create New Savings Goal
   const createGoal = (title, targetAmount, category, targetDate) => {
     const target = parseFloat(targetAmount);
     if (!title || isNaN(target) || target <= 0) return false;
@@ -134,12 +127,21 @@ export const VaultProvider = ({ children }) => {
     return true;
   };
 
-  // 5. Toggle Security & Preferences
   const toggleSetting = (key) => {
     setUser(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
+  };
+
+  const logOut = () => {
+    setIsLoggedOut(true);
+    showToast("Logged out of Vault session");
+  };
+
+  const logIn = () => {
+    setIsLoggedOut(false);
+    showToast(`Welcome back, ${user.name.split(' ')[0]}!`);
   };
 
   return (
@@ -158,6 +160,9 @@ export const VaultProvider = ({ children }) => {
       depositToGoal,
       createGoal,
       toggleSetting,
+      isLoggedOut,
+      logOut,
+      logIn,
       toast,
       showToast
     }}>

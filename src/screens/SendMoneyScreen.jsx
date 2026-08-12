@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Search, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock, QrCode } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock, QrCode } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
 import { PinPadModal } from '../components/PinPadModal';
 import { BiometricModal } from '../components/BiometricModal';
 import { QrScannerModal } from '../components/QrScannerModal';
+
+const MAX_SINGLE_TRANSFER = 100000;
 
 export const SendMoneyScreen = () => {
   const { user, contacts, executeSendMoney, setActiveTab } = useVault();
@@ -47,8 +49,14 @@ export const SendMoneyScreen = () => {
   const handleInitiateSend = () => {
     setErrorState(null);
 
+    // Security & Sanitization Checks
     if (isNaN(numAmount) || numAmount <= 0) {
-      setErrorState("Please enter a valid transfer amount.");
+      setErrorState("Please enter a valid transfer amount greater than ₹0.");
+      return;
+    }
+
+    if (numAmount > MAX_SINGLE_TRANSFER) {
+      setErrorState(`Transfer limit exceeded — the maximum single transfer limit is ₹${MAX_SINGLE_TRANSFER.toLocaleString('en-IN')}.`);
       return;
     }
 
@@ -91,15 +99,15 @@ export const SendMoneyScreen = () => {
   if (successResult) {
     return (
       <div className="space-y-5 animate-in fade-in zoom-in-95">
-        <div className="bg-vault-surface border border-vault-border rounded-3xl p-6 text-center space-y-4 shadow-sm text-vault-charcoal">
+        <div className="bg-vault-surface border border-vault-border rounded-3xl p-6 text-center space-y-4 shadow-sm text-vault-charcoal dark:text-vault-text">
           <div className="w-16 h-16 bg-vault-terracottaLight border border-vault-terracotta/40 text-vault-terracotta rounded-full flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-8 h-8" />
           </div>
 
           <div>
-            <h3 className="text-xl font-bold text-vault-charcoal">Transfer Complete</h3>
+            <h3 className="text-xl font-bold text-vault-charcoal dark:text-vault-text">Transfer Complete</h3>
             <p className="text-xs text-vault-muted mt-1">
-              Sent to <span className="font-bold text-vault-charcoal">{recipient.name}</span>
+              Sent to <span className="font-bold text-vault-charcoal dark:text-vault-text">{recipient.name}</span>
             </p>
           </div>
 
@@ -107,18 +115,18 @@ export const SendMoneyScreen = () => {
             ₹{parseFloat(amount).toLocaleString('en-IN')}
           </div>
 
-          <div className="p-3.5 bg-vault-paper rounded-2xl text-left border border-vault-border text-xs space-y-2">
+          <div className="p-3.5 bg-vault-paper border border-vault-border rounded-2xl text-left text-xs space-y-2">
             <div className="flex justify-between">
               <span className="text-vault-muted">Fee charged</span>
               <span className="font-bold text-vault-terracotta">₹0 (Free)</span>
             </div>
             <div className="flex justify-between">
               <span className="text-vault-muted">UPI Ref ID</span>
-              <span className="font-mono text-vault-charcoal text-[11px]">{successResult.upiRef}</span>
+              <span className="font-mono text-vault-charcoal dark:text-vault-text text-[11px]">{successResult.upiRef}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-vault-muted">Updated Available Balance</span>
-              <span className="font-display font-bold text-vault-charcoal tabular-nums">
+              <span className="font-display font-bold text-vault-charcoal dark:text-vault-text tabular-nums">
                 ₹{user.availableBalance.toLocaleString('en-IN')}
               </span>
             </div>
@@ -131,7 +139,7 @@ export const SendMoneyScreen = () => {
           <div className="flex gap-3 pt-2">
             <button
               onClick={resetForm}
-              className="flex-1 py-3 bg-vault-surfaceHighlight border border-vault-border text-vault-charcoal font-semibold text-xs rounded-xl hover:bg-vault-border transition-colors"
+              className="flex-1 py-3 bg-vault-surfaceHighlight border border-vault-border text-vault-charcoal dark:text-vault-text font-semibold text-xs rounded-xl hover:bg-vault-border transition-colors"
             >
               Send Another
             </button>
@@ -152,7 +160,7 @@ export const SendMoneyScreen = () => {
     <div className="space-y-4">
       {/* Header title */}
       <div>
-        <h2 className="text-xl font-bold text-vault-charcoal tracking-tight">Send Money</h2>
+        <h2 className="text-xl font-bold text-vault-charcoal dark:text-vault-text tracking-tight">Send Money</h2>
         <p className="text-xs text-vault-muted mt-0.5">
           Instant UPI transfer with 6-digit security PIN verification
         </p>
@@ -176,28 +184,32 @@ export const SendMoneyScreen = () => {
           Select Recipient
         </label>
 
-        {/* Contacts Horizontal Scroll */}
         <div className="flex gap-3 overflow-x-auto no-scrollbar py-1">
           {contacts.map(c => {
             const isSelected = selectedContact?.id === c.id;
             return (
               <button
                 key={c.id}
+                type="button"
+                aria-label={`Select recipient ${c.name}`}
                 onClick={() => { setSelectedContact(c); setCustomUpi(''); }}
                 className={`flex flex-col items-center p-2 rounded-2xl shrink-0 transition-all w-20 border ${
                   isSelected 
-                    ? 'bg-vault-terracottaLight border-vault-terracotta text-vault-charcoal shadow-xs' 
+                    ? 'bg-vault-terracottaLight border-vault-terracotta text-vault-charcoal dark:text-vault-text shadow-xs' 
                     : 'bg-vault-paper border-vault-border text-vault-muted hover:border-vault-borderDark'
                 }`}
               >
                 <img 
                   src={c.avatar} 
-                  alt={c.name}
-                  className={`w-10 h-10 rounded-full object-cover mb-1.5 ${
+                  alt={`${c.name}'s profile avatar`}
+                  width={40}
+                  height={40}
+                  loading="lazy"
+                  className={`w-10 h-10 rounded-full object-cover mb-1.5 shrink-0 ${
                     isSelected ? 'ring-2 ring-vault-terracotta' : ''
                   }`} 
                 />
-                <span className="text-[11px] font-semibold truncate w-full text-center">
+                <span className="text-xs font-semibold truncate w-full text-center">
                   {c.name.split(' ')[0]}
                 </span>
               </button>
@@ -205,14 +217,13 @@ export const SendMoneyScreen = () => {
           })}
         </div>
 
-        {/* Selected Contact Detail Pill */}
         {selectedContact && (
           <div className="p-3 bg-vault-paper border border-vault-border rounded-xl flex items-center justify-between text-xs">
             <div>
-              <p className="font-bold text-vault-charcoal">{selectedContact.name}</p>
-              <p className="text-[11px] text-vault-muted font-mono">{selectedContact.upiId}</p>
+              <p className="font-bold text-vault-charcoal dark:text-vault-text">{selectedContact.name}</p>
+              <p className="text-xs text-vault-muted font-mono">{selectedContact.upiId}</p>
             </div>
-            <span className="text-[10px] text-vault-terracotta font-bold bg-vault-terracottaLight px-2 py-0.5 rounded border border-vault-terracotta/20">
+            <span className="text-xs text-vault-terracotta font-bold bg-vault-terracottaLight px-2 py-0.5 rounded border border-vault-terracotta/20">
               Verified UPI
             </span>
           </div>
@@ -222,47 +233,49 @@ export const SendMoneyScreen = () => {
       {/* 2. Amount Entry */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
         <div className="flex justify-between items-center text-xs">
-          <label className="font-bold text-vault-muted uppercase tracking-wider">
-            Amount
+          <label htmlFor="send-amount-input" className="font-bold text-vault-muted uppercase tracking-wider">
+            Amount (Max ₹1,00,000)
           </label>
           <span className="text-vault-muted">
-            Available: <strong className="text-vault-charcoal font-display tabular-nums">₹{user.availableBalance.toLocaleString('en-IN')}</strong>
+            Available: <strong className="text-vault-charcoal dark:text-vault-text font-display tabular-nums">₹{user.availableBalance.toLocaleString('en-IN')}</strong>
           </span>
         </div>
 
-        {/* Amount Input */}
         <div className="relative flex items-center bg-vault-paper border border-vault-border rounded-xl px-4 py-2 focus-within:border-vault-terracotta transition-colors">
           <span className="text-2xl font-bold text-vault-muted mr-1">₹</span>
           <input 
+            id="send-amount-input"
             type="number"
+            min="1"
+            max={MAX_SINGLE_TRANSFER}
             value={amount}
             onChange={(e) => { setAmount(e.target.value); setErrorState(null); }}
             placeholder="0"
-            className="w-full bg-transparent text-2xl font-display font-bold text-vault-charcoal focus:outline-none tabular-nums"
+            className="w-full bg-transparent text-2xl font-display font-bold text-vault-charcoal dark:text-vault-text focus:outline-none tabular-nums"
           />
         </div>
 
-        {/* Quick Amount Chips */}
         <div className="flex gap-2">
           {[500, 1000, 2000, 5000, 12000].map(val => (
             <button
               key={val}
               type="button"
+              aria-label={`Set amount to ${val} rupees`}
               onClick={() => handleQuickAmount(val)}
-              className="flex-1 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-border rounded-xl text-xs font-semibold text-vault-muted hover:text-vault-charcoal transition-colors tabular-nums"
+              className="flex-1 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-border rounded-xl text-xs font-semibold text-vault-muted hover:text-vault-charcoal dark:hover:text-vault-text transition-colors tabular-nums focus:ring-2 focus:ring-vault-terracotta"
             >
               +₹{val}
             </button>
           ))}
         </div>
 
-        {/* Note input */}
         <input 
           type="text"
           placeholder="Add a note (e.g. Dinner share, rent portion)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full bg-vault-paper border border-vault-border rounded-xl px-3 py-2 text-xs text-vault-charcoal placeholder-vault-muted focus:outline-none focus:border-vault-terracotta"
+          aria-label="Add a transfer note"
+          className="w-full bg-vault-paper border border-vault-border rounded-xl px-3 py-2 text-xs text-vault-charcoal dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-terracotta"
         />
       </div>
 
@@ -272,7 +285,7 @@ export const SendMoneyScreen = () => {
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
           <div>
             <p className="font-bold">Large Transfer Warning</p>
-            <p className="mt-0.5 leading-relaxed text-vault-charcoal text-[11px]">
+            <p className="mt-0.5 leading-relaxed text-vault-charcoal dark:text-vault-text text-xs">
               "This is a large transfer. Double-check the recipient before you continue."
             </p>
           </div>
@@ -285,27 +298,30 @@ export const SendMoneyScreen = () => {
           <ShieldCheck className="w-4 h-4" />
           <span>Explicit Fee Breakdown</span>
         </div>
-        <p className="text-xs text-vault-charcoal leading-relaxed">
+        <p className="text-xs text-vault-charcoal dark:text-vault-text leading-relaxed">
           "This transfer is free. ₹0 transfer fee via UPI. It'll reach {recipient.name.split(' ')[0]}'s account in a few seconds."
         </p>
       </div>
 
-      {/* Error state */}
-      {errorState && (
-        <div className="p-4 bg-vault-roseLight border border-vault-rose/30 rounded-2xl flex items-start gap-3 text-xs text-vault-rose animate-in fade-in">
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-vault-rose" />
-          <div>
-            <p className="font-bold">Transfer Error</p>
-            <p className="mt-1 leading-relaxed text-vault-charcoal text-[11px]">{errorState}</p>
+      {/* Error state with aria-live */}
+      <div aria-live="polite">
+        {errorState && (
+          <div className="p-4 bg-vault-roseLight border border-vault-rose/30 rounded-2xl flex items-start gap-3 text-xs text-vault-rose animate-in fade-in">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-vault-rose" />
+            <div>
+              <p className="font-bold">Transfer Error</p>
+              <p className="mt-1 leading-relaxed text-vault-charcoal dark:text-vault-text text-xs">{errorState}</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Action Button */}
       <button
+        type="button"
         onClick={handleInitiateSend}
         disabled={isLoading || !amount || parseFloat(amount) <= 0}
-        className="w-full py-3.5 bg-vault-terracotta hover:bg-vault-terracottaHover disabled:opacity-50 active:scale-[0.99] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-vault-terracotta/20 flex items-center justify-center gap-2"
+        className="w-full py-3.5 bg-vault-terracotta hover:bg-vault-terracottaHover disabled:opacity-50 active:scale-[0.99] text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-vault-terracotta/20 flex items-center justify-center gap-2 focus:ring-2 focus:ring-vault-terracotta"
       >
         {isLoading ? (
           <>

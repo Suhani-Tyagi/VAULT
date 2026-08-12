@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Delete, X, Lock, Loader2, AlertTriangle } from 'lucide-react';
 
@@ -9,13 +9,30 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
   const [errorMessage, setErrorMessage] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
   
-  // Lockout state
   const [isLocked, setIsLocked] = useState(false);
   const [lockoutCountdown, setLockoutCountdown] = useState(30);
 
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   const CORRECT_PIN = "123456";
 
-  // Lockout timer logic
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
+      setTimeout(() => {
+        if (modalRef.current) {
+          const firstFocusable = modalRef.current.querySelector('button, [tabindex="0"]');
+          if (firstFocusable) firstFocusable.focus();
+        }
+      }, 50);
+    } else {
+      if (previousFocusRef.current && previousFocusRef.current.focus) {
+        previousFocusRef.current.focus();
+      }
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     let timer = null;
     if (isLocked && lockoutCountdown > 0) {
@@ -41,7 +58,6 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
       setPin(nextPin);
       setErrorMessage(null);
 
-      // Auto submit on 6th digit
       if (nextPin.length === 6) {
         verifyPin(nextPin);
       }
@@ -63,7 +79,6 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
   const verifyPin = (enteredPin) => {
     setIsVerifying(true);
 
-    // Simulate 750ms bank security latency
     setTimeout(() => {
       if (enteredPin === CORRECT_PIN) {
         setIsVerifying(false);
@@ -98,18 +113,23 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
           onClick={onClose}
         />
 
-        {/* Modal Container */}
+        {/* Modal Dialog */}
         <motion.div 
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pinpad-modal-title"
           initial={{ y: "100%", opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 280 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal"
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal focus:outline-none"
         >
           {/* Close button */}
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight"
+            aria-label="Close PIN Verification"
+            className="absolute top-4 right-4 p-1.5 text-vault-muted hover:text-vault-charcoal rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
           >
             <X className="w-5 h-5" />
           </button>
@@ -120,11 +140,11 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
               <ShieldCheck className="w-6 h-6" />
             </div>
 
-            <h3 className="text-lg font-bold text-vault-charcoal tracking-tight">
+            <h3 id="pinpad-modal-title" className="text-lg font-bold text-vault-charcoal tracking-tight">
               Enter 6-Digit Vault PIN
             </h3>
             <p className="text-xs text-vault-muted mt-0.5">
-              Confirming transfer of <strong className="text-vault-terracotta font-display">₹{parseFloat(amount || 0).toLocaleString('en-IN')}</strong> to {recipientName || 'Recipient'}
+              Confirming security authorization for {recipientName || 'account action'}
             </p>
           </div>
 
@@ -145,23 +165,24 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
             })}
           </div>
 
-          {/* Error Message or Lockout Indicator */}
-          {errorMessage && (
-            <div className="mb-4 p-2.5 rounded-xl bg-vault-roseLight border border-vault-rose/30 text-center text-xs font-semibold text-vault-rose flex items-center justify-center gap-1.5 animate-in fade-in">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+          {/* Error Message */}
+          <div aria-live="polite" className="min-h-[32px]">
+            {errorMessage && (
+              <div className="mb-4 p-2.5 rounded-xl bg-vault-roseLight border border-vault-rose/30 text-center text-xs font-semibold text-vault-rose flex items-center justify-center gap-1.5 animate-in fade-in">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+          </div>
 
           {/* Verifying Spinner overlay */}
           {isVerifying ? (
-            <div className="py-12 flex flex-col items-center justify-center space-y-2">
+            <div aria-live="polite" className="py-12 flex flex-col items-center justify-center space-y-2">
               <Loader2 className="w-8 h-8 text-vault-terracotta animate-spin" />
               <p className="text-xs font-semibold text-vault-muted">Verifying PIN with bank server...</p>
             </div>
           ) : isLocked ? (
-            /* Lockout state countdown display */
-            <div className="py-8 text-center space-y-3 bg-vault-paper border border-vault-border rounded-2xl">
+            <div aria-live="polite" className="py-8 text-center space-y-3 bg-vault-paper border border-vault-border rounded-2xl">
               <Lock className="w-8 h-8 text-vault-rose mx-auto" />
               <div>
                 <p className="text-xs font-bold text-vault-charcoal">PIN Verification Locked</p>
@@ -178,8 +199,9 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
                 <button
                   key={num}
                   type="button"
+                  aria-label={`Digit ${num}`}
                   onClick={() => handleKeyPress(num.toString())}
-                  className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal active:scale-95 transition-all shadow-xs tabular-nums"
+                  className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal active:scale-95 transition-all shadow-xs tabular-nums focus:ring-2 focus:ring-vault-terracotta"
                 >
                   {num}
                 </button>
@@ -187,34 +209,32 @@ export const PinPadModal = ({ isOpen, onClose, onSuccess, amount, recipientName 
 
               <button
                 type="button"
+                aria-label="Clear PIN entry"
                 onClick={handleClear}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-xs font-semibold text-vault-muted active:scale-95 transition-all"
+                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-xs font-semibold text-vault-muted active:scale-95 transition-all focus:ring-2 focus:ring-vault-terracotta"
               >
                 Clear
               </button>
 
               <button
                 type="button"
+                aria-label="Digit 0"
                 onClick={() => handleKeyPress('0')}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal active:scale-95 transition-all shadow-xs tabular-nums"
+                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-lg font-display font-bold text-vault-charcoal active:scale-95 transition-all shadow-xs tabular-nums focus:ring-2 focus:ring-vault-terracotta"
               >
                 0
               </button>
 
               <button
                 type="button"
+                aria-label="Backspace"
                 onClick={handleBackspace}
-                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-vault-muted hover:text-vault-charcoal active:scale-95 transition-all flex items-center justify-center"
+                className="py-3 bg-vault-paper hover:bg-vault-surfaceHighlight active:bg-vault-border border border-vault-border rounded-2xl text-vault-muted hover:text-vault-charcoal active:scale-95 transition-all flex items-center justify-center focus:ring-2 focus:ring-vault-terracotta"
               >
                 <Delete className="w-5 h-5" />
               </button>
             </div>
           )}
-
-          {/* Hint for evaluator */}
-          <p className="text-[10px] text-vault-subtle text-center mt-4">
-            Default test PIN: <span className="font-mono font-bold text-vault-charcoal">123456</span>
-          </p>
         </motion.div>
       </div>
     </AnimatePresence>
