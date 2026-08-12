@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Search, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock } from 'lucide-react';
+import { Search, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock, QrCode } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
+import { useDevice } from '../context/DeviceContext';
 import { PinPadModal } from '../components/PinPadModal';
 import { BiometricModal } from '../components/BiometricModal';
+import { QrScannerModal } from '../components/QrScannerModal';
 
 export const SendMoneyScreen = () => {
   const { user, contacts, executeSendMoney, setActiveTab } = useVault();
+  const { isTouch } = useDevice();
   
   const [selectedContact, setSelectedContact] = useState(contacts[0]); // Default Aditi Nair
   const [customUpi, setCustomUpi] = useState('');
@@ -14,6 +17,7 @@ export const SendMoneyScreen = () => {
   
   const [showPinModal, setShowPinModal] = useState(false);
   const [showBiometricModal, setShowBiometricModal] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(null);
@@ -34,7 +38,12 @@ export const SendMoneyScreen = () => {
     setErrorState(null);
   };
 
-  // Step 1: Initiate Transfer Check & Trigger Security Verification
+  const handleQrSuccess = (scannedRecipient) => {
+    setShowQrModal(false);
+    setSelectedContact(null);
+    setCustomUpi(scannedRecipient.upiId);
+  };
+
   const handleInitiateSend = () => {
     setErrorState(null);
 
@@ -48,7 +57,6 @@ export const SendMoneyScreen = () => {
       return;
     }
 
-    // Determine security modal: Biometrics or 6-digit PIN
     if (user.biometricsEnabled) {
       setShowBiometricModal(true);
     } else {
@@ -56,7 +64,6 @@ export const SendMoneyScreen = () => {
     }
   };
 
-  // Step 2: Executed after PIN / Biometric verification succeeds
   const handleSecuritySuccess = () => {
     setShowPinModal(false);
     setShowBiometricModal(false);
@@ -81,7 +88,6 @@ export const SendMoneyScreen = () => {
     setNote('');
   };
 
-  // Success Confirmation Screen
   if (successResult) {
     return (
       <div className="space-y-5 animate-in fade-in zoom-in-95">
@@ -101,7 +107,6 @@ export const SendMoneyScreen = () => {
             ₹{parseFloat(amount).toLocaleString('en-IN')}
           </div>
 
-          {/* Plain English Confirmation Receipt */}
           <div className="p-3.5 bg-vault-paper rounded-2xl text-left border border-vault-border text-xs space-y-2">
             <div className="flex justify-between">
               <span className="text-vault-muted">Fee charged</span>
@@ -152,6 +157,18 @@ export const SendMoneyScreen = () => {
           Instant UPI transfer with 6-digit security PIN verification
         </p>
       </div>
+
+      {/* Touch Device Feature: Scan QR Code Button */}
+      {isTouch && (
+        <button
+          type="button"
+          onClick={() => setShowQrModal(true)}
+          className="w-full py-2.5 px-4 bg-vault-terracottaLight border border-vault-terracotta/40 text-vault-terracotta font-bold text-xs rounded-2xl flex items-center justify-center gap-2 hover:bg-vault-terracotta hover:text-white transition-all shadow-xs"
+        >
+          <QrCode className="w-4 h-4" />
+          <span>Scan Merchant or Friend QR Code to Pay</span>
+        </button>
+      )}
 
       {/* 1. Recipient Picker */}
       <div className="bg-vault-surface border border-vault-border rounded-2xl p-4 space-y-3 shadow-xs">
@@ -249,7 +266,7 @@ export const SendMoneyScreen = () => {
         />
       </div>
 
-      {/* 3. Large Transfer Warning (Section 9 Requirement for ≥ ₹10,000) */}
+      {/* 3. Large Transfer Warning */}
       {isLargeTransfer && (
         <div className="p-3.5 bg-vault-amberLight border border-vault-amber/40 rounded-2xl flex items-start gap-2.5 text-xs text-vault-amber animate-in fade-in">
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
@@ -262,7 +279,7 @@ export const SendMoneyScreen = () => {
         </div>
       )}
 
-      {/* 4. Plain English Fee Transparency Box */}
+      {/* 4. Fee Transparency */}
       <div className="p-3.5 bg-vault-surface border border-vault-terracotta/30 rounded-2xl space-y-1">
         <div className="flex items-center gap-2 text-xs font-bold text-vault-terracotta">
           <ShieldCheck className="w-4 h-4" />
@@ -273,7 +290,7 @@ export const SendMoneyScreen = () => {
         </p>
       </div>
 
-      {/* 5. Realistic Error State Component */}
+      {/* Error state */}
       {errorState && (
         <div className="p-4 bg-vault-roseLight border border-vault-rose/30 rounded-2xl flex items-start gap-3 text-xs text-vault-rose animate-in fade-in">
           <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-vault-rose" />
@@ -284,7 +301,7 @@ export const SendMoneyScreen = () => {
         </div>
       )}
 
-      {/* 6. Primary Action Button -> Triggers PIN Pad or Biometric Modal */}
+      {/* Action Button */}
       <button
         onClick={handleInitiateSend}
         disabled={isLoading || !amount || parseFloat(amount) <= 0}
@@ -304,7 +321,7 @@ export const SendMoneyScreen = () => {
         )}
       </button>
 
-      {/* 6-Digit PIN Entry Modal */}
+      {/* Modals */}
       <PinPadModal
         isOpen={showPinModal}
         onClose={() => setShowPinModal(false)}
@@ -313,7 +330,6 @@ export const SendMoneyScreen = () => {
         recipientName={recipient.name}
       />
 
-      {/* Biometric Scan Modal */}
       <BiometricModal
         isOpen={showBiometricModal}
         onClose={() => setShowBiometricModal(false)}
@@ -322,18 +338,11 @@ export const SendMoneyScreen = () => {
         recipientName={recipient.name}
       />
 
-      {/* Demo Error Trigger Helper */}
-      <div className="pt-1 text-center">
-        <button
-          onClick={() => {
-            setAmount('60000');
-            setErrorState(`This transfer didn't go through — your available balance is ₹${user.availableBalance.toLocaleString('en-IN')}, which is less than the ₹60,000 you tried to send.`);
-          }}
-          className="text-[11px] text-vault-subtle hover:text-vault-muted underline"
-        >
-          [Test Insufficient Balance Error State]
-        </button>
-      </div>
+      <QrScannerModal
+        isOpen={showQrModal}
+        onClose={() => setShowQrModal(false)}
+        onScanSuccess={handleQrSuccess}
+      />
     </div>
   );
 };

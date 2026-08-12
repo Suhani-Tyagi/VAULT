@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Fingerprint, X, CheckCircle2, Loader2 } from 'lucide-react';
+import { Fingerprint, Scan, ShieldCheck, X, Loader2 } from 'lucide-react';
+import { useDevice } from '../context/DeviceContext';
 
 export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientName }) => {
+  const { os } = useDevice();
   const [isScanning, setIsScanning] = useState(false);
 
   if (!isOpen) return null;
 
+  // OS-conditional copy & icon selection
+  let biometricName = "Biometric ID";
+  let IconComponent = ShieldCheck;
+
+  if (os === 'ios') {
+    biometricName = "Face ID";
+    IconComponent = Scan;
+  } else if (os === 'android') {
+    biometricName = "Fingerprint";
+    IconComponent = Fingerprint;
+  }
+
   const handleScan = () => {
     setIsScanning(true);
-    // Simulate 800ms biometric sensor check
     setTimeout(() => {
       setIsScanning(false);
       onSuccess();
@@ -43,7 +56,7 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
 
           <div className="mt-2 mb-4">
             <h3 className="text-lg font-bold text-vault-charcoal tracking-tight">
-              Biometric Authentication
+              {biometricName} Verification
             </h3>
             <p className="text-xs text-vault-muted mt-0.5">
               Confirming <strong className="text-vault-terracotta font-display">₹{parseFloat(amount || 0).toLocaleString('en-IN')}</strong> transfer to {recipientName || 'Recipient'}
@@ -63,17 +76,17 @@ export const BiometricModal = ({ isOpen, onClose, onSuccess, amount, recipientNa
               {isScanning ? (
                 <Loader2 className="w-12 h-12 text-vault-terracotta animate-spin" />
               ) : (
-                <Fingerprint className="w-12 h-12 text-vault-terracotta" />
+                <IconComponent className="w-12 h-12 text-vault-terracotta" />
               )}
             </button>
 
             <p className="text-xs font-semibold text-vault-charcoal mt-4">
-              {isScanning ? "Scanning fingerprint..." : "Touch sensor to authorize"}
+              {isScanning ? `Verifying ${biometricName}...` : `Touch/Scan sensor to authorize with ${biometricName}`}
             </p>
           </div>
 
           <div className="p-3 bg-vault-paper border border-vault-border rounded-2xl text-xs text-vault-muted">
-            Vault Biometric Touch ID / Face ID Security Active
+            Vault {biometricName} Security Active
           </div>
         </motion.div>
       </div>
