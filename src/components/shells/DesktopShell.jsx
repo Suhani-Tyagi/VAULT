@@ -10,10 +10,6 @@ import {
   Search, 
   Plus, 
   Send, 
-  Bell, 
-  Download, 
-  Moon, 
-  Sun,
   Lock,
   LogIn,
   LogOut
@@ -51,47 +47,42 @@ export const DesktopShell = ({ children }) => {
 
   if (isLoggedOut) {
     return (
-      <div className="min-h-screen bg-[#F3F4F6] dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-vault-surface border border-vault-rule rounded-2xl p-8 shadow-2xl text-center space-y-5 animate-in fade-in">
-          <div className="w-16 h-16 rounded-2xl bg-vault-reserveBlueLight border border-vault-reserveBlue/30 text-vault-reserveBlue flex items-center justify-center mx-auto">
-            <Lock className="w-8 h-8" />
+      <div className="min-h-screen bg-vault-paper dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex items-center justify-center p-6 font-sans">
+        <div className="max-w-sm w-full bg-vault-surface border border-vault-rule rounded-xl p-6 shadow-sm space-y-5">
+          <div className="w-12 h-12 rounded-lg bg-vault-reserveBlueLight text-vault-reserveBlue flex items-center justify-center">
+            <Lock className="w-6 h-6" />
           </div>
 
           <div>
-            <h2 className="font-serif text-2xl font-bold text-vault-ink dark:text-vault-text">Vault Desktop Locked</h2>
+            <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text">Session Locked</h2>
             <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-1 leading-relaxed">
-              "Managing money should feel calm and clear, never intimidating."
+              Your banking session is locked for security. Authenticate to resume access.
             </p>
           </div>
 
-          <div className="bg-vault-paper border border-vault-rule rounded-xl p-4 text-left space-y-3 text-xs font-mono">
+          <div className="border-t border-b border-vault-rule py-3 space-y-2 text-xs font-mono">
             <div className="flex items-center gap-3">
               <img 
                 src={user.profilePic} 
                 alt={`${user.name}'s profile avatar`}
-                width={48}
-                height={48}
-                loading="lazy"
-                className="w-12 h-12 rounded-full object-cover shrink-0 ring-2 ring-vault-reserveBlue/40"
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover shrink-0 border border-vault-rule"
               />
-              <div>
-                <p className="font-bold text-vault-ink dark:text-vault-text font-sans">{user.name}</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.email}</p>
+              <div className="min-w-0">
+                <p className="font-bold text-vault-ink dark:text-vault-text font-sans truncate">{user.name}</p>
+                <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark truncate">{user.email}</p>
               </div>
-            </div>
-
-            <div className="p-2.5 bg-vault-surface border border-vault-rule rounded-lg text-vault-muted dark:text-vault-mutedDark text-xs">
-              Vault Sandbox Environment • RBI Regulated Digital Banking
             </div>
           </div>
 
           <button
             type="button"
             onClick={logIn}
-            className="w-full py-3.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white font-mono font-bold text-xs rounded-lg shadow-xs transition-all flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white font-mono font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <LogIn className="w-4 h-4" />
-            <span>Log Back In as {user.name}</span>
+            <span>Log Back In as {user.name.split(' ')[0]}</span>
           </button>
         </div>
       </div>
@@ -99,21 +90,21 @@ export const DesktopShell = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex">
+    <div className="min-h-screen bg-vault-paper dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex font-sans">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-vault-surface border-r border-vault-rule p-5 flex flex-col justify-between shrink-0 select-none">
+      <aside className="w-60 bg-vault-surface border-r border-vault-rule p-4 flex flex-col justify-between shrink-0 select-none">
         <div className="space-y-6">
           {/* Logo Header */}
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-9 h-9 rounded-lg bg-vault-reserveBlue text-white flex items-center justify-center font-serif font-bold text-lg shadow-xs">
+          <div className="flex items-center gap-2.5 px-2 pt-1">
+            <div className="w-7 h-7 rounded-md bg-vault-reserveBlue text-white flex items-center justify-center font-bold text-xs">
               V
             </div>
             <div>
-              <h1 className="font-serif text-base font-bold text-vault-ink dark:text-vault-text tracking-tight leading-none">
+              <h1 className="text-sm font-bold tracking-tight text-vault-ink dark:text-vault-text leading-none">
                 VAULT
               </h1>
-              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono font-medium tracking-wider uppercase mt-1">
-                UPI Passbook Ledger
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">
+                Digital Banking
               </p>
             </div>
           </div>
@@ -123,14 +114,14 @@ export const DesktopShell = ({ children }) => {
             type="button"
             aria-label="Send money quick action"
             onClick={() => setActiveTab('send')}
-            className="w-full py-2.5 px-4 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg font-mono font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95"
+            className="w-full py-2 px-3 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg font-mono font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
           >
-            <Plus className="w-4 h-4" />
-            <span>Quick Send Money</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>Send Money</span>
           </button>
 
           {/* Nav List */}
-          <nav className="space-y-1 font-mono">
+          <nav className="space-y-0.5 font-mono text-xs">
             {navItems.map(item => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -140,10 +131,10 @@ export const DesktopShell = ({ children }) => {
                   type="button"
                   aria-label={`Navigate to ${item.label}`}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium transition-colors ${
                     isActive 
-                      ? 'bg-vault-reserveBlueLight text-vault-reserveBlue border border-vault-reserveBlue/30' 
-                      : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
+                      ? 'bg-vault-surfaceHighlight text-vault-reserveBlue font-bold border-l-2 border-vault-reserveBlue' 
+                      : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight/60'
                   }`}
                 >
                   <Icon className={`w-4 h-4 ${isActive ? 'text-vault-reserveBlue' : 'text-vault-muted dark:text-vault-mutedDark'}`} />
@@ -155,31 +146,30 @@ export const DesktopShell = ({ children }) => {
         </div>
 
         {/* User Card at Bottom */}
-        <div className="pt-4 border-t border-vault-rule space-y-3">
+        <div className="pt-3 border-t border-vault-rule">
           <div 
             onClick={() => setActiveTab('profile')}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-vault-surfaceHighlight cursor-pointer transition-all"
+            className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-vault-surfaceHighlight cursor-pointer transition-colors"
           >
             <img 
               src={user.profilePic} 
               alt={`${user.name}'s avatar`}
-              width={36}
-              height={36}
-              loading="lazy"
-              className="w-9 h-9 rounded-full object-cover shrink-0 ring-2 ring-vault-reserveBlue/40"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full object-cover shrink-0 border border-vault-rule"
             />
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-vault-ink dark:text-vault-text truncate">{user.name}</p>
-              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono truncate">Salary Account</p>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-mono truncate">{user.upiId}</p>
             </div>
 
             <button
               type="button"
               aria-label="Log out of Vault"
               onClick={(e) => { e.stopPropagation(); setShowLogoutModal(true); }}
-              className="p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-rose rounded-lg hover:bg-vault-roseLight transition-colors"
+              className="p-1 text-vault-muted dark:text-vault-mutedDark hover:text-vault-rose rounded transition-colors"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -188,28 +178,29 @@ export const DesktopShell = ({ children }) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Desktop Bar */}
-        <header className="h-16 border-b border-vault-rule bg-vault-surface/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
+        <header className="h-14 border-b border-vault-rule bg-vault-surface px-6 flex items-center justify-between sticky top-0 z-20">
           <button
             type="button"
             onClick={() => setIsCmdPaletteOpen(true)}
-            className="flex items-center gap-3 px-3.5 py-2 bg-vault-paper border border-vault-rule rounded-lg text-xs font-mono text-vault-muted dark:text-vault-mutedDark hover:border-vault-reserveBlue transition-colors w-72"
+            className="flex items-center gap-2.5 px-3 py-1.5 bg-vault-paper border border-vault-rule rounded-lg text-xs font-mono text-vault-muted dark:text-vault-mutedDark hover:border-vault-muted transition-colors w-64"
           >
-            <Search className="w-4 h-4 text-vault-muted dark:text-vault-mutedDark" />
-            <span className="flex-1 text-left">Search passbook entries...</span>
+            <Search className="w-3.5 h-3.5 text-vault-muted" />
+            <span className="flex-1 text-left">Search transactions...</span>
             <kbd className="px-1.5 py-0.5 bg-vault-surface border border-vault-rule rounded text-[10px] font-mono font-bold text-vault-ink dark:text-vault-text">
               ⌘K
             </kbd>
           </button>
 
-          <div className="flex items-center gap-4 text-xs font-mono font-medium text-vault-muted dark:text-vault-mutedDark">
-            <span className="flex items-center gap-1.5 bg-vault-reserveBlueLight text-vault-reserveBlue px-3 py-1 rounded border border-vault-reserveBlue/30 font-bold">
-              <ShieldCheck className="w-4 h-4" /> RBI Sandbox Verified
+          <div className="flex items-center gap-3 text-xs font-mono text-vault-muted dark:text-vault-mutedDark">
+            <span className="flex items-center gap-1.5 text-vault-muted dark:text-vault-mutedDark">
+              <ShieldCheck className="w-4 h-4 text-vault-emerald" />
+              <span>Encrypted UPI Session</span>
             </span>
           </div>
         </header>
 
-        {/* Screen Content */}
-        <main className="flex-1 p-8 overflow-y-auto max-w-5xl">
+        {/* Screen Content Viewport - Max Width 1100px */}
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-w-5xl mx-auto w-full">
           {children}
         </main>
       </div>
@@ -235,3 +226,4 @@ export const DesktopShell = ({ children }) => {
     </div>
   );
 };
+

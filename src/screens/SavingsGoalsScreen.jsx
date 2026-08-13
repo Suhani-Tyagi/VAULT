@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Plus, Plane, Laptop, ShieldCheck, X } from 'lucide-react';
+import { Target, Plus, X } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { CategoryIcon } from '../components/CategoryIcon';
 
@@ -39,28 +39,28 @@ export const SavingsGoalsScreen = () => {
   const totalSavedInGoals = goals.reduce((acc, g) => acc + g.currentAmount, 0);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 font-sans">
       {/* Header title */}
-      <div className="flex justify-between items-start pb-2 border-b border-vault-rule">
+      <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
-          <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text tracking-tight">Savings Goals</h2>
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-            Ring-fenced funds for things that matter
+          <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Savings Goals</h2>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+            Track dedicated savings targets
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
           aria-label="Create new savings goal"
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg text-xs font-mono font-bold shadow-xs transition-all active:scale-95 focus:ring-2 focus:ring-vault-reserveBlue"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg text-xs font-mono font-bold transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>New Goal</span>
         </button>
       </div>
 
       {/* Summary Card */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex justify-between items-center shadow-xs font-mono">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex justify-between items-center font-mono">
         <div>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Total Saved Across Goals</p>
           <h3 className="text-2xl font-mono font-bold text-vault-reserveBlue tabular-nums mt-0.5">
@@ -84,24 +84,24 @@ export const SavingsGoalsScreen = () => {
           return (
             <div 
               key={goal.id}
-              className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 hover:border-vault-ruleDark transition-all shadow-xs"
+              className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 hover:border-vault-muted transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <CategoryIcon 
                     iconName={goal.iconName} 
                     category={goal.category} 
-                    bgSize="w-10 h-10"
+                    bgSize="w-9 h-9"
                   />
                   <div>
-                    <h3 className="text-xs font-bold text-vault-ink dark:text-vault-text">{goal.title}</h3>
+                    <h3 className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">{goal.title}</h3>
                     <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
                       Target: {goal.targetDate} • {goal.category}
                     </p>
                   </div>
                 </div>
 
-                <span className="text-xs font-mono font-bold text-vault-reserveBlue bg-vault-reserveBlueLight px-2.5 py-0.5 rounded border border-vault-reserveBlue/30 tabular-nums">
+                <span className="text-xs font-mono font-bold text-vault-reserveBlue tabular-nums">
                   {percent}%
                 </span>
               </div>
@@ -109,7 +109,7 @@ export const SavingsGoalsScreen = () => {
               <div>
                 <div className="w-full bg-vault-surfaceHighlight rounded-full h-1.5 overflow-hidden border border-vault-rule">
                   <div 
-                    className="bg-vault-reserveBlue h-full rounded-full transition-all duration-700 ease-out"
+                    className="bg-vault-reserveBlue h-full rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${percent}%` }}
                   />
                 </div>
@@ -125,14 +125,14 @@ export const SavingsGoalsScreen = () => {
               </div>
 
               <div className="pt-2 border-t border-vault-rule flex justify-between items-center text-xs font-mono">
-                <span className="text-vault-muted dark:text-vault-mutedDark italic truncate max-w-[200px]">
+                <span className="text-vault-muted dark:text-vault-mutedDark truncate max-w-[200px]">
                   {goal.notes}
                 </span>
 
                 <button
                   onClick={() => { setActiveDepositGoal(goal); setDepositAmount('1500'); }}
                   aria-label={`Add funds to ${goal.title}`}
-                  className="px-3 py-1 bg-vault-paper hover:bg-vault-surfaceHighlight text-vault-reserveBlue border border-vault-reserveBlue/30 rounded text-xs font-bold transition-all active:scale-95 focus:ring-2 focus:ring-vault-reserveBlue"
+                  className="px-2.5 py-1 bg-vault-paper hover:bg-vault-surfaceHighlight text-vault-reserveBlue border border-vault-rule rounded text-xs font-bold transition-colors"
                 >
                   + Add Funds
                 </button>
@@ -144,39 +144,39 @@ export const SavingsGoalsScreen = () => {
 
       {/* MODAL 1: Add Funds */}
       {activeDepositGoal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div 
             role="dialog"
             aria-modal="true"
             aria-labelledby="deposit-modal-title"
-            className="w-full max-w-sm bg-vault-surface border border-vault-rule rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 text-vault-ink dark:text-vault-text focus:outline-none"
+            className="w-full max-w-sm bg-vault-surface border border-vault-rule rounded-xl p-5 shadow-lg space-y-4 text-vault-ink dark:text-vault-text focus:outline-none"
           >
-            <div className="flex justify-between items-center border-b border-vault-rule pb-3">
-              <h3 id="deposit-modal-title" className="font-serif text-base font-bold text-vault-ink dark:text-vault-text">
+            <div className="flex justify-between items-center border-b border-vault-rule pb-2.5">
+              <h3 id="deposit-modal-title" className="text-sm font-bold text-vault-ink dark:text-vault-text font-sans">
                 Add Funds to Goal
               </h3>
               <button 
                 onClick={() => setActiveDepositGoal(null)}
                 aria-label="Close deposit modal"
-                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-reserveBlue"
+                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink p-1 rounded hover:bg-vault-surfaceHighlight"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div>
-              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">Selected Goal</p>
-              <h4 className="text-sm font-bold text-vault-ink dark:text-vault-text mt-0.5">{activeDepositGoal.title}</h4>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">Target Goal</p>
+              <h4 className="text-xs font-bold text-vault-ink dark:text-vault-text mt-0.5 font-sans">{activeDepositGoal.title}</h4>
             </div>
 
-            <form onSubmit={handleDepositSubmit} className="space-y-3">
+            <form onSubmit={handleDepositSubmit} className="space-y-3 font-mono">
               <div>
-                <div className="flex justify-between text-xs text-vault-muted dark:text-vault-mutedDark mb-1 font-mono">
-                  <span>Amount to Deposit</span>
-                  <span>Available: <strong className="text-vault-ink dark:text-vault-text">₹{user.availableBalance.toLocaleString('en-IN')}</strong></span>
+                <div className="flex justify-between text-xs text-vault-muted dark:text-vault-mutedDark mb-1">
+                  <span>Deposit Amount</span>
+                  <span>Avail: <strong className="text-vault-ink dark:text-vault-text">₹{user.availableBalance.toLocaleString('en-IN')}</strong></span>
                 </div>
 
-                <div className="flex items-center bg-vault-paper border border-vault-rule rounded-lg px-3 py-2">
+                <div className="flex items-center bg-vault-paper border border-vault-rule rounded-lg px-3 py-1.5">
                   <span className="font-serif text-xl font-bold text-vault-reserveBlue mr-1">₹</span>
                   <input 
                     type="number"
@@ -188,37 +188,33 @@ export const SavingsGoalsScreen = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 font-mono">
+              <div className="flex gap-1.5">
                 {[500, 1500, 3000, 5000].map(val => (
                   <button
                     key={val}
                     type="button"
                     aria-label={`Add ${val} rupees`}
                     onClick={() => setDepositAmount(val.toString())}
-                    className="flex-1 py-1 bg-vault-paper border border-vault-rule rounded text-xs text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text font-bold focus:ring-2 focus:ring-vault-reserveBlue"
+                    className="flex-1 py-1 bg-vault-paper border border-vault-rule rounded text-xs text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink font-bold"
                   >
                     +₹{val}
                   </button>
                 ))}
               </div>
 
-              <div className="p-3 bg-vault-paper border border-vault-rule rounded-lg text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
-                "Money added to goals is moved from your safe-to-spend balance. You can withdraw back anytime instantly."
-              </div>
-
-              <div className="flex gap-2 pt-2 font-mono">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setActiveDepositGoal(null)}
-                  className="flex-1 py-2.5 bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text rounded-lg text-xs font-semibold"
+                  className="flex-1 py-2 bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded-lg text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-vault-reserveBlue text-white rounded-lg text-xs font-bold shadow-xs hover:bg-vault-reserveBlueHover"
+                  className="flex-1 py-2 bg-vault-reserveBlue text-white rounded-lg text-xs font-bold hover:bg-vault-reserveBlueHover"
                 >
-                  Confirm Deposit
+                  Confirm
                 </button>
               </div>
             </form>
@@ -228,34 +224,34 @@ export const SavingsGoalsScreen = () => {
 
       {/* MODAL 2: Create Goal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div 
             role="dialog"
             aria-modal="true"
             aria-labelledby="create-modal-title"
-            className="w-full max-w-sm bg-vault-surface border border-vault-rule rounded-2xl p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 text-vault-ink dark:text-vault-text focus:outline-none"
+            className="w-full max-w-sm bg-vault-surface border border-vault-rule rounded-xl p-5 shadow-lg space-y-4 text-vault-ink dark:text-vault-text focus:outline-none font-sans"
           >
-            <div className="flex justify-between items-center border-b border-vault-rule pb-3">
-              <h3 id="create-modal-title" className="font-serif text-base font-bold text-vault-ink dark:text-vault-text">
+            <div className="flex justify-between items-center border-b border-vault-rule pb-2.5">
+              <h3 id="create-modal-title" className="text-sm font-bold text-vault-ink dark:text-vault-text">
                 Create Savings Goal
               </h3>
               <button 
                 onClick={() => setShowCreateModal(false)}
                 aria-label="Close goal creation modal"
-                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text p-1 rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-reserveBlue"
+                className="text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink p-1 rounded hover:bg-vault-surfaceHighlight"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs font-mono">
+            <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs">
               <div>
-                <label htmlFor="goal-name-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Goal Name</label>
+                <label htmlFor="goal-name-input" className="text-vault-muted dark:text-vault-mutedDark font-mono font-bold block mb-1">Goal Name</label>
                 <input 
                   id="goal-name-input"
                   type="text"
                   required
-                  placeholder="e.g. Emergency Reserve, New Phone"
+                  placeholder="e.g. Emergency Reserve, Travel"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full bg-vault-paper border border-vault-rule rounded-lg px-3 py-2 text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-sans"
@@ -263,7 +259,7 @@ export const SavingsGoalsScreen = () => {
               </div>
 
               <div>
-                <label htmlFor="goal-target-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Target Amount (₹)</label>
+                <label htmlFor="goal-target-input" className="text-vault-muted dark:text-vault-mutedDark font-mono font-bold block mb-1">Target Amount (₹)</label>
                 <input 
                   id="goal-target-input"
                   type="number"
@@ -276,12 +272,12 @@ export const SavingsGoalsScreen = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label htmlFor="goal-category-select" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Category</label>
+                  <label htmlFor="goal-category-select" className="text-vault-muted dark:text-vault-mutedDark font-mono font-bold block mb-1">Category</label>
                   <select 
                     id="goal-category-select"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full bg-vault-paper border border-vault-rule rounded-lg px-2.5 py-2 text-vault-ink dark:text-vault-text focus:outline-none font-sans"
+                    className="w-full bg-vault-paper border border-vault-rule rounded-lg px-2 py-2 text-vault-ink dark:text-vault-text focus:outline-none font-sans"
                   >
                     <option value="Travel">Travel</option>
                     <option value="Tech">Tech</option>
@@ -291,7 +287,7 @@ export const SavingsGoalsScreen = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="goal-date-input" className="text-vault-muted dark:text-vault-mutedDark font-bold block mb-1">Target Date</label>
+                  <label htmlFor="goal-date-input" className="text-vault-muted dark:text-vault-mutedDark font-mono font-bold block mb-1">Target Date</label>
                   <input 
                     id="goal-date-input"
                     type="text"
@@ -303,19 +299,19 @@ export const SavingsGoalsScreen = () => {
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-3">
+              <div className="flex gap-2 pt-2 font-mono">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-2.5 bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text rounded-lg font-semibold"
+                  className="flex-1 py-2 bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded-lg font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-vault-reserveBlue text-white rounded-lg font-bold shadow-xs hover:bg-vault-reserveBlueHover"
+                  className="flex-1 py-2 bg-vault-reserveBlue text-white rounded-lg font-bold hover:bg-vault-reserveBlueHover"
                 >
-                  Create Goal
+                  Create
                 </button>
               </div>
             </form>
@@ -325,3 +321,4 @@ export const SavingsGoalsScreen = () => {
     </div>
   );
 };
+

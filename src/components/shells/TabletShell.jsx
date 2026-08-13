@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, ArrowLeftRight, Send, Target, PieChart, User, ShieldCheck, CheckCircle2, AlertCircle, X, Copy, Check, RotateCcw } from 'lucide-react';
+import { Home, ArrowLeftRight, Send, Target, PieChart, User, CheckCircle2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVault } from '../../context/VaultContext';
 import { CategoryIcon } from '../CategoryIcon';
@@ -25,14 +25,14 @@ export const TabletShell = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex">
+    <div className="min-h-screen bg-vault-paper dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex font-sans">
       {/* Left Navigation Rail */}
-      <aside className="w-20 sm:w-24 bg-vault-surface border-r border-vault-rule flex flex-col items-center py-6 shrink-0 select-none font-mono">
-        <div className="w-10 h-10 rounded-xl bg-vault-reserveBlue text-white flex items-center justify-center font-serif font-bold text-lg mb-8 shadow-xs">
+      <aside className="w-20 bg-vault-surface border-r border-vault-rule flex flex-col items-center py-5 shrink-0 select-none font-mono">
+        <div className="w-8 h-8 rounded-md bg-vault-reserveBlue text-white flex items-center justify-center font-bold text-xs mb-6">
           V
         </div>
 
-        <nav className="flex-1 flex flex-col gap-4">
+        <nav className="flex-1 flex flex-col gap-2 w-full px-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id || (item.id === 'send' && activeTab === 'split');
@@ -43,47 +43,47 @@ export const TabletShell = ({ children }) => {
                 type="button"
                 aria-label={`Navigate to ${item.label}`}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex flex-col items-center p-3 rounded-xl transition-all ${
+                className={`flex flex-col items-center py-2.5 px-2 rounded-lg transition-colors text-center ${
                   isActive 
-                    ? 'bg-vault-reserveBlue text-white shadow-xs font-bold scale-105' 
-                    : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight'
+                    ? 'bg-vault-surfaceHighlight text-vault-reserveBlue font-bold border-l-2 border-vault-reserveBlue' 
+                    : 'text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight/50'
                 }`}
               >
-                <Icon className="w-5 h-5 mb-1" />
-                <span className="text-[10px] font-mono">{item.label}</span>
+                <Icon className="w-4 h-4 mb-1" />
+                <span className="text-[10px] font-mono leading-tight">{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* User profile avatar footer button */}
+        {/* User profile avatar button */}
         <button 
           type="button"
           aria-label="Profile Settings"
           onClick={() => setActiveTab('profile')}
-          className="relative rounded-full p-0.5 ring-2 ring-vault-reserveBlue/40 hover:ring-vault-reserveBlue transition-all"
+          className="rounded-full p-0.5 border border-vault-rule hover:border-vault-reserveBlue transition-colors"
         >
-          <img src={user.profilePic} alt={user.name} className="w-9 h-9 rounded-full object-cover" />
+          <img src={user.profilePic} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
         </button>
       </aside>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Tablet Header Bar */}
-        <header className="h-16 px-6 bg-vault-surface border-b border-vault-rule flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="font-serif text-lg font-bold text-vault-ink dark:text-vault-text">
-              Vault Tablet Passbook
+        <header className="h-14 px-6 bg-vault-surface border-b border-vault-rule flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h1 className="text-sm font-bold text-vault-ink dark:text-vault-text">
+              VAULT
             </h1>
-            <span className="text-[10px] font-mono font-bold tracking-widest text-vault-reserveBlue bg-vault-reserveBlueLight px-2.5 py-0.5 rounded border border-vault-reserveBlue/20">
-              UPI TABLET MODE
+            <span className="text-[10px] font-mono text-vault-muted dark:text-vault-mutedDark border-l border-vault-rule pl-2">
+              Tablet View
             </span>
           </div>
 
-          <div className="flex items-center gap-4 font-mono">
+          <div className="flex items-center gap-3 font-mono text-xs">
             <div className="text-right">
-              <p className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">{user.name}</p>
-              <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark">{user.upiId}</p>
+              <p className="font-bold text-vault-ink dark:text-vault-text font-sans">{user.name}</p>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark">{user.upiId}</p>
             </div>
           </div>
         </header>
@@ -103,32 +103,32 @@ export const TabletShell = ({ children }) => {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="w-80 bg-vault-surface border-l border-vault-rule p-6 shadow-2xl overflow-y-auto shrink-0 z-40 relative flex flex-col text-vault-ink dark:text-vault-text"
+            transition={{ duration: 0.2 }}
+            className="w-80 bg-vault-surface border-l border-vault-rule p-5 shadow-lg overflow-y-auto shrink-0 z-40 relative flex flex-col text-vault-ink dark:text-vault-text"
           >
             <button 
               onClick={() => setSelectedTransaction(null)}
               aria-label="Close details"
-              className="absolute top-5 right-5 p-2 text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight"
+              className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text rounded-md hover:bg-vault-surfaceHighlight"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
-            <div className="flex flex-col items-center text-center mt-6 mb-6">
+            <div className="flex flex-col items-center text-center mt-4 mb-5">
               <CategoryIcon 
                 iconName={selectedTransaction.icon} 
                 category={selectedTransaction.category} 
                 type={selectedTransaction.type}
-                className="w-7 h-7"
-                bgSize="w-16 h-16 mb-3"
+                className="w-6 h-6"
+                bgSize="w-12 h-12 mb-2"
               />
 
-              <h3 className="font-serif text-lg font-bold text-vault-ink dark:text-vault-text">
+              <h3 className="text-sm font-bold text-vault-ink dark:text-vault-text">
                 {selectedTransaction.merchant}
               </h3>
               <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">{selectedTransaction.date}</p>
 
-              <div className="mt-4 text-2xl font-mono font-bold tabular-nums">
+              <div className="mt-3 text-xl font-mono font-bold tabular-nums">
                 <span className={selectedTransaction.type === 'refund' ? "text-vault-reserveBlue" : selectedTransaction.type === 'credit' ? "text-vault-emerald font-extrabold" : "text-vault-ink dark:text-vault-text"}>
                   {selectedTransaction.type === 'debit' ? '-₹' : '+₹'}
                   {selectedTransaction.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -136,7 +136,7 @@ export const TabletShell = ({ children }) => {
               </div>
             </div>
 
-            <div className="bg-vault-paper border border-vault-rule rounded-xl p-4 space-y-3 text-xs font-mono">
+            <div className="bg-vault-paper border border-vault-rule rounded-lg p-3 space-y-2.5 text-xs font-mono">
               <div className="flex justify-between py-1 border-b border-vault-rule">
                 <span className="text-vault-muted dark:text-vault-mutedDark">Running Balance</span>
                 <span className="font-bold tabular-nums text-vault-ink dark:text-vault-text">₹{selectedTransaction.runningBalance.toLocaleString('en-IN')}</span>
@@ -158,11 +158,12 @@ export const TabletShell = ({ children }) => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-reserveBlue/40 text-vault-ink dark:text-vault-text px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 font-mono">
-          <CheckCircle2 className="w-5 h-5 text-vault-emerald" />
-          <p className="text-xs font-semibold">{toast.message}</p>
+        <div className="fixed bottom-6 right-6 z-50 bg-vault-surface border border-vault-rule text-vault-ink dark:text-vault-text px-3.5 py-2.5 rounded-lg shadow-md flex items-center gap-2.5 font-mono text-xs">
+          <CheckCircle2 className="w-4 h-4 text-vault-emerald" />
+          <p className="font-medium">{toast.message}</p>
         </div>
       )}
     </div>
   );
 };
+

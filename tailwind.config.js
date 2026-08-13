@@ -9,27 +9,32 @@ export default {
     extend: {
       colors: {
         vault: {
-          // Indian Passbook & UPI Ledger Design System
-          paper: '#FAF9F6',             // Unbleached cream-white ledger paper
-          surface: '#FFFFFF',           // Crisp white elevation
-          surfaceHighlight: '#F3F4F6',  // Hairline highlight
-          rule: '#E5E7EB',              // Passbook hairline divider
-          ruleDark: '#1F2937',          // Dark mode hairline rule
-          ink: '#111827',               // Deep reserve ink text
-          text: '#F3F4F6',              // Chalk text for dark mode
-          muted: '#6B7280',             // Secondary ledger copy
-          mutedDark: '#9CA3AF',         // Dark mode muted copy
+          // Clean Editorial Ledger Palette
+          paper: '#FAF9F6',             // Light neutral ledger background
+          surface: '#FFFFFF',           // Crisp white container surface
+          surfaceHighlight: '#F3F4F6',  // Subtle hairline hover surface
+          rule: '#E5E7EB',              // Crisp 1px divider
+          ruleDark: '#1F2937',          // Dark mode 1px divider
+          ink: '#111827',               // Deep charcoal text
+          text: '#F3F4F6',              // Off-white text for dark mode
+          muted: '#6B7280',             // Secondary text
+          mutedDark: '#9CA3AF',         // Dark mode secondary copy
           subtle: '#9CA3AF',
           
-          // Government Bond Blue & Verified Emerald Accents
-          reserveBlue: '#1E3A8A',       // Institutional bond blue
+          // Primary Accent: Deep Institutional Navy Blue
+          reserveBlue: '#1E3A8A',       
           reserveBlueHover: '#1D4ED8',
           reserveBlueLight: '#1E3A8A14',
           
-          emerald: '#047857',           // Verified UPI green
+          // Status Accents
+          emerald: '#047857',           
           emeraldLight: '#04785714',
-          
-          // Legacy aliases for full backward compatibility
+          amber: '#D97706',
+          amberLight: '#D977061A',
+          rose: '#BE123C',
+          roseLight: '#BE123C1A',
+
+          // Backward compatibility aliases
           bronze: '#1E3A8A',
           bronzeHover: '#1D4ED8',
           bronzeLight: '#1E3A8A14',
@@ -38,12 +43,6 @@ export default {
           border: '#E5E7EB',
           borderDark: '#1F2937',
           charcoal: '#111827',
-          
-          // Status Accents
-          amber: '#D97706',
-          amberLight: '#D977061A',
-          rose: '#BE123C',
-          roseLight: '#BE123C1A'
         }
       },
       fontFamily: {

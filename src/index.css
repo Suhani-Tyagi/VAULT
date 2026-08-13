@@ -14,7 +14,7 @@
     color: #F3F4F6;
   }
 
-  /* Passbook Dark Mode Surface Overrides */
+  /* Dark Mode Surface Overrides */
   .dark .bg-vault-paper {
     background-color: #0C0E12 !important;
   }
@@ -31,28 +31,18 @@
     border-color: #374151 !important;
   }
 
-  /* Force tabular monospace numbers for financial amounts */
+  /* Force tabular numbers for financial amounts */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom Signature Rupee Symbol Container using Fraunces Serif */
+/* Custom Signature Rupee Symbol Container */
 .rupee-symbol {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
-}
-
-/* Thermal Passbook Tape Micro-Ticker Animation */
-@keyframes thermalPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-.animate-thermal {
-  animation: thermalPulse 3s ease-in-out infinite;
 }
 
 /* Keyframes for PIN pad error shake animation */
@@ -66,7 +56,7 @@
   animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-/* Custom scrollbars */
+/* Custom minimal scrollbars */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -78,7 +68,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: #D1D5DB;
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
@@ -93,3 +83,4 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+

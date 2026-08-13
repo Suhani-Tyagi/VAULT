@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Download, Filter, ArrowUpRight, ArrowDownLeft, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { TransactionRow } from '../components/TransactionRow';
 
@@ -54,15 +54,15 @@ export const TransactionsScreen = () => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Header title & Passbook CSV Export button */}
-      <div className="flex justify-between items-start pb-2 border-b border-vault-rule">
+    <div className="space-y-4 font-sans">
+      {/* Header title & Export button */}
+      <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
-          <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text tracking-tight">
+          <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">
             Activity & Transactions
           </h2>
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-            Official NPCI UPI Passbook Ledger
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+            Transaction history and account activity
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export const TransactionsScreen = () => {
           type="button"
           aria-label="Export activity as CSV statement"
           onClick={handleExportCsv}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-paper border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-all shadow-xs focus:ring-2 focus:ring-vault-reserveBlue"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-surface border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-colors"
         >
           <Download className="w-3.5 h-3.5 text-vault-reserveBlue" />
           <span>Export Passbook</span>
@@ -78,9 +78,9 @@ export const TransactionsScreen = () => {
       </div>
 
       {/* Search Input & Category Filter Tabs */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-3 space-y-2.5 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-3 space-y-2.5">
         <div className="relative flex items-center">
-          <Search className="w-4 h-4 absolute left-3 text-vault-muted dark:text-vault-mutedDark pointer-events-none" />
+          <Search className="w-4 h-4 absolute left-3 text-vault-muted pointer-events-none" />
           <input 
             type="text"
             placeholder="Search merchant, category, or note..."
@@ -91,7 +91,7 @@ export const TransactionsScreen = () => {
           />
         </div>
 
-        <div className="flex gap-1.5 text-xs font-mono font-semibold overflow-x-auto no-scrollbar">
+        <div className="flex gap-1.5 text-xs font-mono font-medium overflow-x-auto no-scrollbar">
           {[
             { id: 'all', label: 'All' },
             { id: 'debit', label: 'Spent' },
@@ -103,9 +103,9 @@ export const TransactionsScreen = () => {
               type="button"
               aria-label={filter.label}
               onClick={() => setSelectedFilter(filter.id)}
-              className={`flex-1 min-w-[65px] py-1 rounded-lg transition-all text-center ${
+              className={`flex-1 min-w-[65px] py-1.5 rounded-lg transition-colors text-center ${
                 selectedFilter === filter.id 
-                  ? 'bg-vault-reserveBlue text-white font-bold shadow-xs' 
+                  ? 'bg-vault-reserveBlue text-white font-bold' 
                   : 'bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text'
               }`}
             >
@@ -115,8 +115,8 @@ export const TransactionsScreen = () => {
         </div>
       </div>
 
-      {/* Transaction Passbook Ledger */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl overflow-hidden shadow-xs">
+      {/* Transaction List */}
+      <div className="bg-vault-surface border border-vault-rule rounded-xl overflow-hidden">
         {filteredTransactions.length > 0 ? (
           filteredTransactions.map((tx) => (
             <TransactionRow 
@@ -126,12 +126,13 @@ export const TransactionsScreen = () => {
             />
           ))
         ) : (
-          <div className="py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-2 font-mono">
-            <p className="text-sm font-bold text-vault-ink dark:text-vault-text">No transactions found</p>
-            <p className="text-xs">Try adjusting your search query or filter criteria.</p>
+          <div className="py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-1 font-mono">
+            <p className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">No transactions found</p>
+            <p className="text-xs">Adjust your search terms or filters.</p>
           </div>
         )}
       </div>
     </div>
   );
 };
+

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
-import { QrCode, X, Copy, Share2, Check, Download, ShieldCheck } from 'lucide-react';
+import { QrCode, X, Copy, Share2, Check, Download } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import PropTypes from 'prop-types';
 
@@ -50,58 +50,58 @@ export const ReceiveQrModal = ({ isOpen, onClose }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 font-sans">
         <motion.div 
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="receive-modal-title"
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none"
+          exit={{ opacity: 0, scale: 0.98 }}
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-rule rounded-xl p-5 shadow-xl text-vault-ink dark:text-vault-text text-center focus:outline-none"
         >
           {/* Close button */}
           <button 
             type="button"
             onClick={onClose}
             aria-label="Close receive QR modal"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-bronze"
+            className="absolute top-4 right-4 p-1 text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded hover:bg-vault-surfaceHighlight"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
           {/* Header */}
-          <div className="mt-1 mb-4">
-            <h3 id="receive-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text tracking-tight flex items-center justify-center gap-2">
-              <QrCode className="w-5 h-5 text-vault-bronze" />
+          <div className="mt-1 mb-3">
+            <h3 id="receive-modal-title" className="text-sm font-bold text-vault-ink dark:text-vault-text flex items-center justify-center gap-2 font-sans">
+              <QrCode className="w-4 h-4 text-vault-reserveBlue" />
               <span>Receive Money via QR</span>
             </h3>
-            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-              Scan with GPay, PhonePe, Paytm, or any UPI app
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+              Scan with any UPI payment app
             </p>
           </div>
 
           {/* Rendered SVG QR Code Container */}
-          <div className="p-4 bg-white rounded-2xl border-2 border-vault-bronze/30 shadow-inner flex flex-col items-center justify-center my-3 mx-auto w-56 h-56">
+          <div className="p-3 bg-white rounded-lg border border-vault-rule flex flex-col items-center justify-center my-3 mx-auto w-48 h-48">
             <QRCodeSVG 
               value={upiUrl}
-              size={180}
+              size={160}
               bgColor="#FFFFFF"
-              fgColor="#0F172A"
+              fgColor="#111827"
               level="H"
               includeMargin={false}
             />
           </div>
 
           {/* UPI ID Badge & Copy Button */}
-          <div className="flex items-center justify-center gap-2 p-2 bg-vault-paper border border-vault-border rounded-xl text-xs my-3">
-            <span className="font-mono font-bold text-vault-charcoal dark:text-vault-text truncate">{user.upiId}</span>
+          <div className="flex items-center justify-center gap-2 p-2 bg-vault-paper border border-vault-rule rounded-lg text-xs my-2.5 font-mono">
+            <span className="font-bold text-vault-ink dark:text-vault-text truncate">{user.upiId}</span>
             <button
               type="button"
               aria-label="Copy UPI handle"
               onClick={handleCopyUpi}
-              className="text-vault-bronze hover:underline font-bold flex items-center gap-1 shrink-0"
+              className="text-vault-reserveBlue hover:underline font-bold flex items-center gap-1 shrink-0"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -109,20 +109,20 @@ export const ReceiveQrModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Optional Amount & Note Entries */}
-          <div className="space-y-2 text-left text-xs my-3">
+          <div className="space-y-2 text-left text-xs my-3 font-mono">
             <div>
-              <label htmlFor="req-amount-input" className="text-[11px] font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
-                Request Specific Amount (Optional)
+              <label htmlFor="req-amount-input" className="text-[10px] font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
+                Requested Amount (Optional)
               </label>
-              <div className="flex items-center bg-vault-paper border border-vault-border rounded-xl px-3 py-1.5 focus-within:border-vault-bronze">
-                <span className="font-bold text-vault-muted dark:text-vault-mutedDark mr-1">₹</span>
+              <div className="flex items-center bg-vault-paper border border-vault-rule rounded-lg px-3 py-1.5 focus-within:border-vault-reserveBlue">
+                <span className="font-bold text-vault-reserveBlue mr-1">₹</span>
                 <input 
                   id="req-amount-input"
                   type="number"
-                  placeholder="0 (Any amount)"
+                  placeholder="0"
                   value={requestedAmount}
                   onChange={(e) => setRequestedAmount(e.target.value)}
-                  className="w-full bg-transparent font-display font-bold text-vault-charcoal dark:text-vault-text focus:outline-none tabular-nums text-sm"
+                  className="w-full bg-transparent font-mono font-bold text-vault-ink dark:text-vault-text focus:outline-none tabular-nums text-xs"
                 />
               </div>
             </div>
@@ -130,31 +130,31 @@ export const ReceiveQrModal = ({ isOpen, onClose }) => {
             <div>
               <input 
                 type="text"
-                placeholder="Add request note (e.g. Lunch share)"
+                placeholder="Note (e.g. Dinner share)"
                 value={requestNote}
                 onChange={(e) => setRequestNote(e.target.value)}
-                className="w-full bg-vault-paper border border-vault-border rounded-xl px-3 py-1.5 text-xs text-vault-charcoal dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-bronze"
+                className="w-full bg-vault-paper border border-vault-rule rounded-lg px-3 py-1.5 text-xs text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-mono"
               />
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-2 pt-2">
+          <div className="flex gap-2 pt-2 font-mono">
             <button
               type="button"
               onClick={handleShareQr}
-              className="flex-1 py-2.5 bg-vault-bronze hover:bg-vault-bronzeHover text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
             >
-              <Download className="w-4 h-4" />
-              <span>Save QR Code</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>Save QR</span>
             </button>
 
             <button
               type="button"
               onClick={handleShareQr}
-              className="px-4 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-charcoal dark:text-vault-text rounded-xl text-xs font-bold hover:bg-vault-border transition-all flex items-center justify-center gap-1"
+              className="px-4 py-2 bg-vault-paper border border-vault-rule text-vault-ink dark:text-vault-text rounded-lg text-xs font-bold hover:bg-vault-surfaceHighlight transition-colors flex items-center justify-center gap-1"
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="w-3.5 h-3.5" />
               <span>Share</span>
             </button>
           </div>
@@ -168,3 +168,4 @@ ReceiveQrModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired
 };
+

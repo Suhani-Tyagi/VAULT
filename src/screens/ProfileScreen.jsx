@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Shield, CreditCard, Bell, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, LogOut, Mail, MessageSquare, QrCode } from 'lucide-react';
+import { Shield, CreditCard, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, LogOut, QrCode } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
 import { ToggleSwitch } from '../components/ToggleSwitch';
@@ -103,29 +103,28 @@ export const ProfileScreen = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 font-sans">
       {/* Header title */}
-      <div>
-        <h2 className="font-serif text-xl font-bold text-vault-ink dark:text-vault-text tracking-tight">Profile & Security</h2>
-        <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-          Account credentials, active devices, and security controls
+      <div className="pb-3 border-b border-vault-rule">
+        <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Profile & Settings</h2>
+        <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+          Account credentials, security controls, and viewport options
         </p>
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-4">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex items-center justify-between">
+        <div className="flex items-center gap-3.5">
           <img 
             src={user.profilePic} 
             alt={`${user.name}'s profile avatar`}
-            width={56}
-            height={56}
-            loading="lazy"
-            className="w-14 h-14 rounded-full object-cover ring-2 ring-vault-reserveBlue/40 shrink-0"
+            width={48}
+            height={48}
+            className="w-12 h-12 rounded-full object-cover border border-vault-rule shrink-0"
           />
 
           <div className="min-w-0">
-            <h3 className="font-serif text-base font-bold text-vault-ink dark:text-vault-text truncate">{user.name}</h3>
+            <h3 className="text-sm font-bold text-vault-ink dark:text-vault-text truncate font-sans">{user.name}</h3>
             <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono truncate">{user.email}</p>
             <p className="text-xs text-vault-subtle font-mono mt-0.5">{user.city}</p>
           </div>
@@ -136,7 +135,7 @@ export const ProfileScreen = () => {
           type="button"
           aria-label="Log out of Vault"
           onClick={() => setShowLogoutModal(true)}
-          className="px-3 py-1.5 bg-vault-roseLight text-vault-rose hover:bg-vault-rose hover:text-white border border-vault-rose/30 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 shrink-0"
+          className="px-3 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight text-vault-rose border border-vault-rule rounded-lg text-xs font-mono font-bold transition-colors flex items-center gap-1.5 shrink-0"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Log Out</span>
@@ -144,25 +143,25 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Developer / Demo Device Switcher */}
-      <div className="bg-vault-surface border border-vault-reserveBlue/30 rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-mono text-xs">
         <div className="flex justify-between items-center">
-          <h3 className="text-xs font-mono font-bold text-vault-reserveBlue uppercase tracking-wider flex items-center gap-1.5">
-            <Monitor className="w-4 h-4" />
-            <span>Developer / Demo Settings</span>
+          <h3 className="font-bold text-vault-reserveBlue uppercase tracking-wider flex items-center gap-1.5">
+            <Monitor className="w-3.5 h-3.5" />
+            <span>Developer Viewport Switcher</span>
           </h3>
 
           {isOverridden && (
-            <span className="text-[10px] font-mono bg-vault-reserveBlue text-white px-2 py-0.5 rounded font-bold">
+            <span className="text-[10px] bg-vault-reserveBlue text-white px-2 py-0.5 rounded font-bold">
               Override Active
             </span>
           )}
         </div>
 
-        <p className="text-xs text-vault-muted dark:text-vault-mutedDark">
-          Preview how Vault adapts across viewports and operating systems. Active mode: <strong className="text-vault-ink dark:text-vault-text capitalize font-mono">{deviceType} ({os})</strong>
+        <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-sans">
+          Preview responsive layout modes. Active: <strong className="text-vault-ink dark:text-vault-text capitalize font-mono">{deviceType} ({os})</strong>
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1 font-mono">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1 font-mono">
           {devicePresets.map(preset => {
             const isSelected = preset.id === 'auto' 
               ? !isOverridden 
@@ -177,10 +176,10 @@ export const ProfileScreen = () => {
                   if (preset.id === 'auto') clearOverride();
                   else setOverride({ deviceType: preset.type, os: preset.os });
                 }}
-                className={`py-1.5 px-2.5 rounded-lg text-xs font-bold transition-all border text-center ${
+                className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-colors border text-center ${
                   isSelected 
-                    ? 'bg-vault-reserveBlue text-white border-vault-reserveBlue shadow-xs' 
-                    : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text'
+                    ? 'bg-vault-reserveBlue text-white border-vault-reserveBlue' 
+                    : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink'
                 }`}
               >
                 {preset.label}
@@ -191,9 +190,9 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Theme & Dark Mode Controls */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-sans">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-          Appearance & Theme
+          Appearance
         </h3>
 
         <div className="flex justify-between items-center py-1 text-xs">
@@ -201,7 +200,7 @@ export const ProfileScreen = () => {
             {isDarkMode ? <Moon className="w-4 h-4 text-vault-reserveBlue" /> : <Sun className="w-4 h-4 text-amber-500" />}
             <div>
               <p className="font-bold text-vault-ink dark:text-vault-text">Dark Theme</p>
-              <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Toggle high-contrast obsidian dark mode</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Toggle dark color mode</p>
             </div>
           </div>
 
@@ -215,10 +214,10 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Account Credentials Card */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
         <div className="flex justify-between items-center">
           <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-            Vault Account Details
+            Account Details
           </h3>
 
           <div className="flex items-center gap-2 font-mono">
@@ -246,7 +245,7 @@ export const ProfileScreen = () => {
 
         <div className="space-y-2 text-xs font-mono">
           <div className="flex justify-between items-center py-1.5 border-b border-vault-rule">
-            <span className="text-vault-muted dark:text-vault-mutedDark">Primary UPI Handle</span>
+            <span className="text-vault-muted dark:text-vault-mutedDark">UPI Handle</span>
             <button 
               type="button"
               aria-label="Copy UPI handle"
@@ -272,16 +271,16 @@ export const ProfileScreen = () => {
 
           <div className="flex justify-between items-center py-1.5">
             <span className="text-vault-muted dark:text-vault-mutedDark">Account Type</span>
-            <span className="font-bold text-vault-ink dark:text-vault-text font-sans">Vault Salary Account</span>
+            <span className="font-bold text-vault-ink dark:text-vault-text font-sans">Salary Account</span>
           </div>
         </div>
       </div>
 
       {/* Linked Bank Card */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-sans">
         <div className="flex justify-between items-center">
           <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-            Linked Bank & Cards
+            Linked Debit Card
           </h3>
 
           <button 
@@ -297,11 +296,11 @@ export const ProfileScreen = () => {
 
         <div className="p-3 bg-vault-paper border border-vault-rule rounded-lg flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-vault-reserveBlueLight border border-vault-reserveBlue/30 text-vault-reserveBlue flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-vault-surface border border-vault-rule text-vault-reserveBlue flex items-center justify-center">
               <CreditCard className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-xs font-bold text-vault-ink dark:text-vault-text">{user.linkedCard.bank}</p>
+              <p className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">{user.linkedCard.bank}</p>
               <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono">
                 {revealCard ? user.linkedCard.fullCardNo : user.linkedCard.cardNo} • {user.linkedCard.type}
               </p>
@@ -314,7 +313,7 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Security & Biometric Controls */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-sans">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
           Security Controls
         </h3>
@@ -325,7 +324,7 @@ export const ProfileScreen = () => {
               <BiometricIcon className="w-4 h-4 text-vault-reserveBlue" />
               <div>
                 <p className="font-bold text-vault-ink dark:text-vault-text">{biometricLabel} Verification</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Use {biometricLabel} instead of 6-digit PIN for payments</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Use {biometricLabel} for fast authentication</p>
               </div>
             </div>
 
@@ -341,8 +340,8 @@ export const ProfileScreen = () => {
             <div className="flex items-center gap-2.5">
               <Lock className="w-4 h-4 text-vault-reserveBlue" />
               <div>
-                <p className="font-bold text-vault-ink dark:text-vault-text">Mandatory PIN for transfers over ₹5,000</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Enforces security check on high-value transfers</p>
+                <p className="font-bold text-vault-ink dark:text-vault-text">PIN for transfers over ₹5,000</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Require PIN confirmation for higher value transactions</p>
               </div>
             </div>
 
@@ -357,17 +356,17 @@ export const ProfileScreen = () => {
       </div>
 
       {/* Active Devices & Sessions */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-2 shadow-xs">
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-2 font-mono">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-          Active Devices & Sessions
+          Active Session
         </h3>
 
         <div className="flex items-center justify-between p-2.5 bg-vault-paper border border-vault-rule rounded-lg text-xs font-mono">
           <div className="flex items-center gap-2.5">
             <Smartphone className="w-4 h-4 text-vault-reserveBlue" />
             <div>
-              <p className="font-bold text-vault-ink dark:text-vault-text">{user.activeSession.device}</p>
-              <p className="text-xs text-vault-muted dark:text-vault-mutedDark">Logged in on this device • {user.activeSession.location}</p>
+              <p className="font-bold text-vault-ink dark:text-vault-text font-sans">{user.activeSession.device}</p>
+              <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.activeSession.location}</p>
             </div>
           </div>
           <span className="text-[11px] text-vault-reserveBlue font-bold">
@@ -406,3 +405,4 @@ export const ProfileScreen = () => {
     </div>
   );
 };
+

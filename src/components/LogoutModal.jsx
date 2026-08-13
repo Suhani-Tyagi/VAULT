@@ -26,52 +26,52 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 font-sans">
         <motion.div 
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="logout-modal-title"
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="relative w-full max-w-sm bg-vault-surface border border-vault-border rounded-3xl p-6 shadow-2xl overflow-hidden z-10 text-vault-charcoal dark:text-vault-text text-center focus:outline-none"
+          exit={{ opacity: 0, scale: 0.98 }}
+          className="relative w-full max-w-sm bg-vault-surface border border-vault-rule rounded-xl p-5 shadow-xl text-vault-ink dark:text-vault-text text-center focus:outline-none"
         >
           <button 
             type="button"
             onClick={onClose}
             aria-label="Close logout modal"
-            className="absolute top-4 right-4 p-1.5 text-vault-muted dark:text-vault-mutedDark hover:text-vault-charcoal dark:hover:text-vault-text rounded-full hover:bg-vault-surfaceHighlight focus:ring-2 focus:ring-vault-terracotta"
+            className="absolute top-4 right-4 p-1 text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded hover:bg-vault-surfaceHighlight"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
-          <div className="w-14 h-14 bg-vault-roseLight border border-vault-rose/30 text-vault-rose rounded-full flex items-center justify-center mx-auto mb-3">
-            <LogOut className="w-7 h-7" />
+          <div className="w-10 h-10 bg-vault-roseLight text-vault-rose rounded-full flex items-center justify-center mx-auto mb-2.5">
+            <LogOut className="w-5 h-5" />
           </div>
 
-          <h3 id="logout-modal-title" className="text-lg font-bold text-vault-charcoal dark:text-vault-text">
+          <h3 id="logout-modal-title" className="text-sm font-bold text-vault-ink dark:text-vault-text font-sans">
             Log Out of Vault?
           </h3>
 
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark my-2 leading-relaxed">
-            "You will be logged out of your Vault sandbox session on this device. Your money and settings will remain safe."
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark my-2 font-mono">
+            You will need to sign in again to access your account details and transactions.
           </p>
 
-          <div className="flex gap-2 pt-3">
+          <div className="flex gap-2 pt-2 font-mono">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 bg-vault-surfaceHighlight border border-vault-border text-vault-charcoal dark:text-vault-text rounded-xl text-xs font-bold hover:bg-vault-border"
+              className="flex-1 py-2 bg-vault-paper border border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded-lg text-xs font-bold"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className="flex-1 py-2.5 bg-vault-rose text-white rounded-xl text-xs font-bold hover:bg-rose-700 shadow-xs"
+              className="flex-1 py-2 bg-vault-rose text-white rounded-lg text-xs font-bold hover:bg-rose-700"
             >
-              Log Out Now
+              Log Out
             </button>
           </div>
         </motion.div>
@@ -79,3 +79,4 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
     </AnimatePresence>
   );
 };
+
