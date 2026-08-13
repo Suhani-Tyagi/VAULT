@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Download } from 'lucide-react';
+import { Search, Download, FileText } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { TransactionRow } from '../components/TransactionRow';
+import { ExportPassbookModal } from '../components/ExportPassbookModal';
 
 export const TransactionsScreen = () => {
   const { transactions, setSelectedTransaction, showToast } = useVault();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
@@ -15,6 +17,7 @@ export const TransactionsScreen = () => {
         tx.merchant.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tx.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tx.method.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (tx.upiRef && tx.upiRef.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (tx.notes && tx.notes.toLowerCase().includes(searchQuery.toLowerCase()));
 
       if (selectedFilter === 'debit') return matchesSearch && tx.type === 'debit';
@@ -35,37 +38,8 @@ export const TransactionsScreen = () => {
     return groups;
   }, [filteredTransactions]);
 
-  const handleExportCsv = () => {
-    if (filteredTransactions.length === 0) {
-      showToast("No transactions available to export", "error");
-      return;
-    }
-
-    const headers = ["ID", "Merchant", "Amount (INR)", "Type", "Category", "Date", "UPI Ref"];
-    const rows = filteredTransactions.map(t => [
-      t.id,
-      `"${t.merchant}"`,
-      t.amount,
-      t.type,
-      `"${t.category}"`,
-      `"${t.date}"`,
-      t.upiRef
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Vault_Passbook_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    showToast("Passbook CSV downloaded");
-  };
-
   return (
-    <div className="space-y-4 font-sans">
+    <div className="space-y-4 font-sans max-w-5xl mx-auto">
       {/* Header title & Export button */}
       <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
@@ -80,10 +54,10 @@ export const TransactionsScreen = () => {
         <button
           type="button"
           aria-label="Export activity as CSV statement"
-          onClick={handleExportCsv}
+          onClick={() => setShowExportModal(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-paper border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-colors"
         >
-          <Download className="w-3.5 h-3.5 text-vault-reserveBlue" />
+          <FileText className="w-3.5 h-3.5 text-vault-reserveBlue" />
           <span>Export Passbook</span>
         </button>
       </div>
@@ -153,6 +127,13 @@ export const TransactionsScreen = () => {
           </div>
         )}
       </div>
+
+      {/* Export Passbook Modal */}
+      <ExportPassbookModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
     </div>
   );
 };
+

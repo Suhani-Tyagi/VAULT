@@ -4,6 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { DeviceProvider, useDevice } from './context/DeviceContext';
 import { VaultProvider, useVault } from './context/VaultContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { LoginScreen } from './components/LoginScreen';
 
 import { MobileShell } from './components/shells/MobileShell';
 import { TabletShell } from './components/shells/TabletShell';
@@ -20,8 +21,8 @@ const ProfileScreen = lazy(() => import('./screens/ProfileScreen').then(m => ({ 
 
 const LoadingFallback = () => (
   <div className="py-20 flex flex-col items-center justify-center space-y-3 text-vault-muted">
-    <Loader2 className="w-8 h-8 text-vault-terracotta animate-spin" />
-    <p className="text-xs font-semibold">Loading Vault Screen...</p>
+    <Loader2 className="w-8 h-8 text-vault-reserveBlue animate-spin" />
+    <p className="text-xs font-semibold font-mono">Loading Vault Screen...</p>
   </div>
 );
 
@@ -58,6 +59,7 @@ const MainScreenRouter = () => {
 
 const AdaptiveShellContainer = () => {
   const { deviceType } = useDevice();
+  const { isAuthenticated, isLoggedOut, loginWithPassword, user } = useVault();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("vault-theme");
@@ -65,6 +67,10 @@ const AdaptiveShellContainer = () => {
       document.documentElement.classList.add('dark');
     }
   }, []);
+
+  if (!isAuthenticated || isLoggedOut) {
+    return <LoginScreen onLogin={loginWithPassword} user={user} />;
+  }
 
   if (deviceType === 'tablet') {
     return (
@@ -102,3 +108,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+

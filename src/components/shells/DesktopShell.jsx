@@ -8,24 +8,41 @@ import {
   User, 
   ShieldCheck, 
   Search, 
-  Plus, 
   Send, 
   Lock,
   LogIn,
   LogOut,
   Moon,
   Sun,
-  Settings
+  Bell,
+  FileText
 } from 'lucide-react';
 import { useVault } from '../../context/VaultContext';
 import { CommandPalette } from '../CommandPalette';
 import { TransactionDrawer } from '../TransactionDrawer';
 import { LogoutModal } from '../LogoutModal';
+import { NotificationCenter } from '../NotificationCenter';
+import { ExportPassbookModal } from '../ExportPassbookModal';
 
 export const DesktopShell = ({ children }) => {
-  const { user, activeTab, setActiveTab, selectedTransaction, setSelectedTransaction, isLoggedOut, logOut, logIn, showToast } = useVault();
+  const { 
+    user, 
+    activeTab, 
+    setActiveTab, 
+    selectedTransaction, 
+    setSelectedTransaction, 
+    isLoggedOut, 
+    logOut, 
+    logIn, 
+    lockVault,
+    notifications,
+    showToast 
+  } = useVault();
+
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -53,11 +70,14 @@ export const DesktopShell = ({ children }) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setIsCmdPaletteOpen(prev => !prev);
+      } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        lockVault();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [lockVault]);
 
   const mainNavItems = [
     { id: 'home', label: 'Home', icon: Home },
@@ -67,6 +87,8 @@ export const DesktopShell = ({ children }) => {
     { id: 'goals', label: 'Goals', icon: Target },
     { id: 'insights', label: 'Insights', icon: PieChart },
   ];
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   if (isLoggedOut) {
     return (
@@ -160,7 +182,7 @@ export const DesktopShell = ({ children }) => {
           </nav>
         </div>
 
-        {/* Bottom Navigation Section: Profile, Settings, Theme */}
+        {/* Bottom Navigation Section: Profile, Settings, Theme, Lock */}
         <div className="space-y-3 pt-3 border-t border-vault-rule font-sans text-xs">
           <div className="space-y-1 font-medium">
             <button
@@ -178,6 +200,29 @@ export const DesktopShell = ({ children }) => {
               )}
               <User className="w-4 h-4" />
               <span>Profile</span>
+            </button>
+
+            <button
+              type="button"
+              aria-label="Export Passbook Statement"
+              onClick={() => setShowExportModal(true)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight/50 transition-colors text-left"
+            >
+              <FileText className="w-4 h-4 text-vault-reserveBlue" />
+              <span>Export Passbook</span>
+            </button>
+
+            <button
+              type="button"
+              aria-label="Lock Vault Session"
+              onClick={lockVault}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight/50 transition-colors text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                <Lock className="w-4 h-4 text-vault-reserveBlue" />
+                <span>Lock Vault</span>
+              </div>
+              <kbd className="text-[9px] font-mono text-vault-subtle">Ctrl+L</kbd>
             </button>
 
             <button
@@ -235,7 +280,27 @@ export const DesktopShell = ({ children }) => {
             </kbd>
           </button>
 
-          <div className="flex items-center gap-3 text-xs font-mono text-vault-muted dark:text-vault-mutedDark">
+          <div className="flex items-center gap-4 text-xs font-mono text-vault-muted dark:text-vault-mutedDark">
+            {/* Notification Bell Icon */}
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Notifications"
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink rounded-lg hover:bg-vault-paper transition-colors relative"
+              >
+                <Bell className="w-4 h-4 text-vault-reserveBlue" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-vault-reserveBlue" />
+                )}
+              </button>
+
+              <NotificationCenter 
+                isOpen={showNotifications} 
+                onClose={() => setShowNotifications(false)} 
+              />
+            </div>
+
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-vault-emerald" />
               <span>Personal Banking</span>
@@ -255,6 +320,12 @@ export const DesktopShell = ({ children }) => {
         onClose={() => setIsCmdPaletteOpen(false)} 
       />
 
+      {/* Export Passbook Modal */}
+      <ExportPassbookModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
+
       {/* Transaction Detail Drawer */}
       <TransactionDrawer 
         transaction={selectedTransaction} 
@@ -270,5 +341,6 @@ export const DesktopShell = ({ children }) => {
     </div>
   );
 };
+
 
 

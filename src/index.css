@@ -79,9 +79,21 @@
   display: none;
 }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* WCAG 2.2 AA Keyboard Focus Indicators */
+*:focus-visible {
+  outline: 2px solid #C85A32 !important;
+  outline-offset: 2px !important;
 }
+
+/* Reduced Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 
 

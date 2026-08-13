@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, CreditCard, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, LogOut, QrCode, User, Bell } from 'lucide-react';
+import { Shield, CreditCard, Smartphone, Lock, Eye, EyeOff, Copy, Moon, Sun, Scan, Fingerprint, Monitor, LogOut, QrCode, User, Bell, FileText, Trash2, Key } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
 import { ToggleSwitch } from '../components/ToggleSwitch';
@@ -7,9 +7,11 @@ import { PinPadModal } from '../components/PinPadModal';
 import { BiometricModal } from '../components/BiometricModal';
 import { LogoutModal } from '../components/LogoutModal';
 import { ReceiveQrModal } from '../components/ReceiveQrModal';
+import { ExportPassbookModal } from '../components/ExportPassbookModal';
+import { ConfirmationModal } from '../components/ConfirmationModal';
 
 export const ProfileScreen = () => {
-  const { user, toggleSetting, showToast, logOut } = useVault();
+  const { user, toggleSetting, showToast, logOut, lockVault, clearLocalData } = useVault();
   const { deviceType, os, isOverridden, activeOverride, setOverride, clearOverride } = useDevice();
 
   const [revealAccount, setRevealAccount] = useState(false);
@@ -20,6 +22,8 @@ export const ProfileScreen = () => {
   const [showBiometricAuthModal, setShowBiometricAuthModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showClearDataModal, setShowClearDataModal] = useState(false);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -107,9 +111,9 @@ export const ProfileScreen = () => {
       {/* Header title */}
       <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
-          <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Settings & Preferences</h2>
+          <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Settings & Security Center</h2>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-            Personal identity, account details, security controls, and application preferences
+            Personal identity, security controls, passbook export, and data management
           </p>
         </div>
 
@@ -147,17 +151,35 @@ export const ProfileScreen = () => {
       {/* SECTION 1: PERSONAL & SECURITY */}
       <div className="space-y-2">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider px-1">
-          PERSONAL & SECURITY
+          SECURITY & SESSIONS
         </h3>
 
         <div className="bg-vault-surface border border-vault-rule rounded-xl divide-y divide-vault-rule text-xs font-sans">
+          {/* Lock Vault */}
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Lock className="w-4 h-4 text-vault-reserveBlue shrink-0" />
+              <div>
+                <p className="font-bold text-vault-ink dark:text-vault-text">Lock Vault Session</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Manually lock session immediately (Ctrl+L)</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={lockVault}
+              className="px-3 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule rounded-lg text-vault-ink dark:text-vault-text font-mono font-bold text-xs"
+            >
+              Lock Vault
+            </button>
+          </div>
+
           {/* Biometrics */}
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <BiometricIcon className="w-4 h-4 text-vault-reserveBlue shrink-0" />
               <div>
                 <p className="font-bold text-vault-ink dark:text-vault-text">{biometricLabel} Authentication</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Use biometric authentication for quick transaction signing</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Use biometric verification for quick transaction signing</p>
               </div>
             </div>
             <ToggleSwitch 
@@ -171,7 +193,7 @@ export const ProfileScreen = () => {
           {/* Mandatory PIN Threshold */}
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Lock className="w-4 h-4 text-vault-reserveBlue shrink-0" />
+              <Key className="w-4 h-4 text-vault-reserveBlue shrink-0" />
               <div>
                 <p className="font-bold text-vault-ink dark:text-vault-text">High-Value Transfer Safeguard</p>
                 <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Mandatory 6-digit PIN confirmation for transfers over ₹5,000</p>
@@ -194,18 +216,36 @@ export const ProfileScreen = () => {
                 <p className="text-xs text-vault-muted dark:text-vault-mutedDark">{user.activeSession.device} • {user.activeSession.location}</p>
               </div>
             </div>
-            <span className="text-xs text-vault-emerald font-bold">Active now</span>
+            <span className="text-xs text-vault-emerald font-bold">10-min Idle Policy Active</span>
           </div>
         </div>
       </div>
 
-      {/* SECTION 2: ACCOUNT & CARDS */}
+      {/* SECTION 2: ACCOUNT & PASSBOOK */}
       <div className="space-y-2">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider px-1">
-          ACCOUNT & CREDENTIALS
+          ACCOUNT & PASSBOOK
         </h3>
 
         <div className="bg-vault-surface border border-vault-rule rounded-xl divide-y divide-vault-rule text-xs font-mono">
+          {/* Export Passbook */}
+          <div className="p-4 flex items-center justify-between font-sans">
+            <div className="flex items-center gap-3">
+              <FileText className="w-4 h-4 text-vault-reserveBlue shrink-0" />
+              <div>
+                <p className="font-bold text-vault-ink dark:text-vault-text">Export Bank Passbook (PDF)</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Generate official multi-page PDF transaction statement</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowExportModal(true)}
+              className="px-3 py-1.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover text-white rounded-lg font-mono font-bold text-xs"
+            >
+              Export Statement
+            </button>
+          </div>
+
           {/* UPI ID */}
           <div className="p-4 flex items-center justify-between">
             <span className="text-vault-muted dark:text-vault-mutedDark font-bold">UPI ID</span>
@@ -241,30 +281,37 @@ export const ProfileScreen = () => {
             <span className="text-vault-muted dark:text-vault-mutedDark font-bold">IFSC Code</span>
             <span className="font-bold text-vault-ink dark:text-vault-text">{user.ifscCode}</span>
           </div>
+        </div>
+      </div>
 
-          {/* Linked Card */}
-          <div className="p-4 flex items-center justify-between font-sans">
+      {/* SECTION 3: DATA & PRIVACY */}
+      <div className="space-y-2">
+        <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider px-1">
+          DATA & DESTRUCTIVE ACTIONS
+        </h3>
+
+        <div className="bg-vault-surface border border-vault-rule rounded-xl divide-y divide-vault-rule text-xs font-sans">
+          {/* Clear Local Data */}
+          <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <CreditCard className="w-4 h-4 text-vault-reserveBlue shrink-0" />
+              <Trash2 className="w-4 h-4 text-vault-rose shrink-0" />
               <div>
-                <p className="font-bold text-vault-ink dark:text-vault-text">{user.linkedCard.bank} Debit Card</p>
-                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">
-                  {revealCard ? user.linkedCard.fullCardNo : user.linkedCard.cardNo}
-                </p>
+                <p className="font-bold text-vault-rose">Clear Local VAULT Data</p>
+                <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-mono mt-0.5">Reset locally stored demo data and session keys</p>
               </div>
             </div>
-            <button 
+            <button
               type="button"
-              onClick={() => handleInitiateReveal('card')}
-              className="text-xs font-mono font-bold text-vault-reserveBlue hover:underline"
+              onClick={() => setShowClearDataModal(true)}
+              className="px-3 py-1.5 bg-vault-paper border border-vault-rose/30 text-vault-rose hover:bg-vault-roseLight rounded-lg font-mono font-bold text-xs transition-colors"
             >
-              {revealCard ? "Mask" : "Unmask (Auth)"}
+              Clear Data
             </button>
           </div>
         </div>
       </div>
 
-      {/* SECTION 3: APP PREFERENCES & VIEWPORT */}
+      {/* SECTION 4: APP PREFERENCES */}
       <div className="space-y-2">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider px-1">
           APP & ENVIRONMENT
@@ -288,47 +335,10 @@ export const ProfileScreen = () => {
             />
           </div>
 
-          {/* Viewport Switcher Grid */}
-          <div className="p-4 space-y-2 font-mono">
-            <div className="flex justify-between items-center">
-              <span className="font-bold text-vault-ink dark:text-vault-text font-sans">Developer Viewport Override</span>
-              {isOverridden && (
-                <span className="text-[10px] bg-vault-reserveBlue text-white px-2 py-0.5 rounded font-bold">
-                  Override Active
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
-              {devicePresets.map(preset => {
-                const isSelected = preset.id === 'auto' 
-                  ? !isOverridden 
-                  : activeOverride?.deviceType === preset.type && activeOverride?.os === preset.os;
-
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => {
-                      if (preset.id === 'auto') clearOverride();
-                      else setOverride({ deviceType: preset.type, os: preset.os });
-                    }}
-                    className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-colors border text-center ${
-                      isSelected 
-                        ? 'bg-vault-reserveBlue text-white border-vault-reserveBlue' 
-                        : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink'
-                    }`}
-                  >
-                    {preset.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* About VAULT */}
           <div className="p-4 flex items-center justify-between font-mono">
             <span className="text-vault-muted dark:text-vault-mutedDark font-bold">VAULT Build Version</span>
-            <span className="font-bold text-vault-ink dark:text-vault-text">v2.4.0 (Editorial Release)</span>
+            <span className="font-bold text-vault-ink dark:text-vault-text">v2.5.0 (Security & Passbook Release)</span>
           </div>
         </div>
       </div>
@@ -348,10 +358,25 @@ export const ProfileScreen = () => {
         recipientName={authActionTarget === 'account' ? 'Unmask Account Details' : 'Unmask Debit Card Details'}
       />
 
-      {/* Receive QR Modal */}
       <ReceiveQrModal
         isOpen={showReceiveModal}
         onClose={() => setShowReceiveModal(false)}
+      />
+
+      <ExportPassbookModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
+
+      {/* Clear Local Data Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showClearDataModal}
+        onClose={() => setShowClearDataModal(false)}
+        onConfirm={clearLocalData}
+        title="Delete all local VAULT data?"
+        description="This action will clear all locally stored transactions, budgets, goals, and security session tokens. This action cannot be undone."
+        confirmLabel="Delete Data"
+        isDanger={true}
       />
 
       {/* Logout Confirmation Modal */}
@@ -363,5 +388,6 @@ export const ProfileScreen = () => {
     </div>
   );
 };
+
 
 
