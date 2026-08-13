@@ -86,6 +86,15 @@ export const HomeScreen = () => {
         <div className="flex items-center gap-2 font-mono text-xs">
           <button
             type="button"
+            onClick={() => setShowReceiveModal(true)}
+            className="px-2.5 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule text-vault-ink dark:text-vault-text rounded-lg font-bold transition-colors flex items-center gap-1.5"
+          >
+            <QrCode className="w-3.5 h-3.5 text-vault-reserveBlue" />
+            <span>Show QR</span>
+          </button>
+
+          <button
+            type="button"
             onClick={copyAccountDetails}
             className="px-2.5 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule rounded-lg text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink transition-colors flex items-center gap-1.5"
           >
@@ -141,7 +150,7 @@ export const HomeScreen = () => {
         </div>
 
         {/* Compact Actions Area */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 font-mono text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 font-mono text-xs">
           <button
             type="button"
             onClick={() => setActiveTab('send')}
@@ -149,6 +158,15 @@ export const HomeScreen = () => {
           >
             <Send className="w-3.5 h-3.5 text-vault-reserveBlue" />
             <span>Send Money</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowReceiveModal(true)}
+            className="py-2.5 px-3 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule rounded-lg text-vault-ink dark:text-vault-text font-bold transition-colors flex items-center justify-center gap-2"
+          >
+            <QrCode className="w-3.5 h-3.5 text-vault-emerald" />
+            <span>Receive / QR</span>
           </button>
 
           <button

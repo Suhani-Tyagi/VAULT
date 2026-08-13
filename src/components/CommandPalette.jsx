@@ -27,6 +27,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     { id: 'profile', label: 'Profile & Security Settings', icon: User, category: 'Screens' },
   ];
 
+
   const filteredScreens = screens.filter(s => s.label.toLowerCase().includes(query.toLowerCase()));
   const filteredContacts = contacts.filter(c => c.name.toLowerCase().includes(query.toLowerCase()) || c.upiId.toLowerCase().includes(query.toLowerCase()));
   const filteredTxs = transactions.filter(t => t.merchant.toLowerCase().includes(query.toLowerCase()) || t.category.toLowerCase().includes(query.toLowerCase()));

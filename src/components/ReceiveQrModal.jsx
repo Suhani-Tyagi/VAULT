@@ -44,9 +44,23 @@ export const ReceiveQrModal = ({ isOpen, onClose }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShareQr = () => {
-    showToast("QR code image saved to gallery");
+  const handleShareQr = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Pay ${user.name} via VAULT`,
+          text: `Send money to ${user.name} on VAULT using UPI ID: ${user.upiId}`,
+          url: upiUrl
+        });
+        showToast("Shared successfully");
+      } catch (err) {
+        handleCopyUpi();
+      }
+    } else {
+      handleCopyUpi();
+    }
   };
+
 
   return (
     <AnimatePresence>

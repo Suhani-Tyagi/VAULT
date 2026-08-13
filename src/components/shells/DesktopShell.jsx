@@ -15,7 +15,8 @@ import {
   Moon,
   Sun,
   Bell,
-  FileText
+  FileText,
+  QrCode
 } from 'lucide-react';
 import { useVault } from '../../context/VaultContext';
 import { CommandPalette } from '../CommandPalette';
@@ -23,6 +24,7 @@ import { TransactionDrawer } from '../TransactionDrawer';
 import { LogoutModal } from '../LogoutModal';
 import { NotificationCenter } from '../NotificationCenter';
 import { ExportPassbookModal } from '../ExportPassbookModal';
+import { ReceiveQrModal } from '../ReceiveQrModal';
 
 export const DesktopShell = ({ children }) => {
   const { 
@@ -43,6 +45,7 @@ export const DesktopShell = ({ children }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -179,6 +182,16 @@ export const DesktopShell = ({ children }) => {
                 </button>
               );
             })}
+
+            <button
+              type="button"
+              aria-label="Receive Money / Show My QR Code"
+              onClick={() => setShowReceiveModal(true)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text hover:bg-vault-surfaceHighlight/50 transition-colors text-left"
+            >
+              <QrCode className="w-4 h-4 text-vault-emerald" />
+              <span>Receive / Show QR</span>
+            </button>
           </nav>
         </div>
 
@@ -281,6 +294,17 @@ export const DesktopShell = ({ children }) => {
           </button>
 
           <div className="flex items-center gap-4 text-xs font-mono text-vault-muted dark:text-vault-mutedDark">
+            {/* Show QR Action Button in Header */}
+            <button
+              type="button"
+              aria-label="Show My QR Code"
+              onClick={() => setShowReceiveModal(true)}
+              className="px-2.5 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule text-vault-ink dark:text-vault-text rounded-lg font-bold transition-colors flex items-center gap-1.5"
+            >
+              <QrCode className="w-3.5 h-3.5 text-vault-emerald" />
+              <span>Show My QR</span>
+            </button>
+
             {/* Notification Bell Icon */}
             <div className="relative">
               <button
@@ -326,6 +350,12 @@ export const DesktopShell = ({ children }) => {
         onClose={() => setShowExportModal(false)}
       />
 
+      {/* Receive QR Modal */}
+      <ReceiveQrModal
+        isOpen={showReceiveModal}
+        onClose={() => setShowReceiveModal(false)}
+      />
+
       {/* Transaction Detail Drawer */}
       <TransactionDrawer 
         transaction={selectedTransaction} 
@@ -341,6 +371,7 @@ export const DesktopShell = ({ children }) => {
     </div>
   );
 };
+
 
 
 
