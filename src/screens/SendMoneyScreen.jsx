@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock, QrCode, ArrowDownLeft } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, ArrowRight, Loader2, AlertTriangle, Fingerprint, Lock, QrCode, ArrowDownLeft, Wallet } from 'lucide-react';
 import { useVault } from '../context/VaultContext';
 import { useDevice } from '../context/DeviceContext';
 import { PinPadModal } from '../components/PinPadModal';
@@ -31,7 +31,7 @@ export const SendMoneyScreen = () => {
     name: customUpi || "Custom UPI Recipient",
     upiId: customUpi || "user@upi",
     initials: "UPI",
-    avatarBg: "#1E3A8A"
+    avatarBg: "#C85A32"
   };
 
   const numAmount = parseFloat(amount) || 0;
@@ -113,8 +113,8 @@ export const SendMoneyScreen = () => {
 
           <div>
             <h3 className="text-lg font-bold text-vault-ink dark:text-vault-text font-sans">Transfer Complete</h3>
-            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-              Sent to <span className="font-bold text-vault-ink dark:text-vault-text">{recipient.name}</span>
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+              Settled to <span className="font-bold text-vault-ink dark:text-vault-text font-sans">{recipient.name}</span>
             </p>
           </div>
 
@@ -160,100 +160,36 @@ export const SendMoneyScreen = () => {
   }
 
   return (
-    <div className="space-y-4 font-sans">
+    <div className="space-y-6 font-sans max-w-2xl mx-auto">
       {/* Header title */}
-      <div className="pb-2 border-b border-vault-rule">
-        <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Send Money</h2>
-        <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-          Instant bank transfer with PIN or biometric authentication
-        </p>
-      </div>
-
-      {/* Dual QR Options Bar */}
-      <div className="grid grid-cols-2 gap-2 font-mono text-xs">
-        <button
-          type="button"
-          aria-label="Scan Merchant or Friend QR Code"
-          onClick={() => setShowQrModal(true)}
-          className="py-2 px-3 bg-vault-surface border border-vault-rule text-vault-ink dark:text-vault-text font-bold rounded-lg flex items-center justify-center gap-2 hover:border-vault-reserveBlue transition-colors"
-        >
-          <QrCode className="w-4 h-4 text-vault-reserveBlue" />
-          <span>Scan QR Code</span>
-        </button>
-
-        <button
-          type="button"
-          aria-label="Show My QR Code to Receive Money"
-          onClick={() => setShowReceiveModal(true)}
-          className="py-2 px-3 bg-vault-paper border border-vault-rule text-vault-ink dark:text-vault-text font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-vault-surfaceHighlight transition-colors"
-        >
-          <ArrowDownLeft className="w-4 h-4 text-vault-emerald" />
-          <span>Receive QR</span>
-        </button>
-      </div>
-
-      {/* 1. Recipient Picker */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
-        <label className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block">
-          Select Recipient
-        </label>
-
-        <div className="flex gap-2.5 overflow-x-auto no-scrollbar py-1">
-          {contacts.map(c => {
-            const isSelected = selectedContact?.id === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                aria-label={`Select recipient ${c.name}`}
-                onClick={() => { setSelectedContact(c); setCustomUpi(''); }}
-                className={`flex flex-col items-center p-2 rounded-lg shrink-0 transition-colors w-20 border text-center ${
-                  isSelected 
-                    ? 'bg-vault-surfaceHighlight border-vault-reserveBlue text-vault-ink dark:text-vault-text font-bold' 
-                    : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:border-vault-muted'
-                }`}
-              >
-                <img 
-                  src={c.avatar} 
-                  alt={`${c.name}'s profile avatar`}
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 rounded-full object-cover mb-1 shrink-0 border border-vault-rule" 
-                />
-                <span className="text-[11px] font-medium truncate w-full">
-                  {c.name.split(' ')[0]}
-                </span>
-              </button>
-            );
-          })}
+      <div className="flex items-center justify-between pb-3 border-b border-vault-rule">
+        <div>
+          <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Send Money</h2>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+            Direct bank transfer & UPI settlement
+          </p>
         </div>
 
-        {selectedContact && (
-          <div className="p-2.5 bg-vault-paper border border-vault-rule rounded-lg flex items-center justify-between text-xs font-mono">
-            <div>
-              <p className="font-bold text-vault-ink dark:text-vault-text font-sans">{selectedContact.name}</p>
-              <p className="text-[11px] text-vault-muted dark:text-vault-mutedDark">{selectedContact.upiId}</p>
-            </div>
-            <span className="text-[10px] text-vault-emerald font-bold bg-vault-emeraldLight px-2 py-0.5 rounded border border-vault-emerald/20">
-              Verified
-            </span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <button
+            type="button"
+            aria-label="Scan Merchant or Friend QR Code"
+            onClick={() => setShowQrModal(true)}
+            className="px-2.5 py-1.5 bg-vault-paper border border-vault-rule text-vault-ink dark:text-vault-text font-bold rounded-lg flex items-center gap-1.5 hover:border-vault-reserveBlue transition-colors"
+          >
+            <QrCode className="w-3.5 h-3.5 text-vault-reserveBlue" />
+            <span>Scan QR</span>
+          </button>
+        </div>
       </div>
 
-      {/* 2. Amount Entry */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
-        <div className="flex justify-between items-center text-xs">
-          <label htmlFor="send-amount-input" className="font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-            Amount (Max ₹1,00,000)
-          </label>
-          <span className="text-vault-muted dark:text-vault-mutedDark font-mono">
-            Available: <strong className="text-vault-ink dark:text-vault-text tabular-nums">₹{user.availableBalance.toLocaleString('en-IN')}</strong>
-          </span>
-        </div>
-
-        <div className="relative flex items-center bg-vault-paper border border-vault-rule rounded-lg px-3 py-2 focus-within:border-vault-reserveBlue transition-colors">
-          <span className="font-serif text-2xl font-bold text-vault-reserveBlue mr-2">₹</span>
+      {/* PROMINENT VISUAL AMOUNT ANCHOR */}
+      <div className="py-4 text-center space-y-2">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-vault-muted dark:text-vault-mutedDark">
+          TRANSFER AMOUNT
+        </span>
+        <div className="flex items-center justify-center gap-1">
+          <span className="font-serif text-3xl sm:text-4xl font-bold text-vault-reserveBlue">₹</span>
           <input 
             id="send-amount-input"
             type="number"
@@ -262,57 +198,115 @@ export const SendMoneyScreen = () => {
             value={amount}
             onChange={(e) => { setAmount(e.target.value); setErrorState(null); }}
             placeholder="0"
-            className="w-full bg-transparent text-2xl sm:text-3xl font-mono font-bold text-vault-ink dark:text-vault-text focus:outline-none tabular-nums"
+            className="w-48 bg-transparent text-4xl sm:text-5xl font-mono font-bold text-vault-ink dark:text-vault-text focus:outline-none text-center tabular-nums"
           />
         </div>
+        <p className="text-xs font-mono text-vault-muted dark:text-vault-mutedDark">
+          Available: <span className="font-bold text-vault-ink dark:text-vault-text tabular-nums">₹{user.availableBalance.toLocaleString('en-IN')}</span>
+        </p>
 
-        <div className="flex gap-2">
-          {[500, 1000, 2000, 5000, 12000].map(val => (
+        {/* Quick Amount Chips */}
+        <div className="flex justify-center gap-1.5 pt-2 max-w-md mx-auto">
+          {[500, 1000, 2500, 5000, 10000].map(val => (
             <button
               key={val}
               type="button"
               aria-label={`Set amount to ${val} rupees`}
               onClick={() => handleQuickAmount(val)}
-              className="flex-1 py-1.5 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule rounded-lg text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text transition-colors tabular-nums"
+              className="px-2.5 py-1 bg-vault-paper hover:bg-vault-surfaceHighlight border border-vault-rule rounded-lg text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark hover:text-vault-ink dark:hover:text-vault-text transition-colors tabular-nums"
             >
               +₹{val}
             </button>
           ))}
         </div>
-
-        <input 
-          type="text"
-          placeholder="Add a note (optional)"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          aria-label="Add a transfer note"
-          className="w-full bg-vault-paper border border-vault-rule rounded-lg px-3 py-2 text-xs text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-mono"
-        />
       </div>
 
-      {/* 3. Large Transfer Warning */}
+      {/* FORM ROWS */}
+      <div className="space-y-4">
+        {/* Recipient Row */}
+        <div className="space-y-2">
+          <label className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block">
+            RECIPIENT
+          </label>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+            {contacts.map(c => {
+              const isSelected = selectedContact?.id === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-label={`Select recipient ${c.name}`}
+                  onClick={() => { setSelectedContact(c); setCustomUpi(''); }}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg shrink-0 transition-colors border text-left ${
+                    isSelected 
+                      ? 'bg-vault-surfaceHighlight border-vault-reserveBlue text-vault-ink dark:text-vault-text font-bold' 
+                      : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:border-vault-muted'
+                  }`}
+                >
+                  <img 
+                    src={c.avatar} 
+                    alt={`${c.name}'s profile avatar`}
+                    width={28}
+                    height={28}
+                    className="w-7 h-7 rounded-full object-cover shrink-0 border border-vault-rule" 
+                  />
+                  <div className="text-xs">
+                    <p className="font-bold leading-none">{c.name.split(' ')[0]}</p>
+                    <p className="text-[10px] font-mono text-vault-muted dark:text-vault-mutedDark mt-0.5">{c.upiId}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Source Account Row */}
+        <div className="space-y-1.5 font-mono text-xs">
+          <label className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block">
+            PAYMENT SOURCE
+          </label>
+          <div className="p-3 bg-vault-surface border border-vault-rule rounded-lg flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <Wallet className="w-4 h-4 text-vault-reserveBlue" />
+              <div>
+                <p className="font-bold text-vault-ink dark:text-vault-text font-sans">VAULT Reserve Account</p>
+                <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark">A/C •••• {user.accountNo.slice(-4)}</p>
+              </div>
+            </div>
+            <span className="text-[10px] text-vault-emerald font-bold bg-vault-emeraldLight px-2 py-0.5 rounded border border-vault-emerald/20">
+              Active
+            </span>
+          </div>
+        </div>
+
+        {/* Optional Note Row */}
+        <div className="space-y-1.5 font-mono text-xs">
+          <label className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block">
+            REFERENCE NOTE (OPTIONAL)
+          </label>
+          <input 
+            type="text"
+            placeholder="Add note or message for recipient..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            aria-label="Add a transfer note"
+            className="w-full bg-vault-surface border border-vault-rule rounded-lg px-3 py-2 text-xs text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-mono"
+          />
+        </div>
+      </div>
+
+      {/* Large Transfer Alert */}
       {isLargeTransfer && (
         <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-start gap-2.5 text-xs text-amber-600 dark:text-amber-400 font-mono">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold">Large Transfer</p>
-            <p className="mt-0.5 text-vault-ink dark:text-vault-text text-xs">Verify recipient details before authenticating.</p>
+            <p className="font-bold">High Value Transfer</p>
+            <p className="mt-0.5 text-vault-ink dark:text-vault-text text-xs">Verify recipient details prior to authorization.</p>
           </div>
         </div>
       )}
 
-      {/* 4. Fee Transparency */}
-      <div className="p-3 bg-vault-surface border-l-2 border-l-vault-emerald border-t border-b border-r border-vault-rule rounded-lg space-y-0.5">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-vault-emerald">
-          <ShieldCheck className="w-4 h-4" />
-          <span>Zero Transfer Fees</span>
-        </div>
-        <p className="text-xs text-vault-muted dark:text-vault-mutedDark">
-          Direct bank settlement with no hidden charges.
-        </p>
-      </div>
-
-      {/* Error state */}
+      {/* Error Banner */}
       <div aria-live="polite">
         {errorState && (
           <div className="p-3 bg-vault-roseLight border border-vault-rose/30 rounded-lg flex items-start gap-2 text-xs text-vault-rose font-mono">
@@ -325,22 +319,22 @@ export const SendMoneyScreen = () => {
         )}
       </div>
 
-      {/* Action Button */}
+      {/* Primary Action Button (Substantial & Restrained) */}
       <button
         type="button"
         onClick={handleInitiateSend}
         disabled={isLoading || !amount || parseFloat(amount) <= 0}
-        className="w-full py-2.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover disabled:opacity-50 text-white font-mono font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full py-3 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover disabled:opacity-50 text-white font-mono font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
       >
         {isLoading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Processing...</span>
+            <span>Settling Transfer...</span>
           </>
         ) : (
           <>
             {user.biometricsEnabled ? <Fingerprint className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-            <span>Authenticate & Send</span>
+            <span>Authorize & Transfer ₹{numAmount.toLocaleString('en-IN')}</span>
             <ArrowRight className="w-4 h-4" />
           </>
         )}
@@ -376,4 +370,5 @@ export const SendMoneyScreen = () => {
     </div>
   );
 };
+
 

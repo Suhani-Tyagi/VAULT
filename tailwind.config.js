@@ -9,40 +9,41 @@ export default {
     extend: {
       colors: {
         vault: {
-          // Clean Editorial Ledger Palette
-          paper: '#FAF9F6',             // Light neutral ledger background
-          surface: '#FFFFFF',           // Crisp white container surface
-          surfaceHighlight: '#F3F4F6',  // Subtle hairline hover surface
-          rule: '#E5E7EB',              // Crisp 1px divider
-          ruleDark: '#1F2937',          // Dark mode 1px divider
-          ink: '#111827',               // Deep charcoal text
-          text: '#F3F4F6',              // Off-white text for dark mode
-          muted: '#6B7280',             // Secondary text
-          mutedDark: '#9CA3AF',         // Dark mode secondary copy
-          subtle: '#9CA3AF',
+          // Warm Paper & Obsidian Surface Architecture
+          paper: '#FAF8F5',             // Light mode warm off-white background
+          surface: '#FFFFFF',           // Crisp white light container surface
+          surfaceHighlight: '#F5F2EB',  // Subtle hairline hover surface
+          rule: '#E7E5E4',              // Crisp 1px stone divider
+          ruleDark: '#292524',          // Dark mode 1px stone divider
+          ink: '#1C1917',               // Deep charcoal text
+          text: '#F5F5F4',              // Off-white text for dark mode
+          muted: '#78716C',             // Secondary muted text
+          mutedDark: '#A8A29E',         // Dark mode secondary text
+          subtle: '#A8A29E',
           
-          // Primary Accent: Deep Institutional Navy Blue
-          reserveBlue: '#1E3A8A',       
-          reserveBlueHover: '#1D4ED8',
-          reserveBlueLight: '#1E3A8A14',
+          // Primary Accent: Warm VAULT Terracotta
+          reserveBlue: '#C85A32',       // Primary Terracotta Accent
+          reserveBlueHover: '#B34E2A',
+          reserveBlueLight: '#C85A3212',
           
-          // Status Accents
-          emerald: '#047857',           
-          emeraldLight: '#04785714',
+          // Status Accents (Subtle Financial Indicators)
+          emerald: '#15803D',           // Subtle green positive credit
+          emeraldLight: '#15803D14',
           amber: '#D97706',
           amberLight: '#D977061A',
-          rose: '#BE123C',
-          roseLight: '#BE123C1A',
+          rose: '#B91C1C',              // Subtle red debit
+          roseLight: '#B91C1C1A',
 
           // Backward compatibility aliases
-          bronze: '#1E3A8A',
-          bronzeHover: '#1D4ED8',
-          bronzeLight: '#1E3A8A14',
-          teal: '#047857',
-          tealLight: '#04785714',
-          border: '#E5E7EB',
-          borderDark: '#1F2937',
-          charcoal: '#111827',
+          terracotta: '#C85A32',
+          bronze: '#C85A32',
+          bronzeHover: '#B34E2A',
+          bronzeLight: '#C85A3212',
+          teal: '#15803D',
+          tealLight: '#15803D14',
+          border: '#E7E5E4',
+          borderDark: '#292524',
+          charcoal: '#1C1917',
         }
       },
       fontFamily: {
@@ -55,3 +56,4 @@ export default {
   },
   plugins: [],
 }
+

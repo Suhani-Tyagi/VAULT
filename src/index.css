@@ -4,31 +4,31 @@
 
 @layer base {
   body {
-    background-color: #FAF9F6;
-    color: #111827;
+    background-color: #FAF8F5;
+    color: #1C1917;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   .dark body {
-    background-color: #0C0E12;
-    color: #F3F4F6;
+    background-color: #141210;
+    color: #F5F5F4;
   }
 
   /* Dark Mode Surface Overrides */
   .dark .bg-vault-paper {
-    background-color: #0C0E12 !important;
+    background-color: #141210 !important;
   }
   .dark .bg-vault-surface {
-    background-color: #141820 !important;
+    background-color: #1C1917 !important;
   }
   .dark .bg-vault-surfaceHighlight {
-    background-color: #1A202C !important;
+    background-color: #292524 !important;
   }
   .dark .border-vault-rule, .dark .border-vault-border {
-    border-color: #1F2937 !important;
+    border-color: #292524 !important;
   }
   .dark .border-vault-borderDark {
-    border-color: #374151 !important;
+    border-color: #44403C !important;
   }
 
   /* Force tabular numbers for financial amounts */
@@ -67,12 +67,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
+  background: #E7E5E4;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: #292524;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -83,4 +83,5 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 

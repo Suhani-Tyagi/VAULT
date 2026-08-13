@@ -24,6 +24,17 @@ export const TransactionsScreen = () => {
     });
   }, [transactions, searchQuery, selectedFilter]);
 
+  // Group transactions by date string
+  const groupedTransactions = useMemo(() => {
+    const groups = {};
+    filteredTransactions.forEach(tx => {
+      const dateKey = tx.date || 'Statement Period';
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(tx);
+    });
+    return groups;
+  }, [filteredTransactions]);
+
   const handleExportCsv = () => {
     if (filteredTransactions.length === 0) {
       showToast("No transactions available to export", "error");
@@ -62,7 +73,7 @@ export const TransactionsScreen = () => {
             Activity & Transactions
           </h2>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-            Transaction history and account activity
+            Bank statement ledger & passbook history
           </p>
         </div>
 
@@ -70,7 +81,7 @@ export const TransactionsScreen = () => {
           type="button"
           aria-label="Export activity as CSV statement"
           onClick={handleExportCsv}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-surface border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-vault-paper border border-vault-rule hover:border-vault-reserveBlue text-vault-ink dark:text-vault-text rounded-lg text-xs font-mono font-bold transition-colors"
         >
           <Download className="w-3.5 h-3.5 text-vault-reserveBlue" />
           <span>Export Passbook</span>
@@ -115,18 +126,28 @@ export const TransactionsScreen = () => {
         </div>
       </div>
 
-      {/* Transaction List */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl overflow-hidden">
-        {filteredTransactions.length > 0 ? (
-          filteredTransactions.map((tx) => (
-            <TransactionRow 
-              key={tx.id}
-              tx={tx}
-              onClick={() => setSelectedTransaction(tx)}
-            />
+      {/* Grouped Statement Ledger Container */}
+      <div className="space-y-4">
+        {Object.keys(groupedTransactions).length > 0 ? (
+          Object.entries(groupedTransactions).map(([dateLabel, txGroup]) => (
+            <div key={dateLabel} className="space-y-1">
+              <div className="px-1 py-1 flex items-center justify-between text-[11px] font-mono text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider font-bold">
+                <span>{dateLabel}</span>
+                <span>{txGroup.length} {txGroup.length === 1 ? 'entry' : 'entries'}</span>
+              </div>
+              <div className="bg-vault-surface border border-vault-rule rounded-xl overflow-hidden">
+                {txGroup.map((tx) => (
+                  <TransactionRow 
+                    key={tx.id}
+                    tx={tx}
+                    onClick={() => setSelectedTransaction(tx)}
+                  />
+                ))}
+              </div>
+            </div>
           ))
         ) : (
-          <div className="py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-1 font-mono">
+          <div className="bg-vault-surface border border-vault-rule rounded-xl py-12 px-4 text-center text-vault-muted dark:text-vault-mutedDark space-y-1 font-mono">
             <p className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">No transactions found</p>
             <p className="text-xs">Adjust your search terms or filters.</p>
           </div>
@@ -135,4 +156,3 @@ export const TransactionsScreen = () => {
     </div>
   );
 };
-

@@ -25,7 +25,8 @@ export const TabletShell = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-vault-paper dark:bg-[#0C0E12] text-vault-ink dark:text-vault-text flex font-sans">
+    <div className="min-h-screen bg-vault-paper dark:bg-[#141210] text-vault-ink dark:text-vault-text flex font-sans">
+
       {/* Left Navigation Rail */}
       <aside className="w-20 bg-vault-surface border-r border-vault-rule flex flex-col items-center py-5 shrink-0 select-none font-mono">
         <div className="w-8 h-8 rounded-md bg-vault-reserveBlue text-white flex items-center justify-center font-bold text-xs mb-6">

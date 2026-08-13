@@ -16,30 +16,30 @@ export const InsightsScreen = () => {
     }, {});
 
   const pieColors = {
-    'Food & Dining': '#1E3A8A',   
-    'Groceries': '#047857',       
-    'Subscriptions': '#3B82F6',   
-    'Transport': '#14B8A6',       
-    'Rent': '#0284C7',            
-    'Shopping': '#D97706',        
+    'Food & Dining': '#C85A32',   
+    'Groceries': '#15803D',       
+    'Subscriptions': '#78716C',   
+    'Transport': '#D97706',       
+    'Rent': '#44403C',            
+    'Shopping': '#B91C1C',        
   };
 
   const chartData = Object.keys(categoryTotals).map(cat => ({
     name: cat,
     value: categoryTotals[cat],
-    color: pieColors[cat] || '#6B7280'
+    color: pieColors[cat] || '#78716C'
   }));
 
   const totalSpent = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="space-y-4 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header title */}
       <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
           <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Spending Insights</h2>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-            Category distribution and spending trends
+            Category distribution & outflow analysis
           </p>
         </div>
 
@@ -63,50 +63,50 @@ export const InsightsScreen = () => {
         </div>
       </div>
 
-      {/* Monthly Summary Hero Card */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex justify-between items-center font-mono">
-        <div>
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Total Outflow ({activeTimeframe})</p>
-          <h3 className="text-2xl font-mono font-bold text-vault-reserveBlue tabular-nums mt-0.5">
+      {/* Primary Financial Summary Block */}
+      <div className="space-y-2 pt-1">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-vault-muted dark:text-vault-mutedDark">
+          SPENDING THIS {activeTimeframe.toUpperCase()}
+        </span>
+        <div className="flex items-baseline gap-3">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-vault-ink dark:text-vault-text tracking-tight tabular-nums">
             ₹{totalSpent.toLocaleString('en-IN')}
-          </h3>
-        </div>
-        <div className="text-right">
-          <span className="text-xs font-mono font-bold text-vault-emerald bg-vault-emeraldLight px-2.5 py-1 rounded border border-vault-emerald/20 flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5" /> 12% lower than last month
+          </div>
+          <span className="text-xs font-mono font-bold text-vault-emerald bg-vault-emeraldLight px-2.5 py-0.5 rounded border border-vault-emerald/20 flex items-center gap-1">
+            <TrendingUp className="w-3.5 h-3.5" /> +4.8% vs last month
           </span>
         </div>
       </div>
 
-      {/* Category Breakdown Donut Chart */}
-      <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
+      {/* Single Primary Chart Block */}
+      <div className="bg-vault-surface border border-vault-rule rounded-xl p-5 space-y-4">
         <h3 className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
           Category Distribution
         </h3>
 
-        <div className="h-52 w-full relative flex items-center justify-center">
+        <div className="h-48 w-full relative flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={85}
+                innerRadius={55}
+                outerRadius={80}
                 paddingAngle={3}
                 dataKey="value"
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} stroke="#141820" strokeWidth={1.5} />
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="#1C1917" strokeWidth={1} />
                 ))}
               </Pie>
               <Tooltip 
                 formatter={(val) => `₹${val.toLocaleString('en-IN')}`}
                 contentStyle={{ 
-                  backgroundColor: '#141820', 
-                  borderColor: '#1F2937', 
+                  backgroundColor: '#1C1917', 
+                  borderColor: '#292524', 
                   borderRadius: '6px',
-                  color: '#F3F4F6',
+                  color: '#F5F5F4',
                   fontSize: '12px',
                   fontFamily: 'DM Mono, monospace',
                   fontWeight: 'bold'
@@ -114,30 +114,29 @@ export const InsightsScreen = () => {
               />
             </PieChart>
           </ResponsiveContainer>
-
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center font-mono">
-            <span className="text-[10px] text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider font-bold">Total Spent</span>
-            <span className="text-base font-bold text-vault-ink dark:text-vault-text tabular-nums">
-              ₹{totalSpent.toLocaleString('en-IN')}
-            </span>
-          </div>
         </div>
 
-        {/* Category Legend List */}
-        <div className="space-y-2 pt-2 border-t border-vault-rule">
+        {/* Top Categories Horizontal Bars */}
+        <div className="space-y-3 pt-3 border-t border-vault-rule font-mono text-xs">
           {chartData.map(cat => {
-            const percent = Math.round((cat.value / totalSpent) * 100);
+            const percent = totalSpent > 0 ? Math.round((cat.value / totalSpent) * 100) : 0;
             return (
-              <div key={cat.name} className="flex justify-between items-center text-xs font-mono">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: cat.color }} />
+              <div key={cat.name} className="space-y-1">
+                <div className="flex justify-between items-center">
                   <span className="font-bold text-vault-ink dark:text-vault-text font-sans">{cat.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-vault-muted dark:text-vault-mutedDark">{percent}%</span>
+                    <span className="font-bold text-vault-ink dark:text-vault-text tabular-nums w-16 text-right">
+                      ₹{cat.value.toLocaleString('en-IN')}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-vault-muted dark:text-vault-mutedDark">{percent}%</span>
-                  <span className="font-bold text-vault-ink dark:text-vault-text tabular-nums w-16 text-right">
-                    ₹{cat.value.toLocaleString('en-IN')}
-                  </span>
+
+                <div className="w-full bg-vault-surfaceHighlight rounded-full h-1.5 overflow-hidden border border-vault-rule">
+                  <div 
+                    className="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${percent}%`, backgroundColor: cat.color }}
+                  />
                 </div>
               </div>
             );
@@ -146,14 +145,15 @@ export const InsightsScreen = () => {
       </div>
 
       {/* Financial Health Status Footnote */}
-      <div className="p-3.5 rounded-lg bg-vault-surface border-l-2 border-l-vault-emerald border-t border-b border-r border-vault-rule text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed">
+      <div className="p-3.5 rounded-lg bg-vault-surface border-l-2 border-l-vault-reserveBlue border-t border-b border-r border-vault-rule text-xs text-vault-muted dark:text-vault-mutedDark leading-relaxed font-mono">
         <p className="flex items-center gap-1.5 text-vault-ink dark:text-vault-text font-bold mb-0.5 font-sans">
-          <ShieldCheck className="w-4 h-4 text-vault-emerald shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-vault-reserveBlue shrink-0" />
           Budget Allocation
         </p>
-        Fixed essential expenses (rent & recurring bills) represent 38% of monthly cashflow, maintaining clear liquid reserves.
+        Fixed essential expenses (rent & recurring subscriptions) account for 38% of monthly cashflow.
       </div>
     </div>
   );
 };
+
 

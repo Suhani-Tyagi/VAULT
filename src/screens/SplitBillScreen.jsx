@@ -6,8 +6,8 @@ export const SplitBillScreen = () => {
   const { user, friends, requestSplitBill } = useVault();
 
   const [billName, setBillName] = useState('Friday Dinner & Drinks');
-  const [totalAmount, setTotalAmount] = useState('2400');
-  const [selectedFriendIds, setSelectedFriendIds] = useState([friends[0].id, friends[1].id]); // Aditi & Rahul by default
+  const [totalAmount, setTotalAmount] = useState('3240');
+  const [selectedFriendIds, setSelectedFriendIds] = useState([friends[0].id, friends[1].id, friends[2].id]); // Aditi, Rahul, Sneha
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const toggleFriend = (id) => {
@@ -21,8 +21,9 @@ export const SplitBillScreen = () => {
 
   const parsedTotal = parseFloat(totalAmount) || 0;
   const numPeople = selectedFriendIds.length + 1; // Friends + Current User
-  const perPerson = parsedTotal > 0 ? (parsedTotal / numPeople).toFixed(2) : 0;
-  const amountToRequest = (perPerson * selectedFriendIds.length).toFixed(2);
+  const perPerson = parsedTotal > 0 ? (parsedTotal / numPeople) : 0;
+  const userShare = perPerson;
+  const othersShare = parsedTotal - userShare;
 
   const handleRequestSubmit = (e) => {
     e.preventDefault();
@@ -42,7 +43,7 @@ export const SplitBillScreen = () => {
 
   if (isSubmitted) {
     return (
-      <div className="space-y-4 font-sans">
+      <div className="space-y-4 font-sans max-w-xl mx-auto">
         <div className="bg-vault-surface border border-vault-rule rounded-xl p-6 text-center space-y-4 text-vault-ink dark:text-vault-text">
           <div className="w-12 h-12 bg-vault-emeraldLight text-vault-emerald rounded-full flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-6 h-6" />
@@ -50,33 +51,30 @@ export const SplitBillScreen = () => {
 
           <div>
             <h3 className="text-lg font-bold text-vault-ink dark:text-vault-text font-sans">Split Requests Sent</h3>
-            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5">
-              Request for <span className="font-bold text-vault-ink dark:text-vault-text">{billName}</span>
+            <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
+              Bill split registered for <span className="font-bold text-vault-ink dark:text-vault-text font-sans">{billName}</span>
             </p>
           </div>
 
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-vault-emerald tabular-nums my-2">
-            ₹{amountToRequest} Total
-          </div>
-
-          <div className="p-3.5 bg-vault-paper border border-vault-rule rounded-lg text-left text-xs space-y-2 font-mono">
-            <div className="flex justify-between">
-              <span className="text-vault-muted dark:text-vault-mutedDark">Total Bill Amount</span>
-              <span className="font-bold tabular-nums text-vault-ink dark:text-vault-text">₹{parsedTotal.toLocaleString('en-IN')}</span>
+          {/* Instant Financial Math Header */}
+          <div className="grid grid-cols-3 gap-2 p-3 bg-vault-paper border border-vault-rule rounded-lg text-center font-mono">
+            <div>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark uppercase">TOTAL</p>
+              <p className="text-sm font-bold text-vault-ink dark:text-vault-text tabular-nums">₹{parsedTotal.toLocaleString('en-IN')}</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-vault-muted dark:text-vault-mutedDark">Your Share</span>
-              <span className="font-bold text-vault-reserveBlue tabular-nums">₹{perPerson}</span>
+            <div className="border-x border-vault-rule">
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark uppercase">YOU</p>
+              <p className="text-sm font-bold text-vault-reserveBlue tabular-nums">₹{userShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-vault-muted dark:text-vault-mutedDark">Friends Notified ({selectedFriendIds.length})</span>
-              <span className="font-bold text-vault-ink dark:text-vault-text">₹{perPerson} / person</span>
+            <div>
+              <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark uppercase">OTHERS</p>
+              <p className="text-sm font-bold text-vault-emerald tabular-nums">₹{othersShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
             </div>
           </div>
 
           <button
             onClick={resetForm}
-            className="w-full py-2 bg-vault-reserveBlue text-white font-mono font-bold text-xs rounded-lg hover:bg-vault-reserveBlueHover transition-colors"
+            className="w-full py-2.5 bg-vault-reserveBlue text-white font-mono font-bold text-xs rounded-lg hover:bg-vault-reserveBlueHover transition-colors"
           >
             Split Another Bill
           </button>
@@ -86,21 +84,51 @@ export const SplitBillScreen = () => {
   }
 
   return (
-    <div className="space-y-4 font-sans">
+    <div className="space-y-6 font-sans max-w-2xl mx-auto">
       {/* Header title */}
-      <div className="pb-2 border-b border-vault-rule">
-        <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Split a Bill</h2>
+      <div className="pb-3 border-b border-vault-rule">
+        <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Split Bill</h2>
         <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-          Calculate equal shares and notify group members
+          Equal math breakdown and request notifications
         </p>
       </div>
 
+      {/* INSTANT FINANCIAL MATH HEADER */}
+      <div className="grid grid-cols-3 gap-3 p-4 bg-vault-surface border border-vault-rule rounded-xl text-center font-mono">
+        <div>
+          <span className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-bold uppercase tracking-wider block">
+            TOTAL
+          </span>
+          <span className="text-lg sm:text-xl font-bold text-vault-ink dark:text-vault-text tabular-nums">
+            ₹{parsedTotal.toLocaleString('en-IN')}
+          </span>
+        </div>
+
+        <div className="border-x border-vault-rule px-2">
+          <span className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-bold uppercase tracking-wider block">
+            YOU
+          </span>
+          <span className="text-lg sm:text-xl font-bold text-vault-reserveBlue tabular-nums">
+            ₹{userShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </span>
+        </div>
+
+        <div>
+          <span className="text-[10px] text-vault-muted dark:text-vault-mutedDark font-bold uppercase tracking-wider block">
+            OTHERS
+          </span>
+          <span className="text-lg sm:text-xl font-bold text-vault-emerald tabular-nums">
+            ₹{othersShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+          </span>
+        </div>
+      </div>
+
       <form onSubmit={handleRequestSubmit} className="space-y-4">
-        {/* 1. Bill Details */}
-        <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
+        {/* Bill Input Rows */}
+        <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-mono text-xs">
           <div>
-            <label htmlFor="bill-description-input" className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
-              Description
+            <label htmlFor="bill-description-input" className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
+              Bill Description
             </label>
             <input 
               id="bill-description-input"
@@ -108,13 +136,13 @@ export const SplitBillScreen = () => {
               required
               value={billName}
               onChange={(e) => setBillName(e.target.value)}
-              placeholder="e.g. Dinner, Rent share"
+              placeholder="e.g. Dinner & drinks, House rent"
               className="w-full bg-vault-paper border border-vault-rule rounded-lg px-3 py-2 text-xs text-vault-ink dark:text-vault-text placeholder-vault-muted focus:outline-none focus:border-vault-reserveBlue font-mono"
             />
           </div>
 
           <div>
-            <label htmlFor="bill-total-input" className="text-xs font-mono font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
+            <label htmlFor="bill-total-input" className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider block mb-1">
               Total Amount (₹)
             </label>
             <div className="flex items-center bg-vault-paper border border-vault-rule rounded-lg px-3 py-2 focus-within:border-vault-reserveBlue">
@@ -133,93 +161,94 @@ export const SplitBillScreen = () => {
           </div>
         </div>
 
-        {/* 2. Select Friends */}
-        <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3">
-          <div className="flex justify-between items-center text-xs font-mono">
+        {/* Member Selection Tiles & Status Rows */}
+        <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-3 font-mono text-xs">
+          <div className="flex justify-between items-center">
             <label className="font-bold text-vault-muted dark:text-vault-mutedDark uppercase tracking-wider">
-              Group Members
+              PARTICIPANTS ({numPeople})
             </label>
             <span className="text-vault-reserveBlue font-bold">
-              {selectedFriendIds.length} Selected
+              ₹{perPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })} / person
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 font-mono">
+          {/* User Row (You - Paid) */}
+          <div className="p-2.5 bg-vault-paper border border-vault-rule rounded-lg flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <img 
+                src={user.profilePic} 
+                alt={user.name} 
+                className="w-7 h-7 rounded-full object-cover border border-vault-rule"
+              />
+              <div>
+                <p className="font-bold text-vault-ink dark:text-vault-text font-sans">{user.name} (You)</p>
+                <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark">Paid entire bill</p>
+              </div>
+            </div>
+            <span className="text-xs font-bold text-vault-reserveBlue tabular-nums">
+              Your Share: ₹{userShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            </span>
+          </div>
+
+          {/* Friends Rows (Pending Share) */}
+          <div className="space-y-1.5 pt-1">
             {friends.map(friend => {
               const isSelected = selectedFriendIds.includes(friend.id);
               return (
-                <button
+                <div
                   key={friend.id}
-                  type="button"
-                  aria-label={`Toggle friend ${friend.name} for bill split`}
                   onClick={() => toggleFriend(friend.id)}
-                  className={`p-2.5 rounded-lg border flex items-center justify-between transition-colors text-left ${
+                  className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
                     isSelected 
-                      ? 'bg-vault-surfaceHighlight border-vault-reserveBlue text-vault-ink dark:text-vault-text font-bold' 
-                      : 'bg-vault-paper border-vault-rule text-vault-muted dark:text-vault-mutedDark hover:border-vault-muted'
+                      ? 'bg-vault-paper border-vault-reserveBlue text-vault-ink dark:text-vault-text font-bold' 
+                      : 'bg-vault-paper/40 border-vault-rule text-vault-muted opacity-60'
                   }`}
                 >
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-2.5">
                     <img 
                       src={friend.avatar} 
-                      alt={`${friend.name}'s profile avatar`}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full object-cover shrink-0 border border-vault-rule" 
+                      alt={friend.name}
+                      className="w-7 h-7 rounded-full object-cover border border-vault-rule"
                     />
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold truncate font-sans">{friend.name}</p>
-                      <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark truncate">{friend.upiId}</p>
+                    <div>
+                      <p className="font-bold font-sans text-xs">{friend.name}</p>
+                      <p className="text-[10px] text-vault-muted dark:text-vault-mutedDark">{friend.upiId}</p>
                     </div>
                   </div>
 
-                  <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
-                    isSelected ? 'bg-vault-reserveBlue text-white' : 'border border-vault-rule'
-                  }`}>
-                    {isSelected && <Check className="w-2.5 h-2.5" />}
+                  <div className="flex items-center gap-3">
+                    {isSelected ? (
+                      <span className="text-xs text-vault-emerald font-bold tabular-nums">
+                        Pending: ₹{perPerson.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-vault-muted">Excluded</span>
+                    )}
+
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-vault-reserveBlue text-white' : 'border border-vault-rule'
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5" />}
+                    </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>
         </div>
 
-        {/* 3. Live Breakdown */}
-        {parsedTotal > 0 && (
-          <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 space-y-2 text-xs font-mono">
-            <h4 className="font-bold text-vault-ink dark:text-vault-text flex items-center gap-1.5 font-sans">
-              <Users className="w-4 h-4 text-vault-reserveBlue" />
-              <span>Split Breakdown ({numPeople} people)</span>
-            </h4>
-
-            <div className="p-3 bg-vault-paper border border-vault-rule rounded-lg space-y-1.5 font-medium">
-              <div className="flex justify-between">
-                <span className="text-vault-muted dark:text-vault-mutedDark">Your share ({user.name.split(' ')[0]})</span>
-                <span className="font-bold text-vault-reserveBlue tabular-nums">₹{perPerson}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-vault-muted dark:text-vault-mutedDark">Per friend ({selectedFriendIds.length} friends)</span>
-                <span className="font-bold text-vault-emerald tabular-nums">₹{perPerson} each</span>
-              </div>
-              <div className="flex justify-between pt-1 border-t border-vault-rule">
-                <span className="text-vault-muted dark:text-vault-mutedDark">Total to receive</span>
-                <span className="font-bold text-vault-emerald tabular-nums">₹{amountToRequest}</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Action button */}
+        {/* Submit Request Button */}
         <button
           type="submit"
           disabled={parsedTotal <= 0 || selectedFriendIds.length === 0}
-          className="w-full py-2.5 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover disabled:opacity-50 text-white font-mono font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 bg-vault-reserveBlue hover:bg-vault-reserveBlueHover disabled:opacity-50 text-white font-mono font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <Send className="w-4 h-4" />
-          <span>Request ₹{amountToRequest} Total</span>
+          <span>Send Split Requests (₹{othersShare.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Total)</span>
         </button>
       </form>
     </div>
   );
 };
+
 

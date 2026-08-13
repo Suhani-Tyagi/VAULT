@@ -39,13 +39,13 @@ export const SavingsGoalsScreen = () => {
   const totalSavedInGoals = goals.reduce((acc, g) => acc + g.currentAmount, 0);
 
   return (
-    <div className="space-y-4 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header title */}
       <div className="flex justify-between items-start pb-3 border-b border-vault-rule">
         <div>
           <h2 className="text-lg font-bold text-vault-ink dark:text-vault-text tracking-tight font-sans">Savings Goals</h2>
           <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-            Track dedicated savings targets
+            Structured savings targets & reserve funds
           </p>
         </div>
 
@@ -62,20 +62,20 @@ export const SavingsGoalsScreen = () => {
       {/* Summary Card */}
       <div className="bg-vault-surface border border-vault-rule rounded-xl p-4 flex justify-between items-center font-mono">
         <div>
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Total Saved Across Goals</p>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium uppercase tracking-wider">TOTAL RESERVED</p>
           <h3 className="text-2xl font-mono font-bold text-vault-reserveBlue tabular-nums mt-0.5">
             ₹{totalSavedInGoals.toLocaleString('en-IN')}
           </h3>
         </div>
         <div className="text-right">
-          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium">Active Goals</p>
+          <p className="text-xs text-vault-muted dark:text-vault-mutedDark font-medium uppercase tracking-wider">GOALS</p>
           <p className="text-lg font-bold text-vault-ink dark:text-vault-text tabular-nums mt-0.5">
-            {goals.length}
+            {goals.length} Active
           </p>
         </div>
       </div>
 
-      {/* List of Goals */}
+      {/* Strong Vertical List of Goals */}
       <div className="space-y-3">
         {goals.map((goal) => {
           const percent = Math.min(Math.round((goal.currentAmount / goal.targetAmount) * 100), 100);
@@ -94,45 +94,48 @@ export const SavingsGoalsScreen = () => {
                     bgSize="w-9 h-9"
                   />
                   <div>
-                    <h3 className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans">{goal.title}</h3>
+                    <h3 className="text-xs font-bold text-vault-ink dark:text-vault-text font-sans uppercase tracking-wide">{goal.title}</h3>
                     <p className="text-xs text-vault-muted dark:text-vault-mutedDark mt-0.5 font-mono">
-                      Target: {goal.targetDate} • {goal.category}
+                      Target Date: {goal.targetDate} • {goal.category}
                     </p>
                   </div>
                 </div>
 
-                <span className="text-xs font-mono font-bold text-vault-reserveBlue tabular-nums">
-                  {percent}%
-                </span>
+                <div className="text-right font-mono">
+                  <span className="text-xs font-bold text-vault-reserveBlue tabular-nums">
+                    {percent}%
+                  </span>
+                </div>
               </div>
 
-              <div>
-                <div className="w-full bg-vault-surfaceHighlight rounded-full h-1.5 overflow-hidden border border-vault-rule">
+              {/* Refined Linear Progress Bar */}
+              <div className="space-y-1.5 font-mono">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-vault-ink dark:text-vault-text font-bold tabular-nums">
+                    ₹{goal.currentAmount.toLocaleString('en-IN')} / ₹{goal.targetAmount.toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-vault-muted dark:text-vault-mutedDark text-[11px] tabular-nums">
+                    ₹{remaining.toLocaleString('en-IN')} remaining
+                  </span>
+                </div>
+
+                <div className="w-full bg-vault-surfaceHighlight rounded-full h-2 overflow-hidden border border-vault-rule">
                   <div 
                     className="bg-vault-reserveBlue h-full rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${percent}%` }}
                   />
                 </div>
-
-                <div className="flex justify-between items-center text-xs mt-2 font-mono font-medium">
-                  <span className="text-vault-ink dark:text-vault-text font-bold tabular-nums">
-                    ₹{goal.currentAmount.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-vault-muted dark:text-vault-mutedDark tabular-nums">
-                    ₹{remaining.toLocaleString('en-IN')} remaining of ₹{goal.targetAmount.toLocaleString('en-IN')}
-                  </span>
-                </div>
               </div>
 
               <div className="pt-2 border-t border-vault-rule flex justify-between items-center text-xs font-mono">
-                <span className="text-vault-muted dark:text-vault-mutedDark truncate max-w-[200px]">
+                <span className="text-vault-muted dark:text-vault-mutedDark truncate max-w-[220px]">
                   {goal.notes}
                 </span>
 
                 <button
                   onClick={() => { setActiveDepositGoal(goal); setDepositAmount('1500'); }}
                   aria-label={`Add funds to ${goal.title}`}
-                  className="px-2.5 py-1 bg-vault-paper hover:bg-vault-surfaceHighlight text-vault-reserveBlue border border-vault-rule rounded text-xs font-bold transition-colors"
+                  className="px-3 py-1 bg-vault-paper hover:bg-vault-surfaceHighlight text-vault-reserveBlue border border-vault-rule rounded-lg text-xs font-bold transition-colors"
                 >
                   + Add Funds
                 </button>
@@ -321,4 +324,5 @@ export const SavingsGoalsScreen = () => {
     </div>
   );
 };
+
 
