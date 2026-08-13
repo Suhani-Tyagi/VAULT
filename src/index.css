@@ -79,21 +79,35 @@
   display: none;
 }
 
-/* WCAG 2.2 AA Keyboard Focus Indicators */
-*:focus-visible {
-  outline: 2px solid #C85A32 !important;
-  outline-offset: 2px !important;
-}
+/* Print CSS rules for dedicated passbook printing */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
 
-/* Reduced Motion Compliance */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  /* Hide main application root containers during print */
+  #root, header, aside, nav, button, footer, [role="dialog"] {
+    display: none !important;
+  }
+
+  /* Display print-only passbook container */
+  #vault-printable-statement {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    size: portrait;
+    margin: 12mm;
   }
 }
+
 
 
 
